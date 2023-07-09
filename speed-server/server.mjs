@@ -1,7 +1,9 @@
+import "./loadEnvironment.mjs";
+import MongoDBStore from "./db/sessions.mjs";
+import session from "express-session";
 import express from "express";
 import cors from "cors";
-import "./loadEnvironment.mjs";
-import hello from "./routes/hello.mjs";
+import records from "./routes/records.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -9,7 +11,18 @@ const app = express();
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 app.use(express.json());
 
-app.use("/hello", hello);
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    name: "session-id",
+    store: MongoDBStore,
+    cookie: { maxAge: 2678400, sameSite: false, secure: false },
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use("/records", records);
 
 // start the Express server
 app.listen(PORT, () => {
