@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../models/UserSchema.mjs";
+import User from "../db/models/UserSchema.mjs";
 import bcrypt from "bcrypt";
 import asyncHandler from "express-async-handler";
 
