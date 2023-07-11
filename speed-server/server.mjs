@@ -1,10 +1,11 @@
 import "./loadEnvironment.mjs";
+import "./db/conn.mjs";
 import MongoDBStore from "./db/sessions.mjs";
 import session from "express-session";
 import express from "express";
 import cors from "cors";
 import records from "./routes/records.mjs";
-import users from "./routes/users.mjs"
+import users from "./routes/users.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
