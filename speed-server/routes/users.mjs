@@ -5,90 +5,103 @@ import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 
-router.post("/gen-salt", async (req, res) => {
-  const usernameTaken = await User.findOne({ username: req.body.username });
+router.post(
+  "/make-salt",
+  asyncHandler(async (req, res) => {
+    const emailTaken = await User.findOne({ email: req.body.email });
 
-  if (usernameTaken) {
-    res.status(401).send("Username already taken");
-  } else {
+    const usernameTaken = await User.findOne({ username: req.body.username });
+
+    let message = "";
+
+    if (emailTaken) {
+      message += "Email already taken. ";
+    }
+    if (usernameTaken) {
+      message += "Username already taken.";
+    }
+
+    if (emailTaken || usernameTaken) {
+      return res.status(401).send(message);
+    }
+
     const salt = await bcrypt.genSalt(10);
     res.status(201).send(salt);
-  }
-});
+  })
+);
 
-router.post("/get-salt", async (req, res) => {
-  console.log(req.session);
-
-  const user = await User.findOne({ username: req.body.username });
-
-  if (user) {
-    res.status(201).send(user.salt);
-  } else {
-    res.status(401).send("Invalid Username or Password");
-  }
-});
-
-router.post("/register-new-user", async (req, res) => {
-  const { username, password, salt, userType } = req.body;
-
-  const newUser = new User({
-    username,
-    password,
-    salt,
-    userType,
-  });
-
-  await newUser.save();
-
-  req.session.user = { username, isLoggedIn: true }; // makes session
-
-  res
-    .status(201)
-    .send({ message: `${username} created!`, userSession: req.session.user });
-
-  // res.status(204).send(`${username} created!`);
-});
-
-router.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  const user = await User.findOne({ username: username });
-
-  if (password !== user.password) {
-    return res.status(401).send("Invalid Username or Password");
-  }
-
-  req.session.user = { username: user.username, isLoggedIn: true }; // makes session
-
-  console.log(req.session);
-
-  res
-    .status(201)
-    .send({ message: "Login successful", userSession: req.session.user });
-});
-
-router.get(
-  "/isLoggedIn",
+router.post(
+  "/get-salt",
   asyncHandler(async (req, res) => {
-    console.log(req.session);
+    const user = await User.findOne({ email: req.body.email });
 
-    if (req.session.user) {
-      res.status(200).send(req.session.user);
+    if (user) {
+      res.status(201).send(user.salt);
     } else {
-      res.status(401).send("Unauthorized");
+      res.status(401).send("Invalid Email or Password.");
     }
   })
 );
 
-router.delete(`/logout`, async (req, res) => {
-  console.log(req.session);
-  req.session.destroy((error) => {
-    if (error) {
-      return res.status(404).send(error.message);
+router.post(
+  "/register",
+  asyncHandler(async (req, res) => {
+    const { email, username, password, salt } = req.body;
+
+    const newUser = new User({
+      email,
+      username,
+      password,
+      salt,
+    });
+
+    await newUser.save();
+
+    req.session.user = { username };
+
+    res.status(201).send(req.session.user);
+  })
+);
+
+router.post(
+  "/login",
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email: email });
+
+    if (password !== user.password) {
+      res.status(401).send("Invalid Email or Password.");
+    } else {
+      req.session.user = { username: user.username }; // makes session
+
+      res.status(201).send(req.session.user);
     }
-    res.clearCookie("session-id"); // cleaning the cookies from the user session
-    res.status(204).send("Session destroyed successfully!");
-  });
-});
+  })
+);
+
+router.get(
+  "/authenticated",
+  asyncHandler(async (req, res) => {
+    if (req.session.user) {
+      res.status(200).send(req.session.user);
+    } else {
+      res.status(401).send("Unauthorized.");
+    }
+  })
+);
+
+router.delete(
+  `/logout`,
+  asyncHandler(async (req, res) => {
+    req.session.destroy((error) => {
+      if (error) {
+        return res.status(404).send(error.message);
+      }
+      res.clearCookie("session-id"); // cleaning the cookies from the user session
+      res.status(204).send("Session destroyed successfully!");
+    });
+  })
+);
 
 export default router;
