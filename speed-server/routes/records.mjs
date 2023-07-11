@@ -1,15 +1,11 @@
 import express from "express";
-import db from "../db/conn.mjs";
-import { ObjectId } from "mongodb";
+import Record from "../db/models/RecordSchema.mjs";
 
 const router = express.Router();
 
-router.get("/john", async(req, res)=> {
-  const records = db.collection("records");
-
-  const record = await records.find({name: "John"}).toArray()
-
+router.get("/john", async (req, res) => {
+  const record = await Record.findOne({ name: "John" });
   res.status(200).send(record);
-})
+});
 
 export default router;
