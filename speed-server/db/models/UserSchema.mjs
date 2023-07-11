@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema(
   {
+    email: {
+      type: String,
+      required: true,
+    },
     username: {
       type: String,
       required: true,
@@ -16,17 +20,19 @@ const UserSchema = new mongoose.Schema(
     },
     wins: {
       type: Number,
-      required: true,
+      default: 0,
     },
     losses: {
       type: Number,
-      required: true,
+      default: 0,
     },
   },
   {
     timestamps: true,
   }
 );
+
+
 
 const User = mongoose.model("User", UserSchema);
 
