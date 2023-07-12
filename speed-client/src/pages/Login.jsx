@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
 import SHA256 from "../utils/SHA256.mjs";
@@ -78,6 +78,7 @@ export default function Login({ userSession, setUserSession }) {
         password: await SHA256(form.password + salt),
       });
       setUserSession(data);
+      localStorage.setItem("userSession", JSON.stringify(data));
       alertContext.success(`Login successful ${data.username}, welcome!`);
       navigate("/lobby");
     } catch (error) {
