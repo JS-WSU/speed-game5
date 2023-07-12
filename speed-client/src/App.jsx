@@ -23,8 +23,6 @@ function App() {
   const [userSession, setUserSession] = useState(null);
 
   useEffect(() => {
-    // console.log(localStorage.getItem("userSession"));
-    // setUserSession(JSON.parse(localStorage.getItem("userSession")));
     const fetchUserAuth = async () => {
       try {
         const { data } = await axios.get(`/users/authenticated`);
@@ -45,18 +43,11 @@ function App() {
         <Route path="/hello-world" element={<HelloWorld />} />
         <Route
           path="/register"
-          element={
-            <Register
-              userSession={userSession}
-              setUserSession={setUserSession}
-            />
-          }
+          element={<Register setUserSession={setUserSession} />}
         />
         <Route
           path="/login"
-          element={
-            <Login userSession={userSession} setUserSession={setUserSession} />
-          }
+          element={<Login setUserSession={setUserSession} />}
         />
         <Route element={<ProtectedRoute />}>
           <Route path="/lobby" element={<Lobby userSession={userSession} />} />
