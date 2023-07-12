@@ -1,10 +1,10 @@
 import { useState, useContext } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
 import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
 
-export default function Login({ userSession, setUserSession }) {
+export default function Login({ setUserSession }) {
   const navigate = useNavigate();
 
   const alertContext = useContext(AlertContext);
@@ -91,7 +91,7 @@ export default function Login({ userSession, setUserSession }) {
     setForm((prev) => ({ ...prev, loading: false }));
   };
 
-  return userSession ? (
+  return localStorage.getItem("userSession") ? (
     <Navigate to="/lobby" />
   ) : form.loading ? (
     <h1 className="spinner-border m-auto">
@@ -155,6 +155,9 @@ export default function Login({ userSession, setUserSession }) {
           <button type="submit" className="btn btn-primary w-100">
             Login
           </button>
+          <div class="form-text text-center">
+            Don't have an account? <Link to="/register">Register here</Link>
+          </div>
         </form>
       </div>
     </main>
