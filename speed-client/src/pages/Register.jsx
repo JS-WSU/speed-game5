@@ -39,7 +39,7 @@ export default function Register({ userSession, setUserSession }) {
   const verifyEmail = () => {
     let emailValid = true;
 
-    if (/^[\w\.]+@([\w-]+\.)+[\w]{3,4}$/g.test(form.email)) {
+    if (/^[\w.]+@([\w-]+\.)+[\w]{3,4}$/g.test(form.email)) {
       setIsEmailValid(true);
     } else {
       setIsEmailValid(false);
@@ -151,6 +151,8 @@ export default function Register({ userSession, setUserSession }) {
         salt,
       });
       setUserSession(data);
+      localStorage.setItem("userSession", JSON.stringify(data));
+
       alertContext.success(`Your account, ${form.username}, has been created!`);
       navigate("/lobby");
     } catch (error) {
