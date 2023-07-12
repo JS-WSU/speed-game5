@@ -5,6 +5,22 @@ import asyncHandler from "express-async-handler";
 
 const router = express.Router();
 
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const users = await User.find({});
+    res.status(200).send(users);
+  })
+);
+
+router.get(
+  "/:username",
+  asyncHandler(async (req, res) => {
+    const user = await User.findOne({ username: req.params.username });
+    res.status(200).send(user);
+  })
+);
+
 router.post(
   "/make-salt",
   asyncHandler(async (req, res) => {
