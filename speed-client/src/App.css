@@ -1,0 +1,21 @@
+.small-font {
+  font-size: 12px;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+div.small-container {
+  max-width: 400px;
+  margin: auto;
+}
+
