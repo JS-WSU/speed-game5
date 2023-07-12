@@ -1,29 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
-import HelloWorld from "./components/HelloWorld";
-import Error from "./components/Error";
 import Navbar from "./components/Navbar";
-import Login from "./components/Login";
-import Register from "./components/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Lobby from "./components/Lobby";
+import Login from "./pages/Login";
+import HelloWorld from "./pages/HelloWorld";
+import Error from "./pages/Error";
+import Register from "./pages/Register";
+import Lobby from "./pages/Lobby";
 import axios from "axios";
 import "./App.css";
+import HighScores from "./pages/HighScores";
+import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/js/bootstrap";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import Footer from "./components/Footer";
+import Alert from "./components/Alert";
+import Home from "./pages/Home";
+
+axios.defaults.withCredentials = true;
 
 function App() {
-  axios.defaults.withCredentials = true;
-
   const [userSession, setUserSession] = useState(null);
 
   useEffect(() => {
+    // console.log(localStorage.getItem("userSession"));
+    // setUserSession(JSON.parse(localStorage.getItem("userSession")));
     const fetchUserAuth = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:4000/users/isLoggedIn`
-        );
+        const { data } = await axios.get(`/users/authenticated`);
         setUserSession(data);
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
       }
     };
     fetchUserAuth();
@@ -31,19 +38,36 @@ function App() {
 
   return (
     <>
-      <Navbar />
+      <Navbar userSession={userSession} setUserSession={setUserSession} />
+      <Alert />
       <Routes>
-        <Route exact path="/" element={<HelloWorld />} />
+        <Route exact path="/" element={<Home />} />
+        <Route path="/hello-world" element={<HelloWorld />} />
         <Route
           path="/register"
-          element={<Register userSession={userSession} />}
+          element={
+            <Register
+              userSession={userSession}
+              setUserSession={setUserSession}
+            />
+          }
         />
-        <Route path="/login" element={<Login userSession={userSession} />} />
-        <Route element={<ProtectedRoute userSession={userSession} />}>
-          <Route path="/lobby" element={<Lobby />} />
+        <Route
+          path="/login"
+          element={
+            <Login userSession={userSession} setUserSession={setUserSession} />
+          }
+        />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/lobby" element={<Lobby userSession={userSession} />} />
+          <Route
+            path="/high-scores"
+            element={<HighScores userSession={userSession} />}
+          />
         </Route>
         <Route path="*" element={<Error />} />
       </Routes>
+      <Footer />
     </>
   );
 }
