@@ -59,7 +59,7 @@ export default function Login({ setUserSession }) {
     let salt;
 
     try {
-      const { data } = await axios.post("/users/get-salt", {
+      const { data } = await axios.post("http://localhost:4000/users/get-salt", {
         email: form.email,
       });
       salt = data;
@@ -73,7 +73,7 @@ export default function Login({ setUserSession }) {
     }
 
     try {
-      const { data } = await axios.post("/users/login", {
+      const { data } = await axios.post("http://localhost:4000/users/login", {
         email: form.email,
         password: await SHA256(form.password + salt),
       });

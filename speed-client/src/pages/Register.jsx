@@ -125,7 +125,7 @@ export default function Register({ setUserSession }) {
     let salt;
 
     try {
-      const { data } = await axios.post("/users/make-salt", {
+      const { data } = await axios.post("http://localhost:4000/users/make-salt", {
         email: form.email,
         username: form.username,
       });
@@ -144,7 +144,7 @@ export default function Register({ setUserSession }) {
     }
 
     try {
-      const { data } = await axios.post("/users/register", {
+      const { data } = await axios.post("http://localhost:4000/users/register", {
         email: form.email,
         username: form.username,
         password: await SHA256(form.password + salt),

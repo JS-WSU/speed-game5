@@ -8,7 +8,7 @@ export default function Navbar({ userSession, setUserSession }) {
 
   const Logout = async () => {
     try {
-      await axios.delete("/users/logout");
+      await axios.delete("http://localhost:4000/users/logout");
       setUserSession(null);
       localStorage.removeItem("userSession");
       alertContext.success("You have logged out successfully!");
@@ -16,7 +16,7 @@ export default function Navbar({ userSession, setUserSession }) {
       alertContext.error(error.message);
     }
     try {
-      await axios.get("/users/authenticated");
+      await axios.get("http://localhost:4000/users/authenticated");
     } catch (error) {
       console.log(error.message);
     }
