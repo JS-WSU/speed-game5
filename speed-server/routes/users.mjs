@@ -10,9 +10,19 @@ router.get(
   asyncHandler(async (req, res) => {
     const users = await User.aggregate([
       { $set: { totalGames: { $add: ["$wins", "$losses"] } } },
-      { $set: { percentage: { $divide: ["$wins", "$totalGames"] } } },
-      { $sort: { percentage: 1 } },
-      { $unset: ["percentage"] },
+      {
+        $set: {
+          percentage: {
+            $cond: [
+              { $eq: ["$totalGames", 0] },
+              0,
+              { $divide: ["$wins", "$totalGames"] },
+            ],
+          },
+        },
+      },
+      { $sort: { percentage: -1 } },
+      { $unset: ["totalGames"] },
     ]).limit(10);
     res.status(200).send(users);
   })
