@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-function HighScores({ userSession }) {
+function HighScores() {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState({});
 
@@ -14,7 +15,7 @@ function HighScores({ userSession }) {
         setUsers(data);
         console.log(data);
       } catch (error) {
-        console.log(error.message);
+        console.log(GetErrorMessage(error));
       }
     };
     fetchUsers();
@@ -23,7 +24,9 @@ function HighScores({ userSession }) {
   const fetchUser = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:4000/users/${userSession.username}`
+        `http://localhost:4000/users/${
+          JSON.parse(localStorage.getItem("userSession")).username
+        }`
       );
       setUser(data);
       console.log(data);
@@ -37,7 +40,7 @@ function HighScores({ userSession }) {
       {users.length ? (
         <div className="m-auto">
           <h1 className="text-center">High Scores Table</h1>
-          <table className="table table-responsive table-hover table-bordered">
+          <table className="table table-responsive table-bordered">
             <caption className="text-center">Top 10</caption>
             <thead>
               <tr>
@@ -47,11 +50,21 @@ function HighScores({ userSession }) {
               </tr>
             </thead>
             <tbody>
-              {users.map((user, index) => (
+              {users.map((user, index) => {
+                if (
+                  user.username ===
+                  JSON.parse(localStorage.getItem("userSession")).username
+                ) {
+                  setOnTable(true);
+                }
+
                 <tr
                   key={index}
                   className={`${
-                    userSession.username === user.username ? "table-active" : ""
+                    JSON.parse(localStorage.getItem("userSession")).username ===
+                    user.username
+                      ? "table-active"
+                      : ""
                   }`}
                 >
                   <th scope="row">{index + 1}</th>
@@ -62,8 +75,8 @@ function HighScores({ userSession }) {
                       minimumFractionDigits: 2,
                     })}
                   </td>
-                </tr>
-              ))}
+                </tr>;
+              })}
             </tbody>
           </table>
           <div>
