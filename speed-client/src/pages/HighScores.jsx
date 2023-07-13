@@ -1,15 +1,19 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function HighScores({ userSession }) {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {});
+
   return (
     <main className="container">
-      <table class="table">
+      <table class="table table-responsive table-hover">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col">PLace</th>
+            <th scope="col">User</th>
+            <th scope="col">Win Percentage</th>
           </tr>
         </thead>
         <tbody>
@@ -17,21 +21,18 @@ function HighScores({ userSession }) {
             <th scope="row">1</th>
             <td>Mark</td>
             <td>Otto</td>
-            <td>@mdo</td>
           </tr>
           <tr>
             <th scope="row">2</th>
             <td>Jacob</td>
             <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
           </tr>
         </tbody>
       </table>
+      <div>
+        <h2>Your winrate: </h2>
+        <h2>Total Games Played:</h2>
+      </div>
     </main>
   );
 }

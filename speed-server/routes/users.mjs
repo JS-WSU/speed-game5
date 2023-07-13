@@ -8,16 +8,13 @@ const router = express.Router();
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const users = await User.find({});
+    const users = await User.aggregate([
+      { $set: { totalGames: { $add: ["$wins", "$losses"] } } },
+      { $set: { percentage: { $divide: ["$wins", "$totalGames"] } } },
+      { $sort: { percentage: 1 } },
+      { $unset: ["percentage"] },
+    ]).limit(10);
     res.status(200).send(users);
-  })
-);
-
-router.get(
-  "/:username",
-  asyncHandler(async (req, res) => {
-    const user = await User.findOne({ username: req.params.username });
-    res.status(200).send(user);
   })
 );
 
@@ -79,6 +76,11 @@ router.post(
   })
 );
 
+router.get("/test", async (req, res) => {
+  console.log("hello");
+  res.status(200).send("dasd");
+});
+
 router.post(
   "/login",
   asyncHandler(async (req, res) => {
@@ -100,6 +102,7 @@ router.get(
   "/authenticated",
   asyncHandler(async (req, res) => {
     if (req.session.user) {
+      console.log(req.session.user);
       res.status(200).send(req.session.user);
     } else {
       res.status(401).send("Unauthorized.");
@@ -117,6 +120,15 @@ router.delete(
       res.clearCookie("session-id"); // cleaning the cookies from the user session
       res.status(204).send("Session destroyed successfully!");
     });
+  })
+);
+
+router.get(
+  "/user/:username",
+  asyncHandler(async (req, res) => {
+    console.log("test");
+    const user = await User.findOne({ username: req.params.username });
+    res.status(200).send(user);
   })
 );
 
