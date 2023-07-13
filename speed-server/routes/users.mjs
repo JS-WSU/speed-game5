@@ -22,7 +22,6 @@ router.get(
         },
       },
       { $sort: { percentage: -1 } },
-      { $unset: ["totalGames"] },
     ]).limit(10);
     res.status(200).send(users);
   })
@@ -86,11 +85,6 @@ router.post(
   })
 );
 
-router.get("/test", async (req, res) => {
-  console.log("hello");
-  res.status(200).send("dasd");
-});
-
 router.post(
   "/login",
   asyncHandler(async (req, res) => {
@@ -112,7 +106,6 @@ router.get(
   "/authenticated",
   asyncHandler(async (req, res) => {
     if (req.session.user) {
-      console.log(req.session.user);
       res.status(200).send(req.session.user);
     } else {
       res.status(401).send("Unauthorized.");
@@ -136,9 +129,13 @@ router.delete(
 router.get(
   "/user/:username",
   asyncHandler(async (req, res) => {
-    console.log("test");
     const user = await User.findOne({ username: req.params.username });
-    res.status(200).send(user);
+
+    if (user) {
+      res.status(200).send(user);
+    } else {
+      res.status(404).send("User not found.");
+    }
   })
 );
 
