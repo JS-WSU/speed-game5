@@ -17,11 +17,11 @@ export default function Navbar({ isAuth, setIsAuth }) {
       alertContext.error(GetErrorMessage(error));
     }
     // make session
-    try {
-      await axios.get("http://localhost:4000/users/authenticated");
-    } catch (error) {
-      console.log(GetErrorMessage(error));
-    }
+    // try {
+    //   await axios.get("http://localhost:4000/users/authenticated");
+    // } catch (error) {
+    //   console.log(GetErrorMessage(error));
+    // }
   };
 
   return (
