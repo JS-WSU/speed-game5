@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -17,11 +17,14 @@ import Footer from "./components/Footer";
 import Alert from "./components/Alert";
 import Home from "./pages/Home";
 import GetErrorMessage from "./utils/GetErrorMessage.mjs";
+import AlertContext from "./context/AlertContext";
 
 axios.defaults.withCredentials = true;
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
+
+  const alertContext = useContext(AlertContext);
 
   const navigate = useNavigate();
 
@@ -40,11 +43,14 @@ function App() {
           localStorage.removeItem("userSession");
           navigate("/login");
         }
-        console.log(GetErrorMessage(error));
+        if (error.code === "ECONNABORTED") {
+          alertContext.error(GetErrorMessage(error));
+        }
+        setIsAuth(false);
       }
     };
     fetchUserAuth();
-  }, [navigate]);
+  }, [navigate, alertContext]);
 
   return (
     <>
