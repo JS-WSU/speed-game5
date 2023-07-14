@@ -2,24 +2,26 @@ import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import AlertContext from "../context/AlertContext";
 import axios from "axios";
+import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Navbar({ userSession, setUserSession }) {
+export default function Navbar({ isAuth, setIsAuth }) {
   const alertContext = useContext(AlertContext);
 
   const Logout = async () => {
     try {
       await axios.delete("http://localhost:4000/users/logout");
-      setUserSession(null);
+      setIsAuth(false);
       localStorage.removeItem("userSession");
       alertContext.success("You have logged out successfully!");
     } catch (error) {
-      alertContext.error(error.message);
+      alertContext.error(GetErrorMessage(error));
     }
-    try {
-      await axios.get("http://localhost:4000/users/authenticated");
-    } catch (error) {
-      console.log(error.message);
-    }
+    // make session
+    // try {
+    //   await axios.get("http://localhost:4000/users/authenticated");
+    // } catch (error) {
+    //   console.log(GetErrorMessage(error));
+    // }
   };
 
   return (
@@ -54,7 +56,7 @@ export default function Navbar({ userSession, setUserSession }) {
                 Hello World
               </NavLink>
             </li>
-            {userSession && (
+            {isAuth && (
               <>
                 <li className="nav-item align-self-center">
                   <NavLink className="nav-link" to="/high-scores">
@@ -70,7 +72,7 @@ export default function Navbar({ userSession, setUserSession }) {
               </>
             )}
           </ul>
-          {userSession ? (
+          {isAuth ? (
             <ul className="navbar-nav dropdown">
               <li className="nav-item dropdown align-self-center">
                 <button
@@ -78,7 +80,9 @@ export default function Navbar({ userSession, setUserSession }) {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Welcome, {userSession.username}
+                  Welcome,{" "}
+                  {JSON.parse(localStorage.getItem("userSession")) &&
+                    JSON.parse(localStorage.getItem("userSession")).username}
                 </button>
                 <ul className="dropdown-menu">
                   <li className="dropdown-item">

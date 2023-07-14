@@ -3,8 +3,9 @@ import { Link, Navigate, useNavigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
 import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
+import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Register({ setUserSession }) {
+export default function Register({ setIsAuth }) {
   const alertContext = useContext(AlertContext);
 
   const navigate = useNavigate();
@@ -125,18 +126,18 @@ export default function Register({ setUserSession }) {
     let salt;
 
     try {
-      const { data } = await axios.post("http://localhost:4000/users/make-salt", {
-        email: form.email,
-        username: form.username,
-      });
+      const { data } = await axios.post(
+        "http://localhost:4000/users/make-salt",
+        {
+          email: form.email,
+          username: form.username,
+        }
+      );
       salt = data;
       setIsUsernameValid(true);
       setIsEmailValid(true);
     } catch (error) {
-      const {
-        response: { data },
-      } = error;
-      alertContext.error(data);
+      alertContext.error(GetErrorMessage(error));
       setIsUsernameValid(null);
       setIsEmailValid(null);
       setForm((prev) => ({ ...prev, loading: false }));
@@ -144,13 +145,16 @@ export default function Register({ setUserSession }) {
     }
 
     try {
-      const { data } = await axios.post("http://localhost:4000/users/register", {
-        email: form.email,
-        username: form.username,
-        password: await SHA256(form.password + salt),
-        salt,
-      });
-      setUserSession(data);
+      const { data } = await axios.post(
+        "http://localhost:4000/users/register",
+        {
+          email: form.email,
+          username: form.username,
+          password: await SHA256(form.password + salt),
+          salt,
+        }
+      );
+      setIsAuth(true);
       localStorage.setItem("userSession", JSON.stringify(data));
 
       alertContext.success(`Your account, ${form.username}, has been created!`);
@@ -320,7 +324,7 @@ export default function Register({ setUserSession }) {
           <button type="submit" className="btn btn-primary w-100 mt-3">
             Register
           </button>
-          <div class="form-text text-center">
+          <div className="form-text text-center">
             Already have an account? <Link to="/login">Login here</Link>
           </div>
         </form>
