@@ -8,7 +8,7 @@ const router = express.Router();
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    const users = await User.aggregate([
+    let users = await User.aggregate([
       { $set: { totalGames: { $add: ["$wins", "$losses"] } } },
       {
         $set: {
@@ -23,6 +23,9 @@ router.get(
       },
       { $sort: { percentage: -1 } },
     ]).limit(10);
+
+    users = users.filter((user) => user.totalGames > 0);
+
     res.status(200).send(users);
   })
 );
@@ -129,10 +132,34 @@ router.delete(
 router.get(
   "/user/:username",
   asyncHandler(async (req, res) => {
-    const user = await User.findOne({ username: req.params.username });
+    const thisUser = await User.findOne({ username: req.params.username });
 
-    if (user) {
-      res.status(200).send(user);
+    const users = await User.aggregate([
+      { $set: { totalGames: { $add: ["$wins", "$losses"] } } },
+      {
+        $set: {
+          percentage: {
+            $cond: [
+              { $eq: ["$totalGames", 0] },
+              0,
+              { $divide: ["$wins", "$totalGames"] },
+            ],
+          },
+        },
+      },
+      { $sort: { percentage: -1 } },
+    ]);
+
+    let rank;
+
+    let userFound = users.find((user, index) => {
+      rank = index + 1;
+      return user._id.toString() === thisUser._id.toString();
+    });
+
+    if (userFound) {
+      userFound = { ...userFound, rank };
+      res.status(200).send(userFound);
     } else {
       res.status(404).send("User not found.");
     }
