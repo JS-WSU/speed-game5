@@ -21,7 +21,7 @@ router.get(
           },
         },
       },
-      { $sort: { percentage: -1 } },
+      { $sort: { percentage: -1, updatedAt: 1 } },
     ]).limit(10);
 
     users = users.filter((user) => user.totalGames > 0);
@@ -147,7 +147,7 @@ router.get(
           },
         },
       },
-      { $sort: { percentage: -1 } },
+      { $sort: { percentage: -1, updatedAt: 1 } },
     ]);
 
     let rank;
