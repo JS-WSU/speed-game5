@@ -10,8 +10,8 @@ function Home() {
       <h1>Welcome to Speed!</h1>
       <div>
         <h2>Instructions</h2>
-        <div className="d-flex flex-column flex-lg-row justify-content-evenly">
-          <div className="d-flex flex-column mb-3 mb-lg-0 ">
+        <div className="row row-cols-2">
+          <div className="d-flex flex-column mb-3 mb-lg-0">
             <button
               onClick={() => setShowCalifornia(!showCalifornia)}
               className="btn btn-danger mx-auto mb-2"
@@ -20,7 +20,7 @@ function Home() {
             </button>
 
             {showCalifornia && (
-              <ul className="list-group list-group-flush">
+              <ul className="list-group list-group-flush ">
                 <li className="list-group-item list-group-item-danger mb-3">
                   1. Cards are shuffled and players are dealt 26 cards
                 </li>
@@ -51,7 +51,7 @@ function Home() {
               Regular Speed
             </button>
             {showRegular && (
-              <ul className="list-group list-group-flush">
+              <ul className="list-group list-group-flush ">
                 <li className="list-group-item list-group-item-primary mb-3">
                   1. Cards are shuffled and players are given 5 cards each as
                   their playing hand, 15 cards each as personal playing deck. 2
