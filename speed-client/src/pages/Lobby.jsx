@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Lobby({ userSession, setPopup, setGameInProcess }) {
@@ -50,7 +50,7 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
           Host Game
         </button>
       </div>
-      <div>User: {userSession && userSession.username}</div>
+      <div>User: {userSession?.username}</div>
     </main>
   );
 }
