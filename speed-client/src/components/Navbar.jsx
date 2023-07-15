@@ -4,7 +4,12 @@ import AlertContext from "../context/AlertContext";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Navbar({ userSession, setUserSession }) {
+export default function Navbar({
+  userSession,
+  setUserSession,
+  gameInProcess,
+  setGameInProcess,
+}) {
   const alertContext = useContext(AlertContext);
 
   const Logout = async () => {
@@ -16,17 +21,14 @@ export default function Navbar({ userSession, setUserSession }) {
     } catch (error) {
       alertContext.error(GetErrorMessage(error));
     }
-    // make session
-    // try {
-    //   await axios.get("http://localhost:4000/users/authenticated");
-    // } catch (error) {
-    //   console.log(GetErrorMessage(error));
-    // }
   };
 
   return (
     <nav
-      className="navbar bg-primary navbar-expand-lg px-5 text-light"
+      className={`navbar bg-primary navbar-expand-lg px-5 text-light ${
+        gameInProcess ? "opacity-50" : ""
+      }`}
+      style={{ pointerEvents: gameInProcess ? "none" : "auto" }}
       data-bs-theme="dark"
     >
       <div className="container-fluid">
@@ -47,7 +49,7 @@ export default function Navbar({ userSession, setUserSession }) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item align-self-center">
-              <NavLink className="nav-link" to="/">
+              <NavLink className={`nav-link`} to="/" as={NavLink}>
                 Home
               </NavLink>
             </li>
