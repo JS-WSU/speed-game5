@@ -21,6 +21,8 @@ axios.defaults.withCredentials = true;
 
 function App() {
   const [userSession, setUserSession] = useState(null);
+  const [popup, setPopup] = useState(null);
+  const [gameInProcess, setGameInProcess] = useState(false);
 
   const navigate = useNavigate();
 
@@ -38,8 +40,32 @@ function App() {
         if (localStorage.getItem("userSession")) {
           localStorage.removeItem("userSession");
           navigate("/login");
+          setUserSession(null);
+          setPopup(
+            <div className="modal d-block" tabIndex="-1">
+              <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-content text-danger">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Alert</h5>
+                    <i className="bi bi-exclamation-octagon me-2 fs-4 text-danger"></i>
+                  </div>
+                  <div className="modal-body text-center">
+                    <p>Session expired</p>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setPopup(null)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
         }
-        setUserSession(null);
       }
     };
     fetchUserAuth();
@@ -47,29 +73,46 @@ function App() {
 
   return (
     <>
-      <Navbar userSession={userSession} setUserSession={setUserSession} />
-      <Alert />
-      <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route path="/hello-world" element={<HelloWorld />} />
-        <Route
-          path="/register"
-          element={<Register setUserSession={setUserSession} />}
+      {popup}
+      <div className={`d-flex flex-column vh-100 ${popup ? "opacity-50" : ""}`}>
+        <Navbar
+          userSession={userSession}
+          setUserSession={setUserSession}
+          gameInProcess={gameInProcess}
+          setGameInProcess={setGameInProcess}
         />
-        <Route
-          path="/login"
-          element={<Login setUserSession={setUserSession} />}
-        />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/lobby" element={<Lobby userSession={userSession} />} />
+        <Alert />
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route path="/hello-world" element={<HelloWorld />} />
           <Route
-            path="/high-scores"
-            element={<HighScores userSession={userSession} />}
+            path="/register"
+            element={<Register setUserSession={setUserSession} />}
           />
-        </Route>
-        <Route path="*" element={<Error />} />
-      </Routes>
-      <Footer />
+          <Route
+            path="/login"
+            element={<Login setUserSession={setUserSession} />}
+          />
+          <Route element={<ProtectedRoute />}>
+            <Route
+              path="/lobby"
+              element={
+                <Lobby
+                  userSession={userSession}
+                  setPopup={setPopup}
+                  setGameInProcess={setGameInProcess}
+                />
+              }
+            />
+            <Route
+              path="/high-scores"
+              element={<HighScores userSession={userSession} />}
+            />
+          </Route>
+          <Route path="*" element={<Error />} />
+        </Routes>
+        <Footer />
+      </div>
     </>
   );
 }
