@@ -42,7 +42,7 @@ function HighScores({ userSession }) {
       fetchUser();
       setLoading(false);
     }, 1000);
-  }, []);
+  }, [userSession]);
 
   return (
     <main className="container">
