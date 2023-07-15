@@ -4,7 +4,7 @@ import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
 function HighScores() {
-  const [users, setUsers] = useState(null);
+  const [users, setUsers] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,14 +41,16 @@ function HighScores() {
         console.log(GetErrorMessage(error));
       }
     };
-    fetchUsers();
-    fetchUser();
-    setLoading(false);
+    setTimeout(() => {
+      fetchUsers();
+      fetchUser();
+      setLoading(false);
+    }, 1000);
   }, []);
 
   return (
     <main className="container">
-      {users ? (
+      {users.length ? (
         <div className="m-auto">
           <h1 className="text-center">High Scores Table</h1>
           <table className="table table-responsive table-bordered">
@@ -104,7 +106,9 @@ function HighScores() {
           </table>
 
           {user && user.totalGames !== 0 && (
-            <h4>Total Games Played: {user.totalGames}</h4>
+            <h4 className="text-center">
+              Total Games Played: {user.totalGames}
+            </h4>
           )}
           {user && user.totalGames === 0 && (
             <div className="d-flex flex-column">
@@ -117,7 +121,7 @@ function HighScores() {
           )}
         </div>
       ) : !loading ? (
-        <h1 className="text-center">No users currently</h1>
+        <h1 className="text-center m-auto">No users currently</h1>
       ) : (
         <h1 className="spinner-border m-auto">
           <span className="visually-hidden">Loading...</span>
