@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Lobby({ userSession, setPopup, setGameInProcess }) {
   const chooseGameType = () => {
@@ -6,13 +7,13 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
       <div className="modal d-block" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
-            <div className="modal-header d-flex justify-content-center">
-              <h5 className="modal-title">Select Speed Type</h5>
-              <button
-                type="button"
-                class="btn-close"
-                onClick={() => setPopup(null)}
-              ></button>
+            <button
+              type="button"
+              class="btn-close ms-auto mt-2 me-2"
+              onClick={() => setPopup(null)}
+            ></button>
+            <div className="modal-header d-flex justify-content-center pt-0">
+              <h5 className="modal-title ">Select Speed Type</h5>
             </div>
             <div className="modal-body text-center d-flex justify-content-between">
               <button
@@ -22,13 +23,15 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
               >
                 California Speed
               </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => setPopup(null)}
-              >
-                Regular Speed
-              </button>
+              <Link to="/">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => setPopup(null)}
+                >
+                  Regular Speed
+                </button>
+              </Link>
             </div>
           </div>
         </div>
