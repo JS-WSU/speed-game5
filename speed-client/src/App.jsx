@@ -44,22 +44,18 @@ function App() {
           setPopup(
             <div className="modal d-block" tabIndex="-1">
               <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content text-danger">
+                <div className="modal-content text-danger border border-danger">
                   <div className="modal-header">
-                    <h5 className="modal-title">Alert</h5>
                     <i className="bi bi-exclamation-octagon me-2 fs-4 text-danger"></i>
-                  </div>
-                  <div className="modal-body text-center">
-                    <p>Session expired</p>
-                  </div>
-                  <div className="modal-footer">
+                    <h5 className="modal-title">Alert</h5>
                     <button
                       type="button"
-                      className="btn btn-secondary"
+                      className="btn-close"
                       onClick={() => setPopup(null)}
-                    >
-                      Close
-                    </button>
+                    ></button>
+                  </div>
+                  <div className="modal-body text-center">
+                    <p>Session expired. Please login again.</p>
                   </div>
                 </div>
               </div>
