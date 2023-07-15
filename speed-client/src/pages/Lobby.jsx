@@ -3,8 +3,10 @@ import React from "react";
 export default function Lobby() {
   return (
     <main className="container">
-      This is the lobby
-      {JSON.parse(localStorage.getItem("userSession")).username}
+      <h1> This is the lobby</h1>
+      <div>
+        User: {JSON.parse(localStorage.getItem("userSession")).username}
+      </div>
     </main>
   );
 }
