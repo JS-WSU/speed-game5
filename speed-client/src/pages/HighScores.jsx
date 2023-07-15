@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-function HighScores() {
+function HighScores({ userSession }) {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,9 +17,7 @@ function HighScores() {
         setUsers(data);
 
         let playerFound = data.find(
-          (player) =>
-            player.username ===
-            JSON.parse(localStorage.getItem("userSession")).username
+          (player) => player.username === userSession.username
         );
 
         if (playerFound) {
@@ -32,9 +30,7 @@ function HighScores() {
     const fetchUser = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/users/user/${
-            JSON.parse(localStorage.getItem("userSession")).username
-          }`
+          `http://localhost:4000/users/user/${userSession.username}`
         );
         setUser(data);
       } catch (error) {
@@ -68,9 +64,7 @@ function HighScores() {
                     <tr
                       key={index}
                       className={`${
-                        JSON.parse(localStorage.getItem("userSession")) &&
-                        JSON.parse(localStorage.getItem("userSession"))
-                          .username === user.username
+                        userSession && userSession.username === user.username
                           ? "table-active"
                           : ""
                       }`}

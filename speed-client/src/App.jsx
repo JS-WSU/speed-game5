@@ -20,7 +20,7 @@ import Home from "./pages/Home";
 axios.defaults.withCredentials = true;
 
 function App() {
-  const [isAuth, setIsAuth] = useState(false);
+  const [userSession, setUserSession] = useState(null);
 
   const navigate = useNavigate();
 
@@ -32,14 +32,14 @@ function App() {
           `http://localhost:4000/users/authenticated`
         );
         localStorage.setItem("userSession", JSON.stringify(data));
-        setIsAuth(true);
+        setUserSession(data);
       } catch (error) {
         // if session expired, remove from local storage
         if (localStorage.getItem("userSession")) {
           localStorage.removeItem("userSession");
           navigate("/login");
         }
-        setIsAuth(false);
+        setUserSession(null);
       }
     };
     fetchUserAuth();
@@ -47,16 +47,25 @@ function App() {
 
   return (
     <>
-      <Navbar isAuth={isAuth} setIsAuth={setIsAuth} />
+      <Navbar userSession={userSession} setUserSession={setUserSession} />
       <Alert />
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/hello-world" element={<HelloWorld />} />
-        <Route path="/register" element={<Register setIsAuth={setIsAuth} />} />
-        <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
+        <Route
+          path="/register"
+          element={<Register setUserSession={setUserSession} />}
+        />
+        <Route
+          path="/login"
+          element={<Login setUserSession={setUserSession} />}
+        />
         <Route element={<ProtectedRoute />}>
-          <Route path="/lobby" element={<Lobby />} />
-          <Route path="/high-scores" element={<HighScores />} />
+          <Route path="/lobby" element={<Lobby userSession={userSession} />} />
+          <Route
+            path="/high-scores"
+            element={<HighScores userSession={userSession} />}
+          />
         </Route>
         <Route path="*" element={<Error />} />
       </Routes>

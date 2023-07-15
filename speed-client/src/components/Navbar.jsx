@@ -4,13 +4,13 @@ import AlertContext from "../context/AlertContext";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Navbar({ isAuth, setIsAuth }) {
+export default function Navbar({ userSession, setUserSession }) {
   const alertContext = useContext(AlertContext);
 
   const Logout = async () => {
     try {
       await axios.delete("http://localhost:4000/users/logout");
-      setIsAuth(false);
+      setUserSession(null);
       localStorage.removeItem("userSession");
       alertContext.success("You have logged out successfully!");
     } catch (error) {
@@ -56,7 +56,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
                 Hello World
               </NavLink>
             </li>
-            {isAuth && (
+            {userSession && (
               <>
                 <li className="nav-item align-self-center">
                   <NavLink className="nav-link" to="/high-scores">
@@ -72,7 +72,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
               </>
             )}
           </ul>
-          {isAuth ? (
+          {userSession ? (
             <ul className="navbar-nav dropdown">
               <li className="nav-item dropdown align-self-center">
                 <button
@@ -80,9 +80,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Welcome,{" "}
-                  {JSON.parse(localStorage.getItem("userSession")) &&
-                    JSON.parse(localStorage.getItem("userSession")).username}
+                  Welcome, {userSession.username}
                 </button>
                 <ul className="dropdown-menu">
                   <li className="dropdown-item">
