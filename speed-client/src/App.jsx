@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
@@ -45,11 +45,13 @@ function App() {
                 <div className="modal-header">
                   <i className="bi bi-exclamation-octagon me-2 fs-4 text-danger"></i>
                   <h5 className="modal-title">Alert</h5>
-                  <button
-                    type="button"
-                    className="btn-close"
-                    onClick={() => setPopup(null)}
-                  ></button>
+                  <Link to="/login">
+                    <button
+                      type="button"
+                      className="btn-close"
+                      onClick={() => setPopup(null)}
+                    ></button>
+                  </Link>
                 </div>
                 <div className="modal-body text-center">
                   <p>Session expired. Please login again.</p>
@@ -106,7 +108,7 @@ function App() {
             />
             <Route
               path="/high-scores"
-              element={<HighScores userSession={userSession}/>}
+              element={<HighScores userSession={userSession} />}
             />
           </Route>
           <Route path="*" element={<Error />} />
