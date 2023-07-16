@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect, useContext } from "react";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
@@ -8,7 +9,6 @@ import Error from "./pages/Error";
 import Register from "./pages/Register";
 import Lobby from "./pages/Lobby";
 import axios from "axios";
-import "./App.css";
 import HighScores from "./pages/HighScores";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap";
@@ -16,12 +16,15 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
 import Alert from "./components/Alert";
 import Home from "./pages/Home";
+import "reactjs-popup/dist/index.css";
+import "./App.css";
+import AlertContext from "./context/AlertContext";
 
 axios.defaults.withCredentials = true;
 
 function App() {
   const [userSession, setUserSession] = useState(null);
-  const [popup, setPopup] = useState(null);
+  const alertContext = useContext(AlertContext);
   const [gameInProcess, setGameInProcess] = useState(false);
 
   const navigate = useNavigate();
@@ -38,28 +41,7 @@ function App() {
       if (localStorage.getItem("userSession")) {
         localStorage.removeItem("userSession");
         setUserSession(null);
-        setPopup(
-          <div className="modal d-block" tabIndex="-1">
-            <div className="modal-dialog modal-dialog-centered">
-              <div className="modal-content text-danger border border-danger">
-                <div className="modal-header">
-                  <i className="bi bi-exclamation-octagon me-2 fs-4 text-danger"></i>
-                  <h5 className="modal-title">Alert</h5>
-                  <Link to="/login">
-                    <button
-                      type="button"
-                      className="btn-close"
-                      onClick={() => setPopup(null)}
-                    ></button>
-                  </Link>
-                </div>
-                <div className="modal-body text-center">
-                  <p>Session expired. Please login again.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        );
+        alertContext.error("Session expired, please login again.");
       }
     }
   };
@@ -75,46 +57,42 @@ function App() {
 
   return (
     <>
-      {popup}
-      <div className={`d-flex flex-column vh-100 ${popup ? "opacity-50" : ""}`}>
-        <Navbar
-          userSession={userSession}
-          setUserSession={setUserSession}
-          gameInProcess={gameInProcess}
-          setGameInProcess={setGameInProcess}
+      <Navbar
+        userSession={userSession}
+        setUserSession={setUserSession}
+        gameInProcess={gameInProcess}
+        setGameInProcess={setGameInProcess}
+      />
+      <Alert />
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route path="/hello-world" element={<HelloWorld />} />
+        <Route
+          path="/register"
+          element={<Register setUserSession={setUserSession} />}
         />
-        <Alert />
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/hello-world" element={<HelloWorld />} />
+        <Route
+          path="/login"
+          element={<Login setUserSession={setUserSession} />}
+        />
+        <Route element={<ProtectedRoute />}>
           <Route
-            path="/register"
-            element={<Register setUserSession={setUserSession} />}
+            path="/lobby"
+            element={
+              <Lobby
+                userSession={userSession}
+                setGameInProcess={setGameInProcess}
+              />
+            }
           />
           <Route
-            path="/login"
-            element={<Login setUserSession={setUserSession} />}
+            path="/high-scores"
+            element={<HighScores userSession={userSession} />}
           />
-          <Route element={<ProtectedRoute />}>
-            <Route
-              path="/lobby"
-              element={
-                <Lobby
-                  userSession={userSession}
-                  setPopup={setPopup}
-                  setGameInProcess={setGameInProcess}
-                />
-              }
-            />
-            <Route
-              path="/high-scores"
-              element={<HighScores userSession={userSession} />}
-            />
-          </Route>
-          <Route path="*" element={<Error />} />
-        </Routes>
-        <Footer />
-      </div>
+        </Route>
+        <Route path="*" element={<Error />} />
+      </Routes>
+      <Footer />
     </>
   );
 }
