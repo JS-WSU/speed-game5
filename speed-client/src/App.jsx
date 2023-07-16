@@ -25,47 +25,51 @@ function App() {
   const [gameInProcess, setGameInProcess] = useState(false);
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUserAuth = async () => {
-      // check if session exists
-      try {
-        const { data } = await axios.get(
-          `http://localhost:4000/users/authenticated`
-        );
-        localStorage.setItem("userSession", JSON.stringify(data));
-        setUserSession(data);
-      } catch (error) {
-        // if session expired, remove from local storage
-        if (localStorage.getItem("userSession")) {
-          localStorage.removeItem("userSession");
-          navigate("/login");
-          setUserSession(null);
-          setPopup(
-            <div className="modal d-block" tabIndex="-1">
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content text-danger border border-danger">
-                  <div className="modal-header">
-                    <i className="bi bi-exclamation-octagon me-2 fs-4 text-danger"></i>
-                    <h5 className="modal-title">Alert</h5>
-                    <button
-                      type="button"
-                      className="btn-close"
-                      onClick={() => setPopup(null)}
-                    ></button>
-                  </div>
-                  <div className="modal-body text-center">
-                    <p>Session expired. Please login again.</p>
-                  </div>
+  const fetchUserAuth = async () => {
+    // check if session exists
+    try {
+      const { data } = await axios.get(
+        `http://localhost:4000/users/authenticated`
+      );
+      localStorage.setItem("userSession", JSON.stringify(data));
+      setUserSession(data);
+    } catch (error) {
+      // if session expired, remove from local storage
+      if (localStorage.getItem("userSession")) {
+        localStorage.removeItem("userSession");
+        setUserSession(null);
+        setPopup(
+          <div className="modal d-block" tabIndex="-1">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content text-danger border border-danger">
+                <div className="modal-header">
+                  <i className="bi bi-exclamation-octagon me-2 fs-4 text-danger"></i>
+                  <h5 className="modal-title">Alert</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setPopup(null)}
+                  ></button>
+                </div>
+                <div className="modal-body text-center">
+                  <p>Session expired. Please login again.</p>
                 </div>
               </div>
             </div>
-          );
-        }
+          </div>
+        );
       }
-    };
+    }
+  };
+
+  useEffect(() => {
     fetchUserAuth();
   }, [navigate]);
+
+  useEffect(() => {
+    const checkSessionExpired = setInterval(fetchUserAuth, 5000);
+    return () => clearInterval(checkSessionExpired);
+  }, []);
 
   return (
     <>
@@ -102,7 +106,7 @@ function App() {
             />
             <Route
               path="/high-scores"
-              element={<HighScores userSession={userSession} />}
+              element={<HighScores userSession={userSession} setPopup={setPopup}/>}
             />
           </Route>
           <Route path="*" element={<Error />} />
