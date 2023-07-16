@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
+import AlertContext from "../context/AlertContext";
 
 function HighScores({ userSession }) {
   const [users, setUsers] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const alertContext = useContext(AlertContext);
   const [onTable, setOnTable] = useState(false);
 
   useEffect(() => {
@@ -25,6 +27,7 @@ function HighScores({ userSession }) {
         }
       } catch (error) {
         console.log(GetErrorMessage(error));
+        alertContext.error(GetErrorMessage(error));
       }
     };
     const fetchUser = async () => {
@@ -35,6 +38,7 @@ function HighScores({ userSession }) {
         setUser(data);
       } catch (error) {
         console.log(GetErrorMessage(error));
+        alertContext.error(GetErrorMessage(error));
       }
     };
     const timeOut = setTimeout(() => {
@@ -43,7 +47,7 @@ function HighScores({ userSession }) {
       setLoading(false);
     }, 1000);
 
-    return ()=>clearTimeout(timeOut);
+    return () => clearTimeout(timeOut);
   }, [userSession]);
 
   return (
