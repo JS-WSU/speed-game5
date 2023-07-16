@@ -19,7 +19,9 @@ function HighScores({ userSession }) {
         setUsers(data);
 
         let playerFound = data.find(
-          (player) => player.username === userSession.username
+          (player) =>
+            player.username ===
+            JSON.parse(localStorage.getItem("userSession"))?.username
         );
 
         if (playerFound) {
@@ -33,7 +35,9 @@ function HighScores({ userSession }) {
     const fetchUser = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/users/user/${userSession.username}`
+          `http://localhost:4000/users/user/${
+            JSON.parse(localStorage.getItem("userSession"))?.username
+          }`
         );
         setUser(data);
       } catch (error) {
@@ -48,7 +52,7 @@ function HighScores({ userSession }) {
     }, 1000);
 
     return () => clearTimeout(timeOut);
-  }, [userSession]);
+  }, []);
 
   return (
     <main className="container">
