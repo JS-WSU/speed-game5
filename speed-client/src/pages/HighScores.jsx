@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
+import AlertContext from "../context/AlertContext";
 
-function HighScores() {
-  const [users, setUsers] = useState(null);
+function HighScores({ userSession }) {
+  const [users, setUsers] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const alertContext = useContext(AlertContext);
   const [onTable, setOnTable] = useState(false);
 
   useEffect(() => {
@@ -19,7 +21,7 @@ function HighScores() {
         let playerFound = data.find(
           (player) =>
             player.username ===
-            JSON.parse(localStorage.getItem("userSession")).username
+            JSON.parse(localStorage.getItem("userSession"))?.username
         );
 
         if (playerFound) {
@@ -27,28 +29,34 @@ function HighScores() {
         }
       } catch (error) {
         console.log(GetErrorMessage(error));
+        alertContext.error(GetErrorMessage(error));
       }
     };
     const fetchUser = async () => {
       try {
         const { data } = await axios.get(
           `http://localhost:4000/users/user/${
-            JSON.parse(localStorage.getItem("userSession")).username
+            JSON.parse(localStorage.getItem("userSession"))?.username
           }`
         );
         setUser(data);
       } catch (error) {
         console.log(GetErrorMessage(error));
+        alertContext.error(GetErrorMessage(error));
       }
     };
-    fetchUsers();
-    fetchUser();
-    setLoading(false);
+    const timeOut = setTimeout(() => {
+      fetchUsers();
+      fetchUser();
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timeOut);
   }, []);
 
   return (
     <main className="container">
-      {users ? (
+      {users.length ? (
         <div className="m-auto">
           <h1 className="text-center">High Scores Table</h1>
           <table className="table table-responsive table-bordered">
@@ -66,9 +74,7 @@ function HighScores() {
                     <tr
                       key={index}
                       className={`${
-                        JSON.parse(localStorage.getItem("userSession")) &&
-                        JSON.parse(localStorage.getItem("userSession"))
-                          .username === user.username
+                        userSession && userSession.username === user.username
                           ? "table-active"
                           : ""
                       }`}
@@ -104,7 +110,9 @@ function HighScores() {
           </table>
 
           {user && user.totalGames !== 0 && (
-            <h4>Total Games Played: {user.totalGames}</h4>
+            <h4 className="text-center">
+              Total Games Played: {user.totalGames}
+            </h4>
           )}
           {user && user.totalGames === 0 && (
             <div className="d-flex flex-column">
@@ -117,7 +125,7 @@ function HighScores() {
           )}
         </div>
       ) : !loading ? (
-        <h1 className="text-center">No users currently</h1>
+        <h1 className="text-center m-auto">No users currently</h1>
       ) : (
         <h1 className="spinner-border m-auto">
           <span className="visually-hidden">Loading...</span>

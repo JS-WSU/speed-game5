@@ -5,7 +5,7 @@ import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Login({ setIsAuth }) {
+export default function Login({ setUserSession }) {
   const navigate = useNavigate();
 
   const alertContext = useContext(AlertContext);
@@ -78,7 +78,7 @@ export default function Login({ setIsAuth }) {
         email: form.email,
         password: await SHA256(form.password + salt),
       });
-      setIsAuth(true);
+      setUserSession(data);
       localStorage.setItem("userSession", JSON.stringify(data));
       alertContext.success(`Login successful ${data.username}, welcome!`);
       navigate("/lobby");
