@@ -37,11 +37,13 @@ function HighScores({ userSession }) {
         console.log(GetErrorMessage(error));
       }
     };
-    setTimeout(() => {
+    const timeOut = setTimeout(() => {
       fetchUsers();
       fetchUser();
       setLoading(false);
     }, 1000);
+
+    return ()=>clearTimeout(timeOut);
   }, [userSession]);
 
   return (
