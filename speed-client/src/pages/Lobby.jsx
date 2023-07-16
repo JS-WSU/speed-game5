@@ -1,25 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Popup from "reactjs-popup";
 
 export default function Lobby({ userSession, setPopup, setGameInProcess }) {
+  const [show, setShow] = useState(false);
+
   const chooseGameType = () => {
-    setPopup(
-      <div className="modal d-block" tabIndex="-1">
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
-            <button
-              type="button"
-              class="btn-close ms-auto mt-2 me-2"
-              onClick={() => setPopup(null)}
-            ></button>
-            <div className="modal-header d-flex justify-content-center pt-0">
-              <h5 className="modal-title ">Select Speed Type</h5>
-            </div>
-            <div className="modal-body text-center d-flex justify-content-between">
+    setShow(true);
+  };
+
+  return (
+    <main className="container">
+      <div className="d-flex justify-content-between">
+        <Popup open={show} className="popup-content" onClose={() => setShow(false)}>
+          <div className="">
+            <h5 className="text-center ">Select Speed Type</h5>
+            <div className="d-flex justify-content-evenly">
               <button
                 type="button"
                 className="btn btn-danger"
-                onClick={() => setPopup(null)}
+                onClick={() => setShow(false)}
               >
                 California Speed
               </button>
@@ -27,21 +27,14 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => setPopup(null)}
+                  onClick={() => setShow(false)}
                 >
                   Regular Speed
                 </button>
               </Link>
             </div>
           </div>
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <main className="container">
-      <div className="d-flex justify-content-between">
+        </Popup>
         <h1>Games</h1>
         <button
           className="btn btn-primary align-self-center"
