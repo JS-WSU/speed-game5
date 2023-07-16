@@ -106,7 +106,7 @@ function App() {
             />
             <Route
               path="/high-scores"
-              element={<HighScores userSession={userSession} setPopup={setPopup}/>}
+              element={<HighScores userSession={userSession}/>}
             />
           </Route>
           <Route path="*" element={<Error />} />
