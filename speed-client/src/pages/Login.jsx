@@ -1,13 +1,11 @@
 import { useState, useContext } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
 import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
 export default function Login({ setUserSession }) {
-  const navigate = useNavigate();
-
   const alertContext = useContext(AlertContext);
 
   const [form, setForm] = useState({
@@ -81,7 +79,6 @@ export default function Login({ setUserSession }) {
       setUserSession(data);
       localStorage.setItem("userSession", JSON.stringify(data));
       alertContext.success(`Login successful ${data.username}, welcome!`);
-      navigate("/lobby");
     } catch (error) {
       const {
         response: { data },
