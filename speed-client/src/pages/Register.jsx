@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
 import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
@@ -7,6 +7,8 @@ import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
 export default function Register({ setUserSession }) {
   const alertContext = useContext(AlertContext);
+
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     email: "",
@@ -156,6 +158,7 @@ export default function Register({ setUserSession }) {
       localStorage.setItem("userSession", JSON.stringify(data));
 
       alertContext.success(`Your account, ${form.username}, has been created!`);
+      navigate("/lobby");
     } catch (error) {
       const {
         response: { data },
