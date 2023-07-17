@@ -8,8 +8,6 @@ import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 export default function Register({ setUserSession }) {
   const alertContext = useContext(AlertContext);
 
-  const navigate = useNavigate();
-
   const [form, setForm] = useState({
     email: "",
     username: "",
@@ -158,7 +156,6 @@ export default function Register({ setUserSession }) {
       localStorage.setItem("userSession", JSON.stringify(data));
 
       alertContext.success(`Your account, ${form.username}, has been created!`);
-      navigate("/lobby");
     } catch (error) {
       const {
         response: { data },
