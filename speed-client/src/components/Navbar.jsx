@@ -71,6 +71,12 @@ export default function Navbar({
                     Lobby
                   </NavLink>
                 </li>
+
+                <li className="nav-item align-self-center">
+                  <NavLink className="nav-link" to="/game">
+                    Game (TODO)
+                  </NavLink>
+                </li>
               </>
             )}
           </ul>

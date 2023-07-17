@@ -16,6 +16,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
 import Alert from "./components/Alert";
 import Home from "./pages/Home";
+import Game from "./pages/Game";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
 import AlertContext from "./context/AlertContext";
@@ -88,6 +89,10 @@ function App() {
           <Route
             path="/high-scores"
             element={<HighScores userSession={userSession} />}
+          />
+          <Route 
+            path="/game" 
+            element={<Game userSession={userSession} />}
           />
         </Route>
         <Route path="*" element={<Error />} />
