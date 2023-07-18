@@ -37,41 +37,43 @@ const io = new Server(server, {
   },
 });
 
-io.of("/game").on("connection", (socket) => {
+io.on("connection", (socket) => {
   console.log("User connected: " + socket.id);
-  socket.emit(
-    "receive_message",
-    JSON.stringify([
-      {
-        name: "Aleix Melon",
-        id: "E00245",
-        role: ["Dev", "DBA"],
-        age: 23,
-        doj: "11-12-2019",
-        married: false,
-        address: {
-          street: "32, Laham St.",
-          city: "Innsbruck",
-          country: "Austria",
-        },
-        referredby: "E0012",
+
+  // socket.on("user", (userData) => {
+  //   io.emit("user", `Hello, ${userData.username} is here!`);
+  // });
+
+  io.emit("receive_message", [
+    {
+      name: "Aleix Melon",
+      id: "E00245",
+      role: ["Dev", "DBA"],
+      age: 23,
+      doj: "11-12-2019",
+      married: false,
+      address: {
+        street: "32, Laham St.",
+        city: "Innsbruck",
+        country: "Austria",
       },
-      {
-        name: "Bob Washington",
-        id: "E01245",
-        role: ["HR"],
-        age: 43,
-        doj: "10-06-2010",
-        married: true,
-        address: {
-          street: "45, Abraham Lane.",
-          city: "Washington",
-          country: "USA",
-        },
-        referredby: null,
+      referredby: "E0012",
+    },
+    {
+      name: "Bob Washington",
+      id: "E01245",
+      role: ["HR"],
+      age: 43,
+      doj: "10-06-2010",
+      married: true,
+      address: {
+        street: "45, Abraham Lane.",
+        city: "Washington",
+        country: "USA",
       },
-    ])
-  );
+      referredby: null,
+    },
+  ]);
 });
 
 // start server
