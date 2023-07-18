@@ -69,19 +69,25 @@ function Chat() {
         </div>
       ) : (
         <div className="border-start border-end border-3 border-secondary">
-          <div className="">
+          <div className="d-flex flex-column">
             <div className="p-2 h4 border-bottom border-3 border-secondary text-primary">
               Chat
             </div>
-            <div className="p-1 overflow-auto " style={{ maxHeight: "450px" }}>
-              {messageHistory.map((chatMessage) => (
-                <MessageBubble
-                  username={chatMessage.username}
-                  body={chatMessage.body}
-                  date={chatMessage.date}
-                />
-              ))}
+            <div className="flex-grow-1">
+              <div
+                className="p-1 overflow-auto "
+                style={{ maxHeight: "70vh" }}
+              >
+                {messageHistory.map((chatMessage) => (
+                  <MessageBubble
+                    username={chatMessage.username}
+                    body={chatMessage.body}
+                    date={chatMessage.date}
+                  />
+                ))}
+              </div>
             </div>
+
             <div className="border-top border-bottom border-3 border-secondary">
               {messages.map((value) => (
                 <button
