@@ -2,31 +2,42 @@ import io from "socket.io-client";
 import { useEffect, useState } from "react";
 
 export default function Game() {
-  const [messageRecieved, setMessageRecieved] = useState([]);
+  const [messageRecieved, setMessageReceived] = useState([]);
+  const [userMessages, setUserMessages] = useState([]);
 
   useEffect(() => {
-    const socket = io.connect("http://localhost:4001/game");
+    const socket = io.connect("http://localhost:4000/");
 
     function messageReceivedHandler(data) {
-      console.log(JSON.parse(data));
-      const dataParsed = JSON.parse(data);
-      console.log(dataParsed);
-      setMessageRecieved(dataParsed);
+      console.log(data);
+      console.log(data);
+      setMessageReceived(data);
     }
+
+    // function userMessage(data) {
+    //   console.log(data);
+    //   console.log(data);
+    //   setUserMessages([...userMessages, data]);
+    // }
     socket.on("receive_message", messageReceivedHandler);
+    // socket.on("user", userMessage);
+    socket.emit("user", localStorage.getItem("userSession"));
     return () => {
+      // socket.off("user", userMessage);
       socket.off("receive_message", messageReceivedHandler);
     };
-  }, []);
+  }, [userMessages]);
 
   return (
     <div>
       <div>
         Message:{" "}
-        {
-          messageRecieved.map((value, index) => {
-            return <pre>{JSON.stringify(value)}</pre>;
-          })}
+        {messageRecieved.map((value, index) => {
+          return <pre>{JSON.stringify(value)}</pre>;
+        })}
+        {userMessages.map((value, index) => {
+          return <pre>{JSON.stringify(value)}</pre>;
+        })}
       </div>
     </div>
   );
