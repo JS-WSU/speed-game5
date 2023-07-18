@@ -25,8 +25,7 @@ router.post(
     });
 
     await newMessage.save();
-
-    res.status(200).send("message sent succesfully");
+    res.status(201).send("message sent succesfully");
   })
 )
 
