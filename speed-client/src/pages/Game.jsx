@@ -6,7 +6,7 @@ export default function Game() {
   const [userMessages, setUserMessages] = useState([]);
 
   useEffect(() => {
-    const socket = io.connect("http://localhost:4000/");
+    const socket = io.connect("http://localhost:4000/games", {autoConnect: false});
 
     function messageReceivedHandler(data) {
       console.log(data);
