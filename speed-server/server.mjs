@@ -9,7 +9,7 @@ import users from "./routes/users.mjs";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./db/models/UserSchema.mjs";
-import chatMessages from "./routes/chatMessages.mjs";
+import ChatMessage from "./db/models/ChatMessageSchema.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -30,7 +30,6 @@ app.use(
 
 app.use("/records", records);
 app.use("/users", users);
-app.use("/chat", chatMessages);
 
 const server = http.createServer(app);
 
@@ -40,13 +39,24 @@ const io = new Server(server, {
   },
 });
 
-
 // Main namespace
 const chatNameSpace = io.of("/chat");
 chatNameSpace.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the chat namespace.`);
 
-  chatNameSpace.emit("chat_messages", await User.find({}));
+  chatNameSpace.emit("chat_messages", await ChatMessage.find({}));
+
+  socket.on("new_chat_message", async ({ username, body, date }) => {
+    const newMessage = new ChatMessage({
+      username,
+      body,
+      date,
+    });
+
+    await newMessage.save();
+
+    chatNameSpace.emit("new_chat_message", newMessage);
+  });
 
   socket.on("disconnect", () => {
     console.log(`Socket ${socket.id} disconnected`);
