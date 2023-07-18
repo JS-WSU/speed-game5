@@ -17,26 +17,21 @@ function Chat() {
       setMessages(messages.reverse());
       setLoading(false);
     };
+    const GetNewMessage = (message) => {
+      setMessages((prev) => [message, ...prev]);
+    };
     socket.connect();
+    socket.on("new_chat_message", GetNewMessage);
+
     socket.on("chat_messages", GetMessages);
 
     return () => {
       socket.off("chat_messages", GetMessages);
+      socket.off("new_chat_message", GetNewMessage);
+
       socket.disconnect();
     };
   }, []);
-
-  useEffect(() => {
-    const GetNewMessage = (message) => {
-      setMessages([message, ...messages]);
-    };
-
-    socket.on("new_chat_message", GetNewMessage);
-
-    return () => {
-      socket.off("new_chat_message", GetNewMessage);
-    };
-  }, [messages]);
 
   function handleSendMessage(e) {
     socket.emit("new_chat_message", {
