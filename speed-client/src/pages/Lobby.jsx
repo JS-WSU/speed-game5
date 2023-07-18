@@ -1,3 +1,4 @@
+import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Popup from "reactjs-popup";
@@ -30,43 +31,48 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
 
   return (
     <main className="container">
-      <div className="d-flex justify-content-between">
-        <Popup
+      <div className="d-flex h-100">
+        <div className="d-flex justify-content-between">
+          <Popup
+           
           open={show}
+           
           className="popup-content"
+           
           onClose={() => setShow(false)}
+          
         >
-          <div className="">
-            <h5 className="text-center ">Select Speed Type</h5>
-            <div className="d-flex justify-content-evenly">
-              <button
-                type="button"
-                className="btn btn-danger"
-                onClick={() => setShow(false)}
-              >
-                California Speed
-              </button>
-              <Link to="/">
+            <div className="">
+              <h5 className="text-center ">Select Speed Type</h5>
+              <div className="d-flex justify-content-evenly">
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn btn-danger"
                   onClick={() => setShow(false)}
                 >
-                  Regular Speed
+                  California Speed
                 </button>
-              </Link>
+                <Link to="/">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => setShow(false)}
+                  >
+                    Regular Speed
+                  </button>
+                </Link>
+              </div>
             </div>
-          </div>
-        </Popup>
-        <h1>Games</h1>
-        <button
-          className="btn btn-primary align-self-center"
-          onClick={chooseGameType}
-        >
-          Host Game
-        </button>
-      </div>
-      <div>User: {userSession?.username}</div>
+          </Popup>
+          <h1>Games</h1>
+          <button
+            className="btn btn-primary align-self-center"
+            onClick={chooseGameType}
+          >
+            Host Game
+          </button>
+        </div>
+        <div>User: {userSession?.username}</div>
       {users.length &&
         users.map((user) => (
           <div
@@ -77,6 +83,8 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
             {JSON.stringify(user)}
           </div>
         ))}
+      </div>
+        <Chat />
     </main>
   );
 }

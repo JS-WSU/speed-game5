@@ -9,6 +9,7 @@ import users from "./routes/users.mjs";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./db/models/UserSchema.mjs";
+import chatMessages from "./routes/chatMessages.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -29,6 +30,7 @@ app.use(
 
 app.use("/records", records);
 app.use("/users", users);
+app.use("/chat", chatMessages);
 
 const server = http.createServer(app);
 
