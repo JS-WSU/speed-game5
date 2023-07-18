@@ -46,11 +46,10 @@ chatNameSpace.on("connection", async (socket) => {
 
   socket.emit("chat_messages", await ChatMessage.find({}));
 
-  socket.on("new_chat_message", async ({ username, body, date }) => {
+  socket.on("new_chat_message", async ({ username, body }) => {
     const newMessage = new ChatMessage({
       username,
       body,
-      date,
     });
 
     await newMessage.save();
