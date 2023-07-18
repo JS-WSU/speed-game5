@@ -2,31 +2,72 @@ import express from "express";
 import User from "../db/models/UserSchema.mjs";
 import bcrypt from "bcrypt";
 import asyncHandler from "express-async-handler";
+import SortByWinsGameType from "../utils/SortByWinsGameType.mjs";
+import { GameTypes, MONGO_DB_LIMIT } from "../utils/Constants.mjs";
 
 const router = express.Router();
 
 router.get(
   "/",
   asyncHandler(async (req, res) => {
-    let users = await User.aggregate([
-      { $set: { totalGames: { $add: ["$wins", "$losses"] } } },
-      {
-        $set: {
-          percentage: {
-            $cond: [
-              { $eq: ["$totalGames", 0] },
-              0,
-              { $divide: ["$wins", "$totalGames"] },
-            ],
-          },
-        },
-      },
-      { $sort: { percentage: -1, updatedAt: 1 } },
-    ]).limit(10);
+    let users_california = await SortByWinsGameType(GameTypes.CALIFORNIA, 10);
 
-    users = users.filter((user) => user.totalGames > 0);
+    let users_regular = await SortByWinsGameType(GameTypes.REGULAR, 10);
 
-    res.status(200).send(users);
+    users_california = users_california.filter((user) => user.totalGames > 0);
+
+    users_regular = users_regular.filter((user) => user.totalGames > 0);
+
+    res.status(200).send({ users_california, users_regular });
+  })
+);
+
+router.get(
+  "/regular/:username",
+  asyncHandler(async (req, res) => {
+    const thisUser = await User.findOne({ username: req.params.username });
+
+    if (!thisUser) {
+      return res.status(404).send("User does not exist.");
+    }
+
+    const users = await SortByWinsGameType(GameTypes.REGULAR, MONGO_DB_LIMIT);
+
+    let rank;
+
+    let userFound = users.find((user, index) => {
+      rank = index + 1;
+      return user.username === thisUser.username;
+    });
+
+    userFound = { ...userFound, rank };
+    res.status(200).send(userFound);
+  })
+);
+
+router.get(
+  "/california/:username",
+  asyncHandler(async (req, res) => {
+    const thisUser = await User.findOne({ username: req.params.username });
+
+    if (!thisUser) {
+      return res.status(404).send("User does not exist.");
+    }
+
+    const users = await SortByWinsGameType(
+      GameTypes.CALIFORNIA,
+      MONGO_DB_LIMIT
+    );
+
+    let rank;
+
+    let userFound = users.find((user, index) => {
+      rank = index + 1;
+      return user.username === thisUser.username;
+    });
+
+    userFound = { ...userFound, rank };
+    res.status(200).send(userFound);
   })
 );
 
@@ -126,43 +167,6 @@ router.delete(
       res.clearCookie("session-id"); // cleaning the cookies from the user session
       res.status(204).send("Session destroyed successfully!");
     });
-  })
-);
-
-router.get(
-  "/user/:username",
-  asyncHandler(async (req, res) => {
-    const thisUser = await User.findOne({ username: req.params.username });
-
-    const users = await User.aggregate([
-      { $set: { totalGames: { $add: ["$wins", "$losses"] } } },
-      {
-        $set: {
-          percentage: {
-            $cond: [
-              { $eq: ["$totalGames", 0] },
-              0,
-              { $divide: ["$wins", "$totalGames"] },
-            ],
-          },
-        },
-      },
-      { $sort: { percentage: -1, updatedAt: 1 } },
-    ]);
-
-    let rank;
-
-    let userFound = users.find((user, index) => {
-      rank = index + 1;
-      return user._id.toString() === thisUser._id.toString();
-    });
-
-    if (userFound) {
-      userFound = { ...userFound, rank };
-      res.status(200).send(userFound);
-    } else {
-      res.status(404).send("User not found.");
-    }
   })
 );
 
