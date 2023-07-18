@@ -321,10 +321,10 @@ export default function Register({ setUserSession }) {
           <button type="submit" className="btn btn-primary w-100 mt-3">
             Register
           </button>
-          <div className="form-text text-center">
-            Already have an account? <Link to="/login">Login here</Link>
-          </div>
         </form>
+        <div className="form-text text-center border border-2 mt-3 p-1">
+          Already have an account? <Link to="/login">Login here</Link>
+        </div>
       </div>
     </main>
   );

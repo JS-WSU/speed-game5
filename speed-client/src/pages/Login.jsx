@@ -154,10 +154,10 @@ export default function Login({ setUserSession }) {
           <button type="submit" className="btn btn-primary w-100">
             Login
           </button>
-          <div className="form-text text-center">
+        </form>
+          <div className="form-text text-center border border-2 mt-3 p-1">
             Don't have an account? <Link to="/register">Register here</Link>
           </div>
-        </form>
       </div>
     </main>
   );
