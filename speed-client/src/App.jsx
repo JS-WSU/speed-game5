@@ -20,6 +20,7 @@ import Game from "./pages/Game";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
 import AlertContext from "./context/AlertContext";
+import GetErrorMessage from "./utils/GetErrorMessage.mjs";
 
 axios.defaults.withCredentials = true;
 
@@ -39,10 +40,20 @@ function App() {
       setUserSession(data);
     } catch (error) {
       // if session expired, remove from local storage
-      if (localStorage.getItem("userSession")) {
+      console.log(error);
+      if (
+        error.code === "ERR_BAD_REQUEST" &&
+        localStorage.getItem("userSession")
+      ) {
         localStorage.removeItem("userSession");
         setUserSession(null);
         alertContext.error("Session expired, please login again.");
+      } else if (error.code === "ERR_NETWORK") {
+        localStorage.removeItem("userSession");
+        setUserSession(null);
+        alertContext.error(
+          GetErrorMessage(error) + ", speed-server is not running"
+        );
       }
     }
   };
@@ -90,10 +101,7 @@ function App() {
             path="/high-scores"
             element={<HighScores userSession={userSession} />}
           />
-          <Route 
-            path="/game" 
-            element={<Game userSession={userSession} />}
-          />
+          <Route path="/game" element={<Game userSession={userSession} />} />
         </Route>
         <Route path="*" element={<Error />} />
       </Routes>
