@@ -10,17 +10,11 @@ const ChatMessageSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    date: {
-      type: Date,
-      default: null,
-    },
   },
   {
     timestamps: true,
   }
 );
-
-
 
 const ChatMessage = mongoose.model("ChatMessage", ChatMessageSchema);
 
