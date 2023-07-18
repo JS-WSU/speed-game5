@@ -53,7 +53,7 @@ function HighScores({ userSession }) {
       try {
         const { data } = await axios.get(
           `http://localhost:4000/users/regular/${
-            JSON.parse(localStorage.getItem("userSession"))?.username
+            JSON.parse(localStorage.getItem("userSession")).username
           }`
         );
         setUserRegular(data);
@@ -64,7 +64,7 @@ function HighScores({ userSession }) {
       try {
         const { data } = await axios.get(
           `http://localhost:4000/users/california/${
-            JSON.parse(localStorage.getItem("userSession"))?.username
+            JSON.parse(localStorage.getItem("userSession")).username
           }`
         );
         setUserCalifornia(data);
