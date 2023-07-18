@@ -17,17 +17,23 @@ function Chat() {
       setMessages(messages.reverse());
       setLoading(false);
     };
+    socket.connect();
+    socket.on("chat_messages", GetMessages);
 
+    return () => {
+      socket.off("chat_messages", GetMessages);
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     const GetNewMessage = (message) => {
       setMessages([message, ...messages]);
     };
 
-    socket.connect();
-    socket.on("chat_messages", GetMessages);
     socket.on("new_chat_message", GetNewMessage);
 
     return () => {
-      socket.off("chat_messages", GetMessages);
       socket.off("new_chat_message", GetNewMessage);
     };
   }, [messages]);
