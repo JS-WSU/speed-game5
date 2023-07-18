@@ -44,7 +44,7 @@ const chatNameSpace = io.of("/chat");
 chatNameSpace.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the chat namespace.`);
 
-  chatNameSpace.emit("chat_messages", await ChatMessage.find({}));
+  socket.emit("chat_messages", await ChatMessage.find({}));
 
   socket.on("new_chat_message", async ({ username, body, date }) => {
     const newMessage = new ChatMessage({
