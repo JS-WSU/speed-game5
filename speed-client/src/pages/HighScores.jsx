@@ -52,9 +52,9 @@ function HighScores({ userSession }) {
     const fetchUser = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/users/regular/${
-            JSON.parse(localStorage.getItem("userSession"))?.username
-          }`
+          `http://localhost:4000/users/regular/${JSON.parse(
+            localStorage.getItem("userSession")
+          )}`
         );
         setUserRegular(data);
       } catch (error) {
@@ -63,9 +63,9 @@ function HighScores({ userSession }) {
       }
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/users/california/${
-            JSON.parse(localStorage.getItem("userSession"))?.username
-          }`
+          `http://localhost:4000/users/california/${JSON.parse(
+            localStorage.getItem("userSession")
+          )}`
         );
         setUserCalifornia(data);
       } catch (error) {
