@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -28,7 +27,6 @@ function Chat() {
     return () => {
       socket.off("chat_messages", GetMessages);
       socket.off("new_chat_message", GetNewMessage);
-
       socket.disconnect();
     };
   }, []);
@@ -37,7 +35,6 @@ function Chat() {
     socket.emit("new_chat_message", {
       username: JSON.parse(localStorage.getItem("userSession")).username,
       body: e.target.value,
-      date: Date(),
     });
   }
 
@@ -65,7 +62,7 @@ function Chat() {
                   <MessageBubble
                     username={chatMessage.username}
                     body={chatMessage.body}
-                    date={chatMessage.date}
+                    date={chatMessage.createdAt}
                     key={index}
                   />
                 ))}
