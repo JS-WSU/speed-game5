@@ -8,6 +8,7 @@ import records from "./routes/records.mjs";
 import users from "./routes/users.mjs";
 import http from "http";
 import { Server } from "socket.io";
+import User from "./db/models/UserSchema.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -37,14 +38,34 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log("User connected: " + socket.id);
+
+
+const chatNameSpace = io.of("/chat");
+// Main namespace
+chatNameSpace.on("connection", async(socket) => {
+  console.log(`${socket.id} has joined the chat namespace.`);
+
+  chatNameSpace.emit("chat_messages", await User.find({}))
+});
+
+
+
+
+
+
+
+
+// Game namespace
+const gameNameSpace = io.of("/games");
+
+gameNameSpace.on("connection", (socket) => {
+  console.log("User connected to game namespace: " + socket.id);
 
   // socket.on("user", (userData) => {
   //   io.emit("user", `Hello, ${userData.username} is here!`);
   // });
 
-  io.emit("receive_message", [
+  gameNameSpace.emit("receive_message", [
     {
       name: "Aleix Melon",
       id: "E00245",
@@ -78,5 +99,5 @@ io.on("connection", (socket) => {
 
 // start server
 server.listen(PORT, () => {
-  console.log(`Listening on port: ${PORT}`);
+  console.log(`Socket IO and express server listening on port: ${PORT}`);
 });
