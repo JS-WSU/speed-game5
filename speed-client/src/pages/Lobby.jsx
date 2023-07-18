@@ -2,32 +2,13 @@ import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Popup from "reactjs-popup";
-import { io } from "socket.io-client";
-
-const socket = io.connect("http://localhost:4000/chat", { autoConnect: false });
 
 export default function Lobby({ userSession, setPopup, setGameInProcess }) {
   const [show, setShow] = useState(false);
-  const [messages, setMessages] = useState([]);
 
   const chooseGameType = () => {
     setShow(true);
   };
-
-  useEffect(() => {
-    const GetMessages = (messages) => {
-      setMessages(messages);
-    };
-
-    socket.connect();
-
-    socket.on("chat_messages", GetMessages);
-
-    return () => {
-      socket.off("chat_messages", GetMessages);
-      socket.disconnect();
-    };
-  }, []);
 
   return (
     <>
