@@ -220,9 +220,12 @@ function HighScores({ userSession }) {
       ) : !loading ? (
         <h1 className="text-center m-auto">No users currently</h1>
       ) : (
-        <h1 className="spinner-border m-auto">
-          <span className="visually-hidden">Loading...</span>
-        </h1>
+        <div className="m-auto d-flex flex-column align-items-center">
+          <h1>Loading High Scores...</h1>
+          <div className="spinner-border">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
       )}
     </main>
   );

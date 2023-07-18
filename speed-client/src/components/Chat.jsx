@@ -7,9 +7,11 @@ import MessageBubble from "./MessageBubble.jsx";
 
 function Chat() {
   const [messageHistory, setMessageHistory] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchMessages = async () => {
+      setLoading(true);
       try {
         const { data } = await axios.get(`http://localhost:4000/chat/`);
         console.log(data);
@@ -26,6 +28,7 @@ function Chat() {
       } catch (error) {
         console.log(error);
       }
+      setLoading(false);
     };
     fetchMessages();
   }, []);
@@ -56,35 +59,46 @@ function Chat() {
   }
 
   return (
-    <div className="border-start border-dark w-25">
-      <div className="h-100">
-        <div className="p-2 h4 border-bottom border-dark text-primary">
-          Chat
+    <>
+      {loading ? (
+        <div className="d-flex flex-column align-items-center">
+          <h2>Loading Chat...</h2>
+          <div class="spinner-border text-secondary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
         </div>
-        <div className="h-75 p-1 overflow-auto">
-          {messageHistory.map((chatMessage) => (
-            <MessageBubble
-              username={chatMessage.username}
-              body={chatMessage.body}
-              date={chatMessage.date}
-            />
-          ))}
+      ) : (
+        <div className="border-start border-end border-3 border-secondary">
+          <div className="">
+            <div className="p-2 h4 border-bottom border-3 border-secondary text-primary">
+              Chat
+            </div>
+            <div className="p-1 overflow-auto " style={{ maxHeight: "450px" }}>
+              {messageHistory.map((chatMessage) => (
+                <MessageBubble
+                  username={chatMessage.username}
+                  body={chatMessage.body}
+                  date={chatMessage.date}
+                />
+              ))}
+            </div>
+            <div className="border-top border-bottom border-3 border-secondary">
+              {messages.map((value) => (
+                <button
+                  type="button"
+                  className="btn btn-primary m-1"
+                  key={value}
+                  value={value}
+                  onClick={handleSendMessage}
+                >
+                  {value}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="border-top border-dark p-1">
-          {messages.map((value) => (
-            <button
-              type="button"
-              className="btn btn-primary m-1"
-              key={value}
-              value={value}
-              onClick={handleSendMessage}
-            >
-              {value}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
