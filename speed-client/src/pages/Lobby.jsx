@@ -34,14 +34,10 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
       <div className="d-flex h-100">
         <div className="d-flex justify-content-between">
           <Popup
-           
-          open={show}
-           
-          className="popup-content"
-           
-          onClose={() => setShow(false)}
-          
-        >
+            open={show}
+            className="popup-content"
+            onClose={() => setShow(false)}
+          >
             <div className="">
               <h5 className="text-center ">Select Speed Type</h5>
               <div className="d-flex justify-content-evenly">
@@ -73,18 +69,18 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
           </button>
         </div>
         <div>User: {userSession?.username}</div>
-      {users.length &&
-        users.map((user) => (
-          <div
-            className={`${
-              user.username === userSession?.username ? "bg-danger" : ""
-            }`}
-          >
-            {JSON.stringify(user)}
-          </div>
-        ))}
+        {users.length &&
+          users.map((user) => (
+            <div
+              className={`${
+                user.username === userSession?.username ? "bg-danger" : ""
+              }`}
+            >
+              {JSON.stringify(user)}
+            </div>
+          ))}
       </div>
-        <Chat />
+      <Chat />
     </main>
   );
 }

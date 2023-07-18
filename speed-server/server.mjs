@@ -40,8 +40,9 @@ const io = new Server(server, {
   },
 });
 
-const chatNameSpace = io.of("/chat");
+
 // Main namespace
+const chatNameSpace = io.of("/chat");
 chatNameSpace.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the chat namespace.`);
 
