@@ -4,58 +4,40 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import MessageBubble from "./MessageBubble.jsx";
+import { io } from "socket.io-client";
+import { MessageTypes } from "../utils/Constants.mjs";
 
+const socket = io.connect("http://localhost:4000/chat", { autoConnect: false });
 function Chat() {
-  const [messageHistory, setMessageHistory] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMessages = async () => {
-      setLoading(true);
-      try {
-        const { data } = await axios.get(`http://localhost:4000/chat/`);
-        console.log(data);
-        data.map((chatMessage) =>
-          setMessageHistory((prevMessages) => [
-            ...prevMessages,
-            {
-              username: chatMessage.username,
-              body: chatMessage.body,
-              date: chatMessage.date,
-            },
-          ])
-        );
-      } catch (error) {
-        console.log(error);
-      }
+    const GetMessages = (messages) => {
+      setMessages(messages.reverse());
       setLoading(false);
     };
-    fetchMessages();
-  }, []);
 
-  const messages = [
-    "I AM SPEED",
-    "That was fun",
-    "GG",
-    "Are you ready to rumble!?",
-    "Anyone up for a game?",
-    "Well Played",
-  ];
+    const GetNewMessage = (message) => {
+      setMessages([message, ...messages]);
+    };
+
+    socket.connect();
+    socket.on("chat_messages", GetMessages);
+    socket.on("new_chat_message", GetNewMessage);
+
+    return () => {
+      socket.off("chat_messages", GetMessages);
+      socket.off("new_chat_message", GetNewMessage);
+    };
+  }, [messages]);
 
   function handleSendMessage(e) {
-    e.preventDefault();
-    console.log(e.target.value);
-    console.log(JSON.parse(localStorage.getItem("userSession")).username);
-    try {
-      const { data } = axios.post(`http://localhost:4000/chat/sendMessage`, {
-        username: JSON.parse(localStorage.getItem("userSession")).username,
-        body: e.target.value,
-        date: Date(),
-      });
-      console.log(JSON.stringify(data));
-    } catch (error) {
-      console.log(error);
-    }
+    socket.emit("new_chat_message", {
+      username: JSON.parse(localStorage.getItem("userSession")).username,
+      body: e.target.value,
+      date: Date(),
+    });
   }
 
   return (
@@ -63,8 +45,8 @@ function Chat() {
       {loading ? (
         <div className="d-flex flex-column align-items-center">
           <h2>Loading Chat...</h2>
-          <div class="spinner-border text-secondary" role="status">
-            <span class="visually-hidden">Loading...</span>
+          <div className="spinner-border text-secondary" role="status">
+            <span className="visually-hidden">Loading...</span>
           </div>
         </div>
       ) : (
@@ -75,21 +57,22 @@ function Chat() {
             </div>
             <div className="flex-grow-1">
               <div
-                className="p-1 overflow-auto "
+                className="p-1 overflow-auto d-flex flex-column-reverse"
                 style={{ maxHeight: "70vh" }}
               >
-                {messageHistory.map((chatMessage) => (
+                {messages.map((chatMessage, index) => (
                   <MessageBubble
                     username={chatMessage.username}
                     body={chatMessage.body}
                     date={chatMessage.date}
+                    key={index}
                   />
                 ))}
               </div>
             </div>
 
             <div className="border-top border-bottom border-3 border-secondary">
-              {messages.map((value) => (
+              {MessageTypes.map((value) => (
                 <button
                   type="button"
                   className="btn btn-primary m-1"
