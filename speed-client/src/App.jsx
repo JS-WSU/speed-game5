@@ -14,7 +14,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
-import Alert from "./components/Alert";
 import Home from "./pages/Home";
 import Game from "./pages/Game";
 import "reactjs-popup/dist/index.css";
@@ -74,8 +73,8 @@ function App() {
         setUserSession={setUserSession}
         gameInProcess={gameInProcess}
         setGameInProcess={setGameInProcess}
-      />
-      <Alert />
+      >
+      </Navbar>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/hello-world" element={<HelloWorld />} />
