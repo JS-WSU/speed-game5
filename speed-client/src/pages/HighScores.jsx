@@ -28,7 +28,7 @@ function HighScores({ userSession }) {
         let playerFoundRegular = users_regular.find(
           (player) =>
             player.username ===
-            JSON.parse(localStorage.getItem("userSession"))?.username
+            JSON.parse(localStorage.getItem("userSession")).username
         );
 
         if (playerFoundRegular) {
@@ -38,7 +38,7 @@ function HighScores({ userSession }) {
         let playerFoundCalifornia = users_california.find(
           (player) =>
             player.username ===
-            JSON.parse(localStorage.getItem("userSession"))?.username
+            JSON.parse(localStorage.getItem("userSession")).username
         );
 
         if (playerFoundCalifornia) {
