@@ -4,29 +4,31 @@ import AlertContext from "../context/AlertContext";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Navbar({ isAuth, setIsAuth }) {
+export default function Navbar({
+  userSession,
+  setUserSession,
+  gameInProcess,
+  setGameInProcess,
+}) {
   const alertContext = useContext(AlertContext);
 
   const Logout = async () => {
     try {
       await axios.delete("http://localhost:4000/users/logout");
-      setIsAuth(false);
+      setUserSession(null);
       localStorage.removeItem("userSession");
       alertContext.success("You have logged out successfully!");
     } catch (error) {
       alertContext.error(GetErrorMessage(error));
     }
-    // make session
-    try {
-      await axios.get("http://localhost:4000/users/authenticated");
-    } catch (error) {
-      console.log(GetErrorMessage(error));
-    }
   };
 
   return (
     <nav
-      className="navbar bg-primary navbar-expand-lg px-5 text-light"
+      className={`navbar bg-primary navbar-expand-lg px-5 text-light ${
+        gameInProcess ? "opacity-50" : ""
+      }`}
+      style={{ pointerEvents: gameInProcess ? "none" : "auto" }}
       data-bs-theme="dark"
     >
       <div className="container-fluid">
@@ -47,7 +49,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item align-self-center">
-              <NavLink className="nav-link" to="/">
+              <NavLink className={`nav-link`} to="/" as={NavLink}>
                 Home
               </NavLink>
             </li>
@@ -56,7 +58,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
                 Hello World
               </NavLink>
             </li>
-            {isAuth && (
+            {userSession && (
               <>
                 <li className="nav-item align-self-center">
                   <NavLink className="nav-link" to="/high-scores">
@@ -72,7 +74,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
               </>
             )}
           </ul>
-          {isAuth ? (
+          {userSession ? (
             <ul className="navbar-nav dropdown">
               <li className="nav-item dropdown align-self-center">
                 <button
@@ -80,9 +82,7 @@ export default function Navbar({ isAuth, setIsAuth }) {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Welcome,{" "}
-                  {JSON.parse(localStorage.getItem("userSession")) &&
-                    JSON.parse(localStorage.getItem("userSession")).username}
+                  Welcome, {userSession.username}
                 </button>
                 <ul className="dropdown-menu">
                   <li className="dropdown-item">
