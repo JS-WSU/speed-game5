@@ -22,7 +22,10 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
 
     socket.on("chat_messages", GetUsers);
 
-    return () => socket.off("chat_messages", GetUsers);
+    return () => {
+      socket.off("chat_messages", GetUsers);
+      socket.disconnect();
+    };
   }, []);
 
   return (

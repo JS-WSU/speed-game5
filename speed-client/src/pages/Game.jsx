@@ -1,19 +1,22 @@
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
 
+const socket = io.connect("http://localhost:4000/games", {
+  autoConnect: false,
+});
+
 export default function Game() {
   const [messageRecieved, setMessageReceived] = useState([]);
   const [userMessages, setUserMessages] = useState([]);
 
   useEffect(() => {
-    const socket = io.connect("http://localhost:4000/games", {autoConnect: false});
-
     function messageReceivedHandler(data) {
       console.log(data);
       console.log(data);
       setMessageReceived(data);
     }
 
+    socket.connect();
     // function userMessage(data) {
     //   console.log(data);
     //   console.log(data);
@@ -25,6 +28,7 @@ export default function Game() {
     return () => {
       // socket.off("user", userMessage);
       socket.off("receive_message", messageReceivedHandler);
+      socket.disconnect();
     };
   }, [userMessages]);
 
