@@ -57,7 +57,7 @@ io.on("connection", async (socket) => {
 
     await newMessage.save();
 
-    chatNameSpace.emit("new_chat_message", newMessage);
+    io.emit("new_chat_message", newMessage);
   });
 
   socket.on("disconnect", () => {
