@@ -1,14 +1,19 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import AlertContext from "../context/AlertContext";
+import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
 export default function HelloWorld() {
   const [record, setRecord] = useState(null);
+  const alertContext = useContext(AlertContext);
+
   const getJohn = async () => {
     try {
       let { data } = await axios.get("http://localhost:4000/records/john");
       setRecord(data);
     } catch (error) {
       console.log(error.message);
+      alertContext.error(GetErrorMessage(error));
     }
   };
 

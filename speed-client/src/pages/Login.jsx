@@ -1,12 +1,11 @@
 import { useState, useContext } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
 import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
+import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Login({ setUserSession }) {
-  const navigate = useNavigate();
-
+export default function Login({ setIsAuth }) {
   const alertContext = useContext(AlertContext);
 
   const [form, setForm] = useState({
@@ -59,15 +58,15 @@ export default function Login({ setUserSession }) {
     let salt;
 
     try {
-      const { data } = await axios.post("http://localhost:4000/users/get-salt", {
-        email: form.email,
-      });
+      const { data } = await axios.post(
+        "http://localhost:4000/users/get-salt",
+        {
+          email: form.email,
+        }
+      );
       salt = data;
     } catch (error) {
-      const {
-        response: { data },
-      } = error;
-      alertContext.error(data);
+      alertContext.error(GetErrorMessage(error));
       setForm((prev) => ({ ...prev, loading: false }));
       return;
     }
@@ -77,10 +76,9 @@ export default function Login({ setUserSession }) {
         email: form.email,
         password: await SHA256(form.password + salt),
       });
-      setUserSession(data);
+      setIsAuth(true);
       localStorage.setItem("userSession", JSON.stringify(data));
       alertContext.success(`Login successful ${data.username}, welcome!`);
-      navigate("/lobby");
     } catch (error) {
       const {
         response: { data },
@@ -155,10 +153,10 @@ export default function Login({ setUserSession }) {
           <button type="submit" className="btn btn-primary w-100">
             Login
           </button>
-          <div class="form-text text-center">
-            Don't have an account? <Link to="/register">Register here</Link>
-          </div>
         </form>
+        <div className="form-text text-center border border-2 mt-3 p-1">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </div>
       </div>
     </main>
   );

@@ -18,11 +18,19 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    wins: {
+    california_wins: {
       type: Number,
       default: 0,
     },
-    losses: {
+    california_losses: {
+      type: Number,
+      default: 0,
+    },
+    regular_wins: {
+      type: Number,
+      default: 0,
+    },
+    regular_losses: {
       type: Number,
       default: 0,
     },
@@ -31,8 +39,6 @@ const UserSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-
 
 const User = mongoose.model("User", UserSchema);
 

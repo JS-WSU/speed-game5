@@ -19,3 +19,9 @@ div.small-container {
   margin: auto;
 }
 
+.popup-content {
+  border-radius: 10px;
+  border: 2px solid black;
+}
+
+
