@@ -32,7 +32,7 @@ function MessageBubble({ username, body, date }) {
               username ===
               JSON.parse(localStorage.getItem("userSession")).username
                 ? "ms-auto"
-                : ""
+                : "me-auto"
             }`}
           >
             <div
