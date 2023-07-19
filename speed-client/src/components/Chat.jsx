@@ -24,10 +24,15 @@ function Chat({ userSession }) {
 
     socket.on("chat_messages", GetMessages);
 
+    const interval = setInterval(() => {
+      socket.emit("update_chat_messages");
+    }, 1000);
+
     return () => {
       socket.off("chat_messages", GetMessages);
       socket.off("new_chat_message", GetNewMessage);
       socket.disconnect();
+      clearInterval(interval);
     };
   }, []);
 
@@ -56,16 +61,20 @@ function Chat({ userSession }) {
             <div className="flex-grow-1">
               <div
                 className="p-1 overflow-auto d-flex flex-column-reverse"
-                style={{ maxHeight: "70vh" }}
+                style={{ height: "70vh" }}
               >
-                {messages.map((chatMessage, index) => (
-                  <MessageBubble
-                    username={chatMessage.username}
-                    body={chatMessage.body}
-                    date={chatMessage.createdAt}
-                    key={index}
-                  />
-                ))}
+                {messages.length ? (
+                  messages.map((chatMessage, index) => (
+                    <MessageBubble
+                      username={chatMessage.username}
+                      body={chatMessage.body}
+                      date={chatMessage.createdAt}
+                      key={index}
+                    />
+                  ))
+                ) : (
+                  <div className="m-auto">Chat currently empty</div>
+                )}
               </div>
             </div>
 
