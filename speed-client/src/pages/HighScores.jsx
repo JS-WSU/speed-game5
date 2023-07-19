@@ -117,23 +117,21 @@ function HighScores() {
                         </tr>
                       );
                     })}
-                    {!onTableCalifornia &&
-                      userCalifornia &&
-                      userCalifornia.totalGames !== 0 && (
-                        <tr className="table-active">
-                          <th scope="row">{userCalifornia.rank}</th>
-                          <td>{userCalifornia.username}</td>
-                          <td>
-                            {Number(userCalifornia.percentage).toLocaleString(
-                              undefined,
-                              {
-                                style: "percent",
-                                minimumFractionDigits: 2,
-                              }
-                            )}
-                          </td>
-                        </tr>
-                      )}
+                    {!onTableCalifornia && userCalifornia.totalGames !== 0 && (
+                      <tr className="table-active">
+                        <th scope="row">{userCalifornia.rank}</th>
+                        <td>{userCalifornia.username}</td>
+                        <td>
+                          {Number(userCalifornia.percentage).toLocaleString(
+                            undefined,
+                            {
+                              style: "percent",
+                              minimumFractionDigits: 2,
+                            }
+                          )}
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
                 {userCalifornia.totalGames !== 0 && (
