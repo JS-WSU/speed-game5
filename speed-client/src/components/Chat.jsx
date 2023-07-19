@@ -3,49 +3,12 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import MessageBubble from "./MessageBubble.jsx";
-import { io } from "socket.io-client";
 import { MessageTypes } from "../utils/Constants.mjs";
 
-const socket = io.connect("http://localhost:4000/chat", { autoConnect: false });
-function Chat({ userSession }) {
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const GetMessages = (messages) => {
-      setMessages(messages.reverse());
-      setLoading(false);
-    };
-    const GetNewMessage = (message) => {
-      setMessages((prev) => [message, ...prev]);
-    };
-    socket.connect();
-    socket.on("new_chat_message", GetNewMessage);
-
-    socket.on("chat_messages", GetMessages);
-
-    const interval = setInterval(() => {
-      socket.emit("update_chat_messages");
-    }, 1000);
-
-    return () => {
-      socket.off("chat_messages", GetMessages);
-      socket.off("new_chat_message", GetNewMessage);
-      socket.disconnect();
-      clearInterval(interval);
-    };
-  }, []);
-
-  function handleSendMessage(e) {
-    socket.emit("new_chat_message", {
-      username: JSON.parse(localStorage.getItem("userSession")).username,
-      body: e.target.value,
-    });
-  }
-
+function Chat({ loadingChat, messages, handleSendMessage }) {
   return (
     <>
-      {loading ? (
+      {loadingChat ? (
         <div className="d-flex flex-column align-items-center">
           <h2>Loading Chat...</h2>
           <div className="spinner-border text-secondary" role="status">
