@@ -33,7 +33,6 @@ app.use(
 app.use("/records", records);
 app.use("/users", users);
 app.use("/cards", cards);
-app.use("/cards", cards);
 
 const server = http.createServer(app);
 
