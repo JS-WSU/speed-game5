@@ -2,13 +2,52 @@ import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Popup from "reactjs-popup";
+import { io } from "socket.io-client";
 
-export default function Lobby({ setPopup, setGameInProcess }) {
+const socket = io.connect("http://localhost:4000/", { autoConnect: false });
+export default function Lobby({ setGameInProcess }) {
   const [show, setShow] = useState(false);
 
   const chooseGameType = () => {
     setShow(true);
   };
+
+  const [messages, setMessages] = useState([]);
+  const [loadingChat, setLoadingChat] = useState(true);
+
+  useEffect(() => {
+    socket.connect();
+
+    const GetMessages = (messages) => {
+      setMessages(messages.reverse());
+      setLoadingChat(false);
+    };
+    const GetNewMessage = (message) => {
+      setMessages((prev) => [message, ...prev]);
+    };
+
+    socket.on("new_chat_message", GetNewMessage);
+
+    socket.on("chat_messages", GetMessages);
+
+    const interval = setInterval(() => {
+      socket.emit("update_chat_messages");
+    }, 1000);
+
+    return () => {
+      socket.off("chat_messages", GetMessages);
+      socket.off("new_chat_message", GetNewMessage);
+      socket.disconnect();
+      clearInterval(interval);
+    };
+  }, []);
+
+  function handleSendMessage(e) {
+    socket.emit("new_chat_message", {
+      username: JSON.parse(localStorage.getItem("userSession")).username,
+      body: e.target.value,
+    });
+  }
 
   return (
     <>
@@ -41,21 +80,23 @@ export default function Lobby({ setPopup, setGameInProcess }) {
       </Popup>
       <main className="container-fluid">
         <div className="row">
-          <div className="d-flex col-12 col-md-9">
-            <div className="border-bottom border-5">
-              <div className="d-flex border-bottom border-5">
-                <h1>Games</h1>
-                <button
-                  className="btn btn-primary ms-auto"
-                  onClick={chooseGameType}
-                >
-                  Host Game
-                </button>
-              </div>
+          <div className="col-12 col-md-9 px-5">
+            <div className="d-flex border-bottom border-5">
+              <h1>Games</h1>
+              <button
+                className="btn btn-primary ms-auto align-self-center"
+                onClick={chooseGameType}
+              >
+                Host Game
+              </button>
             </div>
           </div>
           <div className="col-12 col-md-3">
-            <Chat />
+            <Chat
+              loadingChat={loadingChat}
+              messages={messages}
+              handleSendMessage={handleSendMessage}
+            />
           </div>
         </div>
       </main>
