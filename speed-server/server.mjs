@@ -40,10 +40,16 @@ const io = new Server(server, {
 });
 
 // Main lobby chat namespace
+
+let rooms = [];
+
 io.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the main namespace.`);
 
+  // console.log(io.of("/").adapter.rooms);
+
   socket.emit("chat_messages", await ChatMessage.find({}));
+  socket.emit("rooms", rooms);
 
   socket.on("update_chat_messages", async () => {
     socket.emit("chat_messages", await ChatMessage.find({}));
@@ -58,6 +64,14 @@ io.on("connection", async (socket) => {
     await newMessage.save();
 
     io.emit("new_chat_message", newMessage);
+  });
+
+  socket.on("host_game", ({ hostName, speedType }) => {
+    console.log(hostName)
+    socket.join(hostName);
+    rooms.push({ hostName, speedType });
+    console.log(rooms)
+    io.emit("rooms", rooms);
   });
 
   socket.on("disconnect", () => {
