@@ -55,7 +55,7 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
             </div>
           </div>
           <div className="col-12 col-md-3">
-            <Chat />
+            <Chat userSession={userSession} />
           </div>
         </div>
       </main>

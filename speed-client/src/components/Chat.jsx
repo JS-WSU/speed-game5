@@ -7,7 +7,7 @@ import { io } from "socket.io-client";
 import { MessageTypes } from "../utils/Constants.mjs";
 
 const socket = io.connect("http://localhost:4000/chat", { autoConnect: false });
-function Chat() {
+function Chat({ userSession }) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -33,7 +33,7 @@ function Chat() {
 
   function handleSendMessage(e) {
     socket.emit("new_chat_message", {
-      username: JSON.parse(localStorage.getItem("userSession")).username,
+      username: userSession.username,
       body: e.target.value,
     });
   }
@@ -64,6 +64,7 @@ function Chat() {
                     body={chatMessage.body}
                     date={chatMessage.createdAt}
                     key={index}
+                    userSession={userSession}
                   />
                 ))}
               </div>
