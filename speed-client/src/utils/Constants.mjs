@@ -12,3 +12,8 @@ export const FetchStatus = {
   FAILURE: "failure",
   LOADING: "loading",
 };
+
+export const SpeedTypes = {
+  CALIFORNIA: "California Speed",
+  REGULAR: "Regular Speed",
+};
