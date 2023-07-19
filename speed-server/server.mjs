@@ -40,9 +40,8 @@ const io = new Server(server, {
 });
 
 // Main lobby chat namespace
-const chatNameSpace = io.of("/chat");
-chatNameSpace.on("connection", async (socket) => {
-  console.log(`${socket.id} has joined the chat namespace.`);
+io.on("connection", async (socket) => {
+  console.log(`${socket.id} has joined the main namespace.`);
 
   socket.emit("chat_messages", await ChatMessage.find({}));
 
@@ -70,21 +69,21 @@ chatNameSpace.on("connection", async (socket) => {
 const regularSpeedNameSpace = io.of("regular_speed");
 
 regularSpeedNameSpace.on("connection", (socket) => {
-  console.log("User connected to regular speed namespace: " + socket.id);
+  console.log(`${socket.id} has joined the regular namespace.`);
 });
 
 // California Speed namespace
 const californiaSpeedNameSpace = io.of("california");
 
 californiaSpeedNameSpace.on("connection", (socket) => {
-  console.log("User connected to california speed namespace: " + socket.id);
+  console.log(`${socket.id} has joined the california namespace.`);
 });
 
 // Game namespace
 const gameNameSpace = io.of("/games");
 
 gameNameSpace.on("connection", (socket) => {
-  console.log("User connected to game namespace: " + socket.id);
+  console.log(`${socket.id} has joined the game namespace.`);
 
   socket.on("disconnect", () => {
     console.log(`Socket ${socket.id} disconnected`);
