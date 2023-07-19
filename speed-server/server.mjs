@@ -39,12 +39,16 @@ const io = new Server(server, {
   },
 });
 
-// Main namespace
+// Main lobby chat namespace
 const chatNameSpace = io.of("/chat");
 chatNameSpace.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the chat namespace.`);
 
   socket.emit("chat_messages", await ChatMessage.find({}));
+
+  socket.on("update_chat_messages", async () => {
+    socket.emit("chat_messages", await ChatMessage.find({}));
+  });
 
   socket.on("new_chat_message", async ({ username, body }) => {
     const newMessage = new ChatMessage({
@@ -60,6 +64,20 @@ chatNameSpace.on("connection", async (socket) => {
   socket.on("disconnect", () => {
     console.log(`Socket ${socket.id} disconnected`);
   });
+});
+
+// Regular Speed namespace
+const regularSpeedNameSpace = io.of("regular_speed");
+
+regularSpeedNameSpace.on("connection", (socket) => {
+  console.log("User connected to regular speed namespace: " + socket.id);
+});
+
+// California Speed namespace
+const californiaSpeedNameSpace = io.of("california");
+
+californiaSpeedNameSpace.on("connection", (socket) => {
+  console.log("User connected to california speed namespace: " + socket.id);
 });
 
 // Game namespace
