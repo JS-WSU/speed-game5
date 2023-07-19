@@ -6,6 +6,7 @@ import express from "express";
 import cors from "cors";
 import records from "./routes/records.mjs";
 import users from "./routes/users.mjs";
+import cards from "./routes/cards.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -26,6 +27,7 @@ app.use(
 
 app.use("/records", records);
 app.use("/users", users);
+app.use("/cards", cards);
 
 // start the Express server
 app.listen(PORT, () => {
