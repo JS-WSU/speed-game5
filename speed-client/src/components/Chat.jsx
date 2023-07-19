@@ -9,7 +9,7 @@ function Chat({ loadingChat, messages, handleSendMessage }) {
   return (
     <>
       {loadingChat ? (
-        <div className="d-flex flex-column align-items-center">
+        <div className="d-flex flex-column align-items-center m-auto">
           <h2>Loading Chat...</h2>
           <div className="spinner-border text-secondary" role="status">
             <span className="visually-hidden">Loading...</span>
