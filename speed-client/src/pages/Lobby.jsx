@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Popup from "reactjs-popup";
 
-export default function Lobby({ userSession, setPopup, setGameInProcess }) {
+export default function Lobby({ setPopup, setGameInProcess }) {
   const [show, setShow] = useState(false);
 
   const chooseGameType = () => {
@@ -55,7 +55,7 @@ export default function Lobby({ userSession, setPopup, setGameInProcess }) {
             </div>
           </div>
           <div className="col-12 col-md-3">
-            <Chat userSession={userSession} />
+            <Chat />
           </div>
         </div>
       </main>

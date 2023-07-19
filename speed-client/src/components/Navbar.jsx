@@ -6,8 +6,7 @@ import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
 export default function Navbar({
-  userSession,
-  setUserSession,
+  setIsAuth,
   gameInProcess,
   setGameInProcess,
   children,
@@ -17,7 +16,7 @@ export default function Navbar({
   const Logout = async () => {
     try {
       await axios.delete("http://localhost:4000/users/logout");
-      setUserSession(null);
+      setIsAuth(false);
       localStorage.removeItem("userSession");
       alertContext.success("You have logged out successfully!");
     } catch (error) {
@@ -61,7 +60,7 @@ export default function Navbar({
                   Hello World
                 </NavLink>
               </li>
-              {userSession && (
+              {localStorage.getItem("userSession") && (
                 <>
                   <li className="nav-item align-self-center">
                     <NavLink className="nav-link" to="/high-scores">
@@ -83,7 +82,7 @@ export default function Navbar({
                 </>
               )}
             </ul>
-            {userSession ? (
+            {localStorage.getItem("userSession") ? (
               <ul className="navbar-nav dropdown">
                 <li className="nav-item dropdown align-self-center">
                   <button
@@ -91,7 +90,8 @@ export default function Navbar({
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    Welcome, {userSession.username}
+                    Welcome,{" "}
+                    {JSON.parse(localStorage.getItem("userSession")).username}
                   </button>
                   <ul className="dropdown-menu">
                     <li className="dropdown-item">

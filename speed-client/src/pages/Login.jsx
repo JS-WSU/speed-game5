@@ -5,8 +5,7 @@ import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Login({ setUserSession }) {
-
+export default function Login({ setIsAuth }) {
   const alertContext = useContext(AlertContext);
 
   const [form, setForm] = useState({
@@ -77,7 +76,7 @@ export default function Login({ setUserSession }) {
         email: form.email,
         password: await SHA256(form.password + salt),
       });
-      setUserSession(data);
+      setIsAuth(true);
       localStorage.setItem("userSession", JSON.stringify(data));
       alertContext.success(`Login successful ${data.username}, welcome!`);
     } catch (error) {
@@ -155,9 +154,9 @@ export default function Login({ setUserSession }) {
             Login
           </button>
         </form>
-          <div className="form-text text-center border border-2 mt-3 p-1">
-            Don't have an account? <Link to="/register">Register here</Link>
-          </div>
+        <div className="form-text text-center border border-2 mt-3 p-1">
+          Don't have an account? <Link to="/register">Register here</Link>
+        </div>
       </div>
     </main>
   );

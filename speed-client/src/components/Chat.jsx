@@ -33,7 +33,7 @@ function Chat({ userSession }) {
 
   function handleSendMessage(e) {
     socket.emit("new_chat_message", {
-      username: userSession.username,
+      username: JSON.parse(localStorage.getItem("userSession")).username,
       body: e.target.value,
     });
   }
@@ -64,7 +64,6 @@ function Chat({ userSession }) {
                     body={chatMessage.body}
                     date={chatMessage.createdAt}
                     key={index}
-                    userSession={userSession}
                   />
                 ))}
               </div>

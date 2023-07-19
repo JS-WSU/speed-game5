@@ -5,7 +5,7 @@ import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 
-export default function Register({ setUserSession }) {
+export default function Register({ setIsAuth }) {
   const alertContext = useContext(AlertContext);
 
   const [form, setForm] = useState({
@@ -152,7 +152,7 @@ export default function Register({ setUserSession }) {
           salt,
         }
       );
-      setUserSession(data);
+      setIsAuth(true);
       localStorage.setItem("userSession", JSON.stringify(data));
 
       alertContext.success(`Your account, ${form.username}, has been created!`);

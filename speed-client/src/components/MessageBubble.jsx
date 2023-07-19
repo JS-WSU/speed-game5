@@ -1,8 +1,7 @@
 import React from "react";
 import moment from "moment";
-import { format } from "date-fns";
 
-function MessageBubble({ username, body, date, userSession }) {
+function MessageBubble({ username, body, date }) {
   const DateTest = new Date(date);
 
   const convertedDate = moment(DateTest).fromNow();
@@ -12,12 +11,19 @@ function MessageBubble({ username, body, date, userSession }) {
       <div className={`d-flex flex-row`}>
         <div
           className={`d-flex flex-column
-        ${username === userSession.username ? "ms-auto" : ""}
+        ${
+          username === JSON.parse(localStorage.getItem("userSession")).username
+            ? "ms-auto"
+            : ""
+        }
         `}
         >
           <div
             className={`text-secondary  ${
-              username === userSession.username ? "align-self-end" : ""
+              username ===
+              JSON.parse(localStorage.getItem("userSession")).username
+                ? "align-self-end"
+                : ""
             }
         `}
           >
@@ -26,12 +32,16 @@ function MessageBubble({ username, body, date, userSession }) {
 
           <div
             className={`card ${
-              username === userSession.username ? "ms-auto" : ""
+              username ===
+              JSON.parse(localStorage.getItem("userSession")).username
+                ? "ms-auto"
+                : ""
             }`}
           >
             <div
               className={`card-body p-2 ${
-                username === userSession.username
+                username ===
+                JSON.parse(localStorage.getItem("userSession")).username
                   ? "bg-primary text-light rounded"
                   : ""
               }`}
@@ -41,7 +51,11 @@ function MessageBubble({ username, body, date, userSession }) {
           </div>
           <div
             className={`
-       ${username === userSession.username ? "align-self-end" : ""}`}
+       ${
+         username === JSON.parse(localStorage.getItem("userSession")).username
+           ? "align-self-end"
+           : ""
+       }`}
           >
             {" "}
             {username}

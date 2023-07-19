@@ -5,7 +5,7 @@ import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 import AlertContext from "../context/AlertContext";
 
-function HighScores({ userSession }) {
+function HighScores() {
   const [usersRegular, setUsersRegular] = useState([]);
   const [usersCalifornia, setUsersCalifornia] = useState([]);
   const [userRegular, setUserRegular] = useState(null);
@@ -106,7 +106,8 @@ function HighScores({ userSession }) {
                     <tr
                       key={index}
                       className={`${
-                        userSession && userSession.username === user.username
+                        JSON.parse(localStorage.getItem("userSession"))
+                          .username === user.username
                           ? "table-active"
                           : ""
                       }`}
@@ -169,7 +170,8 @@ function HighScores({ userSession }) {
                     <tr
                       key={index}
                       className={`${
-                        userSession && userSession.username === user.username
+                        JSON.parse(localStorage.getItem("userSession"))
+                          .username === user.username
                           ? "table-active"
                           : ""
                       }`}

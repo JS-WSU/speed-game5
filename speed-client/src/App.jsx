@@ -24,7 +24,7 @@ import GetErrorMessage from "./utils/GetErrorMessage.mjs";
 axios.defaults.withCredentials = true;
 
 function App() {
-  const [userSession, setUserSession] = useState(null);
+  const [isAuth, setIsAuth] = useState(false);
   const alertContext = useContext(AlertContext);
   const [gameInProcess, setGameInProcess] = useState(false);
 
@@ -36,7 +36,7 @@ function App() {
         `http://localhost:4000/users/authenticated`
       );
       localStorage.setItem("userSession", JSON.stringify(data));
-      setUserSession(data);
+      setIsAuth(true);
     } catch (error) {
       // if session expired, remove from local storage
       console.log(error);
@@ -45,15 +45,15 @@ function App() {
         localStorage.getItem("userSession")
       ) {
         localStorage.removeItem("userSession");
-        setUserSession(null);
+
         alertContext.error("Session expired, please login again.");
       } else if (error.code === "ERR_NETWORK") {
         localStorage.removeItem("userSession");
-        setUserSession(null);
         alertContext.error(
           GetErrorMessage(error) + ", speed-server is not running"
         );
       }
+      setIsAuth(false);
     }
   };
 
@@ -69,38 +69,30 @@ function App() {
   return (
     <>
       <Navbar
-        userSession={userSession}
-        setUserSession={setUserSession}
+        setIsAuth={setIsAuth}
         gameInProcess={gameInProcess}
         setGameInProcess={setGameInProcess}
-      >
-      </Navbar>
+      ></Navbar>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/hello-world" element={<HelloWorld />} />
-        <Route
-          path="/register"
-          element={<Register setUserSession={setUserSession} />}
-        />
-        <Route
-          path="/login"
-          element={<Login setUserSession={setUserSession} />}
-        />
+        <Route path="/register" element={<Register setIsAuth={setIsAuth} />} />
+        <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
         <Route element={<ProtectedRoute />}>
           <Route
             path="/lobby"
             element={
               <Lobby
-                userSession={userSession}
+                setIsAuth={setIsAuth}
                 setGameInProcess={setGameInProcess}
               />
             }
           />
           <Route
             path="/high-scores"
-            element={<HighScores userSession={userSession} />}
+            element={<HighScores setIsAuth={setIsAuth} />}
           />
-          <Route path="/game" element={<Game userSession={userSession} />} />
+          <Route path="/game" element={<Game setIsAuth={setIsAuth} />} />
         </Route>
         <Route path="*" element={<Error />} />
       </Routes>
