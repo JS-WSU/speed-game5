@@ -81,12 +81,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route
             path="/lobby"
-            element={
-              <Lobby
-                setIsAuth={setIsAuth}
-                setGameInProcess={setGameInProcess}
-              />
-            }
+            element={<Lobby setGameInProcess={setGameInProcess} />}
           />
           <Route
             path="/high-scores"
