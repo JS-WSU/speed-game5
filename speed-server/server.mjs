@@ -67,10 +67,8 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("host_game", ({ hostName, speedType }) => {
-    console.log(hostName)
     socket.join(hostName);
     rooms.push({ hostName, speedType });
-    console.log(rooms)
     io.emit("rooms", rooms);
   });
 
