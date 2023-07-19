@@ -1,10 +1,7 @@
-import React from "react";
 import moment from "moment";
 
 function MessageBubble({ username, body, date }) {
-  const DateTest = new Date(date);
-
-  const convertedDate = moment(DateTest).fromNow();
+  const convertedDate = moment(new Date(date)).fromNow();
 
   return (
     <div className="mb-3 ms-1 d-flex flex-column p-3">
