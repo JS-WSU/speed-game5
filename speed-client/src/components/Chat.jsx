@@ -1,7 +1,3 @@
-import React, { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap/dist/js/bootstrap";
-import "bootstrap-icons/font/bootstrap-icons.css";
 import MessageBubble from "./MessageBubble.jsx";
 import { MessageTypes } from "../utils/Constants.mjs";
 

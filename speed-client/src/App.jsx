@@ -20,6 +20,8 @@ import "reactjs-popup/dist/index.css";
 import "./App.css";
 import AlertContext from "./context/AlertContext";
 import GetErrorMessage from "./utils/GetErrorMessage.mjs";
+import RegularSpeed from "./pages/RegularSpeed";
+import CaliforniaSpeed from "./pages/CaliforniaSpeed";
 
 axios.defaults.withCredentials = true;
 
@@ -88,6 +90,8 @@ function App() {
             element={<HighScores setIsAuth={setIsAuth} />}
           />
           <Route path="/game" element={<Game setIsAuth={setIsAuth} />} />
+          <Route path="/california/:hostname" element={<RegularSpeed />} />
+          <Route path="/regular/:hostname" element={<CaliforniaSpeed />} />
         </Route>
         <Route path="*" element={<Error />} />
       </Routes>
