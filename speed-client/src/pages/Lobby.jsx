@@ -109,7 +109,7 @@ export default function Lobby({ setGameInProcess }) {
           </div>
         </div>
       </Popup>
-      <main className="container-fluid">
+      <main>
         <div className="row">
           <div className="col-12 col-md-9 px-5">
             <div className="d-flex border-bottom border-5">
