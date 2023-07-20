@@ -11,7 +11,6 @@ import http from "http";
 import { Server } from "socket.io";
 import User from "./db/models/UserSchema.mjs";
 import ChatMessage from "./db/models/ChatMessageSchema.mjs";
-import cards from "./routes/cards.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
