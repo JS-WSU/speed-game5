@@ -9,6 +9,9 @@ export default function Game() {
   const [messageRecieved, setMessageReceived] = useState([]);
   const [userMessages, setUserMessages] = useState([]);
 
+  function sendBack() {
+    socket.emit("back_at_ya", messageRecieved);
+  }
   useEffect(() => {
     function messageReceivedHandler(data) {
       console.log(data);
@@ -17,20 +20,15 @@ export default function Game() {
     }
 
     socket.connect();
-    // function userMessage(data) {
-    //   console.log(data);
-    //   console.log(data);
-    //   setUserMessages([...userMessages, data]);
-    // }
     socket.on("receive_message", messageReceivedHandler);
-    // socket.on("user", userMessage);
     socket.emit("user", localStorage.getItem("userSession"));
+    
+
     return () => {
-      // socket.off("user", userMessage);
       socket.off("receive_message", messageReceivedHandler);
       socket.disconnect();
     };
-  }, [userMessages]);
+  }, []);
 
   return (
     <div>
@@ -42,6 +40,9 @@ export default function Game() {
         {userMessages.map((value, index) => {
           return <pre>{JSON.stringify(value)}</pre>;
         })}
+      </div>
+      <div>
+        <button onClick={sendBack}>send back</button>
       </div>
     </div>
   );

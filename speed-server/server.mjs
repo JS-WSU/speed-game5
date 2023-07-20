@@ -48,8 +48,6 @@ let rooms = [];
 io.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the main namespace.`);
 
-  // console.log(io.of("/").adapter.rooms);
-
   socket.emit("chat_messages", await ChatMessage.find({}));
   socket.emit("rooms", rooms);
 
@@ -102,9 +100,6 @@ gameNameSpace.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(`Socket ${socket.id} disconnected`);
   });
-  // socket.on("user", (userData) => {
-  //   io.emit("user", `Hello, ${userData.username} is here!`);
-  // });
 
   gameNameSpace.emit("receive_message", [
     {
@@ -136,6 +131,9 @@ gameNameSpace.on("connection", (socket) => {
       referredby: null,
     },
   ]);
+  socket.on("back_at_ya", async (msg) => {
+    console.log(msg);
+  })
 });
 
 // start server
