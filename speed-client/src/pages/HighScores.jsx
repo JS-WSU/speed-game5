@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 import AlertContext from "../context/AlertContext";
-import { FetchStatus } from "../utils/Constants.mjs";
+import { FetchStatus, SpeedTypes } from "../utils/Constants.mjs";
+import Table from "../components/Table";
 
 function HighScores() {
   const [usersRegular, setUsersRegular] = useState([]);
@@ -84,149 +85,22 @@ function HighScores() {
         <div className="row row-cols-2">
           <div className="d-flex flex-column">
             <h2 className="text-center">California Speed</h2>
-            {usersCalifornia.length ? (
-              <>
-                <table className="table table-responsive table-bordered">
-                  <thead>
-                    <tr>
-                      <th scope="col">Place</th>
-                      <th scope="col">User</th>
-                      <th scope="col">Win Percentage</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {usersCalifornia.map((user, index) => {
-                      return (
-                        <tr
-                          key={index}
-                          className={`${
-                            JSON.parse(localStorage.getItem("userSession"))
-                              .username === user.username
-                              ? "table-active"
-                              : ""
-                          }`}
-                        >
-                          <th scope="row">{index + 1}</th>
-                          <td>{user.username}</td>
-                          <td>
-                            {Number(user.percentage).toLocaleString(undefined, {
-                              style: "percent",
-                              minimumFractionDigits: 2,
-                            })}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                    {!onTableCalifornia && userCalifornia.totalGames !== 0 && (
-                      <tr className="table-active">
-                        <th scope="row">{userCalifornia.rank}</th>
-                        <td>{userCalifornia.username}</td>
-                        <td>
-                          {Number(userCalifornia.percentage).toLocaleString(
-                            undefined,
-                            {
-                              style: "percent",
-                              minimumFractionDigits: 2,
-                            }
-                          )}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-                {userCalifornia.totalGames !== 0 && (
-                  <h6 className="text-center">
-                    Total California Speed Games Played:{" "}
-                    {userCalifornia.totalGames}
-                  </h6>
-                )}
-                {userCalifornia.totalGames === 0 && (
-                  <div className="d-flex flex-column">
-                    {" "}
-                    <h6>
-                      You currently haven't played any California speed games
-                    </h6>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="text-center">
-                No Users High Scores for California Speed
-              </div>
-            )}
+            <Table
+              users={usersCalifornia}
+              user={userCalifornia}
+              onTable={onTableCalifornia}
+              speedType={SpeedTypes.CALIFORNIA}
+            />
           </div>
 
           <div className="d-flex flex-column">
             <h2 className="text-center">Regular Speed</h2>
-            {usersRegular.length ? (
-              <>
-                <table className="table table-responsive table-bordered">
-                  <thead>
-                    <tr>
-                      <th scope="col">Place</th>
-                      <th scope="col">User</th>
-                      <th scope="col">Win Percentage</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {usersRegular.map((user, index) => {
-                      return (
-                        <tr
-                          key={index}
-                          className={`${
-                            JSON.parse(localStorage.getItem("userSession"))
-                              .username === user.username
-                              ? "table-active"
-                              : ""
-                          }`}
-                        >
-                          <th scope="row">{index + 1}</th>
-                          <td>{user.username}</td>
-                          <td>
-                            {Number(user.percentage).toLocaleString(undefined, {
-                              style: "percent",
-                              minimumFractionDigits: 2,
-                            })}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                    {!onTableRegular && userRegular.totalGames !== 0 && (
-                      <tr className="table-active">
-                        <th scope="row">{userRegular.rank}</th>
-                        <td>{userRegular.username}</td>
-                        <td>
-                          {Number(userRegular.percentage).toLocaleString(
-                            undefined,
-                            {
-                              style: "percent",
-                              minimumFractionDigits: 2,
-                            }
-                          )}
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-                {userRegular.totalGames !== 0 && (
-                  <h6 className="text-center">
-                    Total Regular Speed Games Played: {userRegular.totalGames}
-                  </h6>
-                )}
-                {userRegular.totalGames === 0 && (
-                  <div className="d-flex flex-column">
-                    {" "}
-                    <h6>
-                      You currently haven't played any Regular Speed games
-                    </h6>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="text-center">
-                No Users High Scores for Regular Speed
-              </div>
-            )}
+            <Table
+              users={usersRegular}
+              user={userRegular}
+              onTable={onTableRegular}
+              speedType={SpeedTypes.REGULAR}
+            />
           </div>
         </div>
       ) : fetchStatus === FetchStatus.FAILURE ? (

@@ -18,9 +18,7 @@ export default function Lobby({ setGameInProcess }) {
   useEffect(() => {
     socket.connect();
 
-   
     return () => {
-
       socket.disconnect();
     };
   }, []);
@@ -82,7 +80,7 @@ export default function Lobby({ setGameInProcess }) {
                 Host Game
               </button>
             </div>
-           <Rooms socket={socket}/>
+            <Rooms socket={socket} />
           </div>
           <div className="col-12 col-md-3">
             <Chat socket={socket} />
