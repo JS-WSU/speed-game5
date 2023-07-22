@@ -1,17 +1,52 @@
 import MessageBubble from "./MessageBubble.jsx";
 import { MessageTypes } from "../utils/Constants.mjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function Chat({ loadingChat, messages, handleSendMessage }) {
+function Chat({ socket }) {
   const [dateIsVisible, setDateIsVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState([]);
 
   function handleShowDate() {
     setDateIsVisible(!dateIsVisible);
   }
 
+  function handleSendMessage(e) {
+    socket.emit("new_chat_message", {
+      username: JSON.parse(localStorage.getItem("userSession")).username,
+      body: e.target.value,
+    });
+  }
+
+  useEffect(() => {
+    const GetMessages = (messages) => {
+      setMessages(messages.reverse());
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    };
+    const GetNewMessage = (message) => {
+      setMessages((prev) => [message, ...prev]);
+    };
+
+    socket.on("chat_messages", GetMessages);
+    socket.on("new_chat_message", GetNewMessage);
+
+    const interval = setInterval(() => {
+      socket.emit("update_chat_messages");
+    }, 1000);
+
+    return () => {
+      socket.off("chat_messages", GetMessages);
+      socket.off("new_chat_message", GetNewMessage);
+
+      clearInterval(interval);
+    };
+  }, [socket]);
+
   return (
     <div className="w-100 h-100">
-      {loadingChat ? (
+      {loading ? (
         <div className="d-flex flex-column align-items-center m-auto">
           <h2>Loading Chat...</h2>
           <div className="spinner-border text-secondary" role="status">
@@ -20,7 +55,10 @@ function Chat({ loadingChat, messages, handleSendMessage }) {
         </div>
       ) : (
         <div>
-          <div className="border-start border-1 border-secondary" onClick={handleShowDate}>
+          <div
+            className="border-start border-1 border-secondary"
+            onClick={handleShowDate}
+          >
             <div className="d-flex flex-column">
               <div className="p-2 h4 border-bottom border-1 border-secondary text-primary">
                 Chat
@@ -60,7 +98,6 @@ function Chat({ loadingChat, messages, handleSendMessage }) {
               </button>
             ))}
           </div>
-
         </div>
       )}
     </div>
