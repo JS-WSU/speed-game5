@@ -13,7 +13,13 @@ function HighScores() {
   const [userRegular, setUserRegular] = useState(null);
   const [userCalifornia, setUserCalifornia] = useState(null);
 
-  const [fetchStatus, setFetchStatus] = useState(FetchStatus.LOADING);
+  const [fetchStatusUsers, setFetchStatusUsers] = useState(FetchStatus.LOADING);
+  const [fetchStatusUserRegular, setFetchStatusUserRegular] = useState(
+    FetchStatus.LOADING
+  );
+  const [fetchStatusUserCalifornia, setFetchStatusUserCalifornia] = useState(
+    FetchStatus.LOADING
+  );
   const [onTableCalifornia, setOnTableCalifornia] = useState(false);
   const [onTableRegular, setOnTableRegular] = useState(false);
   const alertContext = useContext(AlertContext);
@@ -26,6 +32,7 @@ function HighScores() {
         } = await axios.get("http://localhost:4000/users/");
         setUsersRegular(users_regular);
         setUsersCalifornia(users_california);
+        setFetchStatusUsers(FetchStatus.SUCCESS);
 
         let playerFoundRegular = users_regular.find(
           (player) =>
@@ -46,25 +53,37 @@ function HighScores() {
         if (playerFoundCalifornia) {
           setOnTableCalifornia(true);
         }
+      } catch (error) {
+        console.log(GetErrorMessage(error));
+        alertContext.error(GetErrorMessage(error));
+        setFetchStatusUsers(FetchStatus.FAILURE);
+      }
 
-        let response = await axios.get(
+      try {
+        const { data } = await axios.get(
           `http://localhost:4000/users/regular/${
             JSON.parse(localStorage.getItem("userSession")).username
           }`
         );
-        setUserRegular(response.data);
-
-        response = await axios.get(
+        setUserRegular(data);
+        setFetchStatusUserRegular(FetchStatus.SUCCESS);
+      } catch (error) {
+        console.log(GetErrorMessage(error));
+        alertContext.error(GetErrorMessage(error));
+        setFetchStatusUserRegular(FetchStatus.FAILURE);
+      }
+      try {
+        const { data } = await axios.get(
           `http://localhost:4000/users/california/${
             JSON.parse(localStorage.getItem("userSession")).username
           }`
         );
-        setUserCalifornia(response.data);
-        setFetchStatus(FetchStatus.SUCCESS);
+        setUserCalifornia(data);
+        setFetchStatusUserCalifornia(FetchStatus.SUCCESS);
       } catch (error) {
         console.log(GetErrorMessage(error));
         alertContext.error(GetErrorMessage(error));
-        setFetchStatus(FetchStatus.FAILURE);
+        setFetchStatusUserCalifornia(FetchStatus.FAILURE);
       }
     };
 
@@ -81,7 +100,9 @@ function HighScores() {
       <Link to="/lobby" className="btn btn-primary mx-auto">
         Go To Lobby
       </Link>
-      {fetchStatus === FetchStatus.SUCCESS ? (
+      {fetchStatusUsers === FetchStatus.SUCCESS &&
+      fetchStatusUserCalifornia === FetchStatus.SUCCESS &&
+      fetchStatusUserRegular === FetchStatus.SUCCESS ? (
         <div className="row row-cols-2">
           <div className="d-flex flex-column">
             <h2 className="text-center">California Speed</h2>
@@ -103,8 +124,20 @@ function HighScores() {
             />
           </div>
         </div>
-      ) : fetchStatus === FetchStatus.FAILURE ? (
-        <div>Failed to fetch users high scores</div>
+      ) : fetchStatusUsers === FetchStatus.FAILURE ||
+        fetchStatusUserRegular === FetchStatus.FAILURE ||
+        fetchStatusUserCalifornia === FetchStatus.FAILURE ? (
+        <>
+          {fetchStatusUsers === FetchStatus.FAILURE && (
+            <div>Failure in fetching users high scores</div>
+          )}
+          {fetchStatusUserRegular === FetchStatus.FAILURE && (
+            <div>Failure in fetching your high scores for regular</div>
+          )}
+          {fetchStatusUserCalifornia === FetchStatus.FAILURE && (
+            <div>Failure in fetching your high scores for california</div>
+          )}
+        </>
       ) : (
         <div className="m-auto d-flex flex-column align-items-center">
           <h1>Loading High Scores...</h1>

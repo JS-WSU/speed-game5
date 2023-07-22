@@ -48,7 +48,7 @@ function Table({ users, user, onTable, speedType }) {
       </table>
       {user.totalGames !== 0 && (
         <h6 className="text-center">
-          Total Regular Speed Games Played: {user.totalGames}
+          Total Regular Speed Games You Have Played: {user.totalGames}
         </h6>
       )}
       {user.totalGames === 0 && (
