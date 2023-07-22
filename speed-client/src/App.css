@@ -24,4 +24,6 @@ div.small-container {
   border: 2px solid black;
 }
 
-
+.table-active {
+  --bs-table-bg-state: yellow;
+}

@@ -10,7 +10,7 @@ function Rooms({ socket }) {
       setRooms(rooms);
       setTimeout(() => {
         setLoading(false);
-      }, 1000);
+      }, 500);
     };
     socket.on("rooms", GetRooms);
 

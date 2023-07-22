@@ -23,7 +23,7 @@ function Chat({ socket }) {
       setMessages(messages.reverse());
       setTimeout(() => {
         setLoading(false);
-      }, 1000);
+      }, 500);
     };
     const GetNewMessage = (message) => {
       setMessages((prev) => [message, ...prev]);

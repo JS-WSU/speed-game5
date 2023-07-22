@@ -89,7 +89,7 @@ function HighScores() {
 
     const timeOut = setTimeout(() => {
       fetchUsers();
-    }, 1000);
+    }, 500);
 
     return () => clearTimeout(timeOut);
   }, []);
@@ -103,26 +103,19 @@ function HighScores() {
       {fetchStatusUsers === FetchStatus.SUCCESS &&
       fetchStatusUserCalifornia === FetchStatus.SUCCESS &&
       fetchStatusUserRegular === FetchStatus.SUCCESS ? (
-        <div className="row row-cols-2">
-          <div className="d-flex flex-column">
-            <h2 className="text-center">California Speed</h2>
-            <Table
-              users={usersCalifornia}
-              user={userCalifornia}
-              onTable={onTableCalifornia}
-              speedType={SpeedTypes.CALIFORNIA}
-            />
-          </div>
-
-          <div className="d-flex flex-column">
-            <h2 className="text-center">Regular Speed</h2>
-            <Table
-              users={usersRegular}
-              user={userRegular}
-              onTable={onTableRegular}
-              speedType={SpeedTypes.REGULAR}
-            />
-          </div>
+        <div className="row row-cols-md-2 mt-2">
+          <Table
+            users={usersCalifornia}
+            user={userCalifornia}
+            onTable={onTableCalifornia}
+            speedType={SpeedTypes.CALIFORNIA}
+          />
+          <Table
+            users={usersRegular}
+            user={userRegular}
+            onTable={onTableRegular}
+            speedType={SpeedTypes.REGULAR}
+          />
         </div>
       ) : fetchStatusUsers === FetchStatus.FAILURE ||
         fetchStatusUserRegular === FetchStatus.FAILURE ||
