@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 export default function Game({ socket, children }) {
   const navigate = useNavigate();
 
-  const [room, setRoom] = useState({});
+  const [room, setRoom] = useState([]);
 
   const QuitGame = () => {
     localStorage.removeItem("gameInSession");
@@ -34,7 +34,7 @@ export default function Game({ socket, children }) {
 
   return (
     <main className="bg-success container-fluid">
-      {room.users && room.users === 1 ? (
+      {room.length === 1 ? (
         <div className="m-auto">Waiting for other player...</div>
       ) : (
         <>

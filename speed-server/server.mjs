@@ -110,11 +110,11 @@ regularSpeedNameSpace.on("connection", (socket) => {
   socket.on("join_game", (hostName) => {
     socket.join(hostName);
 
-    console.log(regularSpeedNameSpace.adapter.rooms);
+    console.log(regularSpeedNameSpace.adapter.rooms.get(hostName));
 
-    const room = rooms.find((room) => room.hostName === hostName);
+    const room = regularSpeedNameSpace.adapter.rooms.get(hostName);
 
-    regularSpeedNameSpace.to(hostName).emit("room_status", room);
+    regularSpeedNameSpace.to(hostName).emit("room_status", [...room]);
   });
 });
 
@@ -133,9 +133,18 @@ californiaSpeedNameSpace.on("connection", (socket) => {
   socket.on("join_game", (hostName) => {
     socket.join(hostName);
 
-    const room = rooms.find((room) => room.hostName === hostName);
+    console.log(californiaSpeedNameSpace.adapter.rooms.get(hostName));
 
-    californiaSpeedNameSpace.to(hostName).emit(room);
+    const room = californiaSpeedNameSpace.adapter.rooms.get(hostName);
+
+    californiaSpeedNameSpace.to(hostName).emit("room_status", [...room]);
+  });
+
+  socket.on("leave_game", (hostName) => {
+    socket.leave(hostName);
+    const room = californiaSpeedNameSpace.adapter.rooms.get(hostName);
+
+    californiaSpeedNameSpace.to(hostName).emit([...room]);
   });
 });
 
