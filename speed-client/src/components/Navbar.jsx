@@ -57,78 +57,78 @@ export default function Navbar({
             className="collapse navbar-collapse justify-content-between"
             id="navbarSupportedContent"
           >
-            <ul className="navbar-nav mb-2 mb-lg-0 flex-grow-1">
-              <li className="nav-item align-self-center">
+            <ul className="navbar-nav mb-2 mb-lg-0 flex-grow-1 align-items-center justify-content-center">
+              <li className="nav-item">
                 <NavLink className={`nav-link`} to="/" as={NavLink}>
                   Home
                 </NavLink>
               </li>
-              <li className="nav-item align-self-center">
+              <li className="nav-item">
                 <NavLink className="nav-link" to="/hello-world">
                   Hello World
                 </NavLink>
               </li>
               {localStorage.getItem("userSession") && (
                 <>
-                  <li className="nav-item align-self-center">
+                  <li className="nav-item">
                     <NavLink className="nav-link" to="/high-scores">
                       High Scores
                     </NavLink>
                   </li>
 
-                  <li className="nav-item align-self-center">
+                  <li className="nav-item">
                     <NavLink className="nav-link" to="/lobby">
                       Lobby
                     </NavLink>
                   </li>
 
-                  <li className="nav-item align-self-center">
+                  <li className="nav-item">
                     <NavLink className="nav-link" to="/game">
                       Game (TODO)
                     </NavLink>
                   </li>
-                  {localStorage.getItem("userSession") ? (
-                    <li className="ms-auto align-self-center">
-                      <ul className="navbar-nav dropdown">
-                        <li className="nav-item dropdown">
-                          <button
-                            className="nav-link dropdown-toggle"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                          >
-                            Welcome,{" "}
-                            {
-                              JSON.parse(localStorage.getItem("userSession"))
-                                .username
-                            }
-                          </button>
-                          <ul className="dropdown-menu">
-                            <li className="dropdown-item">
-                              <NavLink className="nav-link" onClick={Logout}>
-                                Logout
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                      </ul>
-                    </li>
-                  ) : (
-                    <li className="ms-auto align-self-center">
-                      <ul className="navbar-nav">
-                        <li className="nav-item align-self-center">
-                          <NavLink className="nav-link" to="/register">
-                            Register
-                          </NavLink>
-                        </li>
-                        <li className="nav-item align-self-center">
-                          <NavLink className="nav-link" to="/login">
-                            Login
-                          </NavLink>
-                        </li>
-                      </ul>
-                    </li>
-                  )}
                 </>
+              )}
+              {localStorage.getItem("userSession") ? (
+                <li className="ms-lg-auto">
+                  <ul className="navbar-nav dropdown">
+                    <li className="nav-item dropdown">
+                      <button
+                        className="nav-link dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        Welcome,{" "}
+                        {
+                          JSON.parse(localStorage.getItem("userSession"))
+                            .username
+                        }
+                      </button>
+                      <ul className="dropdown-menu">
+                        <li className="dropdown-item">
+                          <NavLink className="nav-link" onClick={Logout}>
+                            Logout
+                          </NavLink>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              ) : (
+                <li className="ms-auto">
+                  <ul className="navbar-nav">
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to="/register">
+                        Register
+                      </NavLink>
+                    </li>
+                    <li className="nav-item">
+                      <NavLink className="nav-link" to="/login">
+                        Login
+                      </NavLink>
+                    </li>
+                  </ul>
+                </li>
               )}
             </ul>
           </div>
