@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserTypes } from "../utils/Constants.mjs";
+import AlertContext from "../context/AlertContext";
 
 export default function Game({ socket, children }) {
   const navigate = useNavigate();
 
   const [room, setRoom] = useState([]);
+
+  const alertContext = useContext(AlertContext);
 
   const QuitGame = () => {
     socket.emit(
@@ -25,17 +28,25 @@ export default function Game({ socket, children }) {
       setRoom(room);
     };
 
+    const Quit = (room, userType) => {
+      alertContext.error(`User of type ${userType} has left!`);
+      setRoom(room);
+    };
+
     socket.emit(
       "join_game",
       JSON.parse(localStorage.getItem("gameInSession")).hostName
     );
 
     socket.on("room_status", GetRoomStatus);
+    socket.on("quit", Quit);
 
     return () => {
       socket.disconnect();
       socket.off("room_status", GetRoomStatus);
+      socket.off("quit", Quit);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
   return (
