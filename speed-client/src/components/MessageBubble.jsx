@@ -1,6 +1,6 @@
 import moment from "moment";
 
-function MessageBubble({ username, body, date, dateIsVisible}) {
+function MessageBubble({ username, body, date, dateIsVisible }) {
   const convertedDate = moment(new Date(date)).fromNow();
 
   return (
@@ -52,19 +52,15 @@ function MessageBubble({ username, body, date, dateIsVisible}) {
                 {username}
               </div>
             </div>
-            {
-              dateIsVisible ? 
+            {dateIsVisible ? (
               <div
                 className={`text-secondary align-baseline
 
                 `}
               >
                 {convertedDate}
-              </div> 
-              : 
-              null
-            }
-
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

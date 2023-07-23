@@ -97,7 +97,7 @@ function HighScores() {
   return (
     <main className="container">
       <h1 className="text-center">High Scores Table</h1>
-      <Link to="/lobby" className="btn btn-primary mx-auto">
+      <Link to="/lobby" className="btn btn-primary mx-auto border border-3">
         Go To Lobby
       </Link>
       {fetchStatusUsers === FetchStatus.SUCCESS &&

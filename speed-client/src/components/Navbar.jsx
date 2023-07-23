@@ -38,7 +38,7 @@ export default function Navbar({
             Speed
           </NavLink>
           <button
-            className="navbar-toggler border border-3"
+            className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent"
