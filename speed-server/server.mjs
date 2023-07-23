@@ -67,26 +67,27 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("host_game", ({ hostName, speedType }) => {
-    rooms.push({ hostName, speedType, users: 1 });
+    rooms.push({ hostName, speedType, playerOne: hostName });
 
     console.log(rooms);
     io.emit("rooms", rooms);
   });
 
-  socket.on("join_game", ({ hostName }) => {
+  socket.on("join_game", ({ hostName, playerTwo }) => {
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    rooms[roomIndex] = { ...rooms[roomIndex], users: 2 };
+    rooms[roomIndex] = { ...rooms[roomIndex], playerTwo };
 
     io.emit("rooms", rooms);
   });
 
-  socket.on("watch_game", ({ hostName }) => {
+  socket.on("watch_game", ({ hostName, viewerName }) => {
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    let numUsers = rooms[roomIndex].users;
-
-    rooms[roomIndex] = { ...rooms[roomIndex], users: ++numUsers };
+    rooms[roomIndex] = {
+      ...rooms[roomIndex],
+      viewers: [...rooms[roomIndex].viewers, viewerName],
+    };
     io.emit("rooms", rooms);
   });
 
@@ -110,11 +111,30 @@ regularSpeedNameSpace.on("connection", (socket) => {
   socket.on("join_game", (hostName) => {
     socket.join(hostName);
 
-    console.log(regularSpeedNameSpace.adapter.rooms.get(hostName));
+    const room = rooms.find((room) => room.hostName === hostName);
 
-    const room = regularSpeedNameSpace.adapter.rooms.get(hostName);
+    console.log(rooms);
 
-    regularSpeedNameSpace.to(hostName).emit("room_status", [...room]);
+    regularSpeedNameSpace.to(hostName).emit("room_status", room);
+  });
+
+  socket.on("leave_game", (hostName) => {
+    socket.leave(hostName);
+    const host_room = regularSpeedNameSpace.adapter.rooms.get(hostName);
+
+    const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+
+    rooms[roomIndex].users--;
+
+    if (rooms[roomIndex].users === 0) {
+      rooms = rooms.filter(
+        (room) => room.hostName === rooms[roomIndex].hostName
+      );
+    } else {
+      regularSpeedNameSpace.to(hostName).emit(rooms[roomIndex]);
+    }
+
+    io.emit("rooms", rooms);
   });
 });
 
@@ -133,8 +153,6 @@ californiaSpeedNameSpace.on("connection", (socket) => {
   socket.on("join_game", (hostName) => {
     socket.join(hostName);
 
-    console.log(californiaSpeedNameSpace.adapter.rooms.get(hostName));
-
     const room = californiaSpeedNameSpace.adapter.rooms.get(hostName);
 
     californiaSpeedNameSpace.to(hostName).emit("room_status", [...room]);
@@ -142,9 +160,21 @@ californiaSpeedNameSpace.on("connection", (socket) => {
 
   socket.on("leave_game", (hostName) => {
     socket.leave(hostName);
-    const room = californiaSpeedNameSpace.adapter.rooms.get(hostName);
+    const host_room = californiaSpeedNameSpace.adapter.rooms.get(hostName);
 
-    californiaSpeedNameSpace.to(hostName).emit([...room]);
+    const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+
+    rooms[roomIndex].users--;
+
+    if (rooms[roomIndex].users === 0) {
+      rooms = rooms.filter(
+        (room) => room.hostName === rooms[roomIndex].hostName
+      );
+    } else {
+      regularSpeedNameSpace.to(hostName).emit(rooms[roomIndex]);
+    }
+
+    io.emit("rooms", rooms);
   });
 });
 

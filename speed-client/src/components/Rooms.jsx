@@ -33,6 +33,7 @@ function Rooms({ socket }) {
             hostName={room.hostName}
             speedType={room.speedType}
             users={room.users}
+            playerTwo={room.playerTwo}
             socket={socket}
           />
         ))}

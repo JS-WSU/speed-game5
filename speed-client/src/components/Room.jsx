@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { SpeedTypes, UserTypes } from "../utils/Constants.mjs";
 
-function Room({ hostName, speedType, users, socket }) {
+function Room({ hostName, speedType, playerTwo, socket }) {
   const navigate = useNavigate();
 
   const JoinGame = () => {
-    socket.emit("join_game", { hostName });
+    socket.emit("join_game", {
+      hostName,
+      playerTwo: localStorage.getItem("userSession"),
+    });
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({
@@ -21,7 +24,10 @@ function Room({ hostName, speedType, users, socket }) {
   };
 
   const WatchGame = () => {
-    socket.emit("watch_game", { hostName });
+    socket.emit("watch_game", {
+      hostName,
+      viewerName: localStorage.getItem("userSession"),
+    });
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({
@@ -48,7 +54,7 @@ function Room({ hostName, speedType, users, socket }) {
           Host: <span className="ms-start">@{hostName}</span>
         </p>
         <div className="text-center mt-auto">
-          {users < 2 ? (
+          {!playerTwo ? (
             <button onClick={JoinGame} className="btn btn-success w-50 border">
               Join
             </button>
