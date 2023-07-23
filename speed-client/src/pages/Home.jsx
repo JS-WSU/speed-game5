@@ -1,10 +1,20 @@
 import React from "react";
 import { useState } from "react";
+import { SpeedTypes } from "../utils/Constants.mjs";
+import { Navigate } from "react-router-dom";
 
 function Home() {
   const [showCalifornia, setShowCalifornia] = useState(false);
   const [showRegular, setShowRegular] = useState(false);
 
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
   return (
     <main className="container">
       <h1>Welcome to Speed!</h1>

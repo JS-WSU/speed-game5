@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 import AlertContext from "../context/AlertContext";
@@ -90,6 +90,14 @@ function HighScores() {
     return () => clearTimeout(timeOut);
   }, []);
 
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
   return (
     <main className="container">
       <h1 className="text-center">High Scores Table</h1>

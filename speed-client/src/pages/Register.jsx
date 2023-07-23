@@ -4,6 +4,7 @@ import AlertContext from "../context/AlertContext";
 import SHA256 from "../utils/SHA256.mjs";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
+import { SpeedTypes } from "../utils/Constants.mjs";
 
 export default function Register({ setIsAuth }) {
   const alertContext = useContext(AlertContext);
@@ -169,6 +170,15 @@ export default function Register({ setIsAuth }) {
       setForm((prev) => ({ ...prev, loading: false }));
     }, 500);
   };
+
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
 
   return localStorage.getItem("userSession") ? (
     <Navigate to="/lobby" />

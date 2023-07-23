@@ -11,6 +11,7 @@ function Room({ hostName, speedType, playerTwo, socket }) {
       JSON.stringify({
         hostName,
         userType: UserTypes.PLAYER_TWO,
+        speedType,
       })
     );
     if (speedType === SpeedTypes.CALIFORNIA) {
@@ -27,6 +28,7 @@ function Room({ hostName, speedType, playerTwo, socket }) {
       JSON.stringify({
         hostName,
         userType: UserTypes.VIEWER,
+        speedType,
       })
     );
     if (speedType === SpeedTypes.CALIFORNIA) {

@@ -1,6 +1,6 @@
 import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { io } from "socket.io-client";
 import { SpeedTypes } from "../utils/Constants.mjs";
@@ -35,6 +35,7 @@ export default function Lobby() {
       JSON.stringify({
         hostName: localStorage.getItem("userSession"),
         userType: UserTypes.PLAYER_ONE,
+        speedType: SpeedTypes.REGULAR,
       })
     );
   };
@@ -52,10 +53,19 @@ export default function Lobby() {
       JSON.stringify({
         hostName: localStorage.getItem("userSession"),
         userType: UserTypes.PLAYER_ONE,
+        speedType: SpeedTypes.CALIFORNIA,
       })
     );
   };
 
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
   return (
     <>
       <Popup

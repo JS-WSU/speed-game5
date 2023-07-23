@@ -2,6 +2,8 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import AlertContext from "../context/AlertContext";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
+import { Navigate } from "react-router-dom";
+import { SpeedTypes } from "../utils/Constants.mjs";
 
 export default function HelloWorld() {
   const [record, setRecord] = useState(null);
@@ -16,6 +18,15 @@ export default function HelloWorld() {
       alertContext.error(GetErrorMessage(error));
     }
   };
+
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
 
   return (
     <main className="container">
