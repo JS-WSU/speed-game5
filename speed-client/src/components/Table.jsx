@@ -9,7 +9,7 @@ function Table({ users, user, onTable, speedType }) {
         <h2 className="bg-info text-light p-3 text-center">California Speed</h2>
       )}
       <table
-        className={`table table-responsive table-bordered ${
+        className={`table table-responsive table-bordered mb-1 ${
           speedType === SpeedTypes.CALIFORNIA ? "table-danger" : "table-primary"
         }`}
       >

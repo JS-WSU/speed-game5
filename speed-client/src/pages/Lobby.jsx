@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { io } from "socket.io-client";
-import Room from "../components/Room";
 import { SpeedTypes } from "../utils/Constants.mjs";
 import Rooms from "../components/Rooms";
 
@@ -50,7 +49,7 @@ export default function Lobby({ setGameInProcess }) {
             <Link to="/game">
               <button
                 type="button"
-                className="btn btn-danger"
+                className="btn btn-danger border border-3"
                 onClick={HostCaliforniaSpeed}
               >
                 California Speed
@@ -59,7 +58,7 @@ export default function Lobby({ setGameInProcess }) {
             <Link to="/game">
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-primary border border-3"
                 onClick={HostRegularSpeed}
               >
                 Regular Speed
@@ -74,7 +73,7 @@ export default function Lobby({ setGameInProcess }) {
             <div className="d-flex border-bottom border-5">
               <h1>Games</h1>
               <button
-                className="btn btn-primary ms-auto align-self-center"
+                className="btn btn-primary ms-auto align-self-center border border-3"
                 onClick={chooseGameType}
               >
                 Host Game

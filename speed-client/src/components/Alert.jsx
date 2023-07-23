@@ -7,7 +7,7 @@ const Alert = () => {
 
   return alert && alert.status === "success" ? (
     <button
-      className={`w-100 rounded-0 alert alert-success d-flex justify-content-center`}
+      className={`w-100 rounded-0 alert alert-success d-flex justify-content-center border border-3`}
       onClick={clear}
     >
       <i className="bi bi-check2-circle me-2 fs-4 text-success"></i>
@@ -15,7 +15,7 @@ const Alert = () => {
     </button>
   ) : alert ? (
     <button
-      className={`w-100 rounded-0 alert alert-danger d-flex justify-content-center`}
+      className={`w-100 rounded-0 alert alert-danger d-flex justify-content-center border border-3`}
       onClick={clear}
     >
       <i className="bi bi-exclamation-octagon me-2 fs-4 text-danger"></i>

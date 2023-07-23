@@ -150,7 +150,7 @@ export default function Login({ setIsAuth }) {
               </span>
             </div>
           )}
-          <button type="submit" className="btn btn-primary w-100">
+          <button type="submit" className="btn btn-primary w-100 border border-3">
             Login
           </button>
         </form>

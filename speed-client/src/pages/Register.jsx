@@ -318,7 +318,7 @@ export default function Register({ setIsAuth }) {
             )}
           </ul>
 
-          <button type="submit" className="btn btn-primary w-100 mt-3">
+          <button type="submit" className="btn btn-primary w-100 mt-3 border border-3">
             Register
           </button>
         </form>

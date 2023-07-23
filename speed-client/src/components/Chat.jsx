@@ -89,7 +89,7 @@ function Chat({ socket }) {
             {MessageTypes.map((value) => (
               <button
                 type="button"
-                className="btn btn-primary m-1"
+                className="btn btn-primary m-1 border border-3"
                 key={value}
                 value={value}
                 onClick={handleSendMessage}

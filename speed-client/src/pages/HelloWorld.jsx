@@ -21,7 +21,7 @@ export default function HelloWorld() {
     <main className="container">
       <div>
         <h1>Hello World!</h1>
-        <button className="btn btn-primary" onClick={getJohn}>
+        <button className="btn btn-primary border border-3" onClick={getJohn}>
           Click Me!
         </button>
       </div>
