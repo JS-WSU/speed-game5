@@ -5,10 +5,7 @@ function Room({ hostName, speedType, playerTwo, socket }) {
   const navigate = useNavigate();
 
   const JoinGame = () => {
-    socket.emit("join_game", {
-      hostName,
-      playerTwo: localStorage.getItem("userSession"),
-    });
+    socket.emit("join_game", hostName, localStorage.getItem("userSession"));
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({
@@ -24,10 +21,7 @@ function Room({ hostName, speedType, playerTwo, socket }) {
   };
 
   const WatchGame = () => {
-    socket.emit("watch_game", {
-      hostName,
-      viewerName: localStorage.getItem("userSession"),
-    });
+    socket.emit("watch_game", hostName, localStorage.getItem("userSession"));
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({

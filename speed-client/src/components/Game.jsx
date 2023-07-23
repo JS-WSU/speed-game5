@@ -10,7 +10,8 @@ export default function Game({ socket, children }) {
   const QuitGame = () => {
     socket.emit(
       "leave_game",
-      JSON.parse(localStorage.getItem("gameInSession")).hostName
+      JSON.parse(localStorage.getItem("gameInSession")).hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType
     );
     localStorage.removeItem("gameInSession");
     navigate("/lobby");

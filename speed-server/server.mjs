@@ -11,6 +11,7 @@ import http from "http";
 import { Server } from "socket.io";
 import User from "./db/models/UserSchema.mjs";
 import ChatMessage from "./db/models/ChatMessageSchema.mjs";
+import { UserTypes } from "../speed-client/src/utils/Constants.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -66,14 +67,14 @@ io.on("connection", async (socket) => {
     io.emit("new_chat_message", newMessage);
   });
 
-  socket.on("host_game", ({ hostName, speedType }) => {
+  socket.on("host_game", (hostName, speedType) => {
     rooms.push({ hostName, speedType, playerOne: hostName });
 
     console.log(rooms);
     io.emit("rooms", rooms);
   });
 
-  socket.on("join_game", ({ hostName, playerTwo }) => {
+  socket.on("join_game", (hostName, playerTwo) => {
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
     rooms[roomIndex] = { ...rooms[roomIndex], playerTwo };
@@ -81,7 +82,7 @@ io.on("connection", async (socket) => {
     io.emit("rooms", rooms);
   });
 
-  socket.on("watch_game", ({ hostName, viewerName }) => {
+  socket.on("watch_game", (hostName, viewerName) => {
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
     rooms[roomIndex] = {
@@ -118,17 +119,24 @@ regularSpeedNameSpace.on("connection", (socket) => {
     regularSpeedNameSpace.to(hostName).emit("room_status", room);
   });
 
-  socket.on("leave_game", (hostName) => {
+  socket.on("leave_game", (hostName, userType) => {
     socket.leave(hostName);
-    const host_room = regularSpeedNameSpace.adapter.rooms.get(hostName);
-
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    rooms[roomIndex].users--;
+    if (userType === UserTypes.PLAYER_ONE) {
+      delete rooms[roomIndex].playerOne;
+    } else if (userType === UserTypes.PLAYER_TWO) {
+      delete rooms[roomIndex].playerTwo;
+    } else {
+    }
 
-    if (rooms[roomIndex].users === 0) {
+    if (
+      !rooms[roomIndex].playerOne &&
+      !rooms[roomIndex].playerTwo &&
+      !rooms[roomIndex].viewers
+    ) {
       rooms = rooms.filter(
-        (room) => room.hostName === rooms[roomIndex].hostName
+        (room) => room.hostName !== rooms[roomIndex].hostName
       );
     } else {
       regularSpeedNameSpace.to(hostName).emit(rooms[roomIndex]);
@@ -158,20 +166,27 @@ californiaSpeedNameSpace.on("connection", (socket) => {
     californiaSpeedNameSpace.to(hostName).emit("room_status", [...room]);
   });
 
-  socket.on("leave_game", (hostName) => {
+  socket.on("leave_game", (hostName, userType) => {
     socket.leave(hostName);
-    const host_room = californiaSpeedNameSpace.adapter.rooms.get(hostName);
-
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    rooms[roomIndex].users--;
+    if (userType === UserTypes.PLAYER_ONE) {
+      delete rooms[roomIndex].playerOne;
+    } else if (userType === UserTypes.PLAYER_TWO) {
+      delete rooms[roomIndex].playerTwo;
+    } else {
+    }
 
-    if (rooms[roomIndex].users === 0) {
+    if (
+      !rooms[roomIndex].playerOne &&
+      !rooms[roomIndex].playerTwo &&
+      !rooms[roomIndex].viewers
+    ) {
       rooms = rooms.filter(
-        (room) => room.hostName === rooms[roomIndex].hostName
+        (room) => room.hostName !== rooms[roomIndex].hostName
       );
     } else {
-      regularSpeedNameSpace.to(hostName).emit(rooms[roomIndex]);
+      californiaSpeedNameSpace.to(hostName).emit(rooms[roomIndex]);
     }
 
     io.emit("rooms", rooms);

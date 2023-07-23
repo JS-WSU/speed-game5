@@ -22,10 +22,11 @@ export default function Lobby() {
   }, []);
 
   const HostRegularSpeed = () => {
-    socket.emit("host_game", {
-      hostName: localStorage.getItem("userSession"),
-      speedType: SpeedTypes.REGULAR,
-    });
+    socket.emit(
+      "host_game",
+      localStorage.getItem("userSession"),
+      SpeedTypes.REGULAR
+    );
 
     navigate("/regular-speed");
 
@@ -39,10 +40,11 @@ export default function Lobby() {
   };
 
   const HostCaliforniaSpeed = () => {
-    socket.emit("host_game", {
-      hostName: localStorage.getItem("userSession"),
-      speedType: SpeedTypes.CALIFORNIA,
-    });
+    socket.emit(
+      "host_game",
+      localStorage.getItem("userSession"),
+      SpeedTypes.CALIFORNIA
+    );
 
     navigate("/california-speed");
     localStorage.setItem(
