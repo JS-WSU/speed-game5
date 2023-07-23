@@ -1,13 +1,15 @@
 import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { io } from "socket.io-client";
 import { SpeedTypes } from "../utils/Constants.mjs";
 import Rooms from "../components/Rooms";
 
 const socket = io.connect("http://localhost:4000/", { autoConnect: false });
-export default function Lobby({ setGameInProcess }) {
+export default function Lobby() {
+  const navigate = useNavigate();
+
   const [show, setShow] = useState(false);
 
   const chooseGameType = () => {
@@ -27,6 +29,9 @@ export default function Lobby({ setGameInProcess }) {
       hostName: JSON.parse(localStorage.getItem("userSession")).username,
       speedType: SpeedTypes.REGULAR,
     });
+
+    navigate("/regular-speed");
+    localStorage.setItem("gameInSession", true);
   };
 
   const HostCaliforniaSpeed = () => {
@@ -34,6 +39,9 @@ export default function Lobby({ setGameInProcess }) {
       hostName: JSON.parse(localStorage.getItem("userSession")).username,
       speedType: SpeedTypes.CALIFORNIA,
     });
+
+    navigate("/california-speed");
+    localStorage.setItem("gameInSession", true);
   };
 
   return (
@@ -46,24 +54,20 @@ export default function Lobby({ setGameInProcess }) {
         <div className="">
           <h5 className="text-center ">Select Speed Type</h5>
           <div className="d-flex justify-content-evenly">
-            <Link to="/game">
-              <button
-                type="button"
-                className="btn btn-danger border border-3"
-                onClick={HostCaliforniaSpeed}
-              >
-                California Speed
-              </button>
-            </Link>
-            <Link to="/game">
-              <button
-                type="button"
-                className="btn btn-primary border border-3"
-                onClick={HostRegularSpeed}
-              >
-                Regular Speed
-              </button>
-            </Link>
+            <button
+              type="button"
+              className="btn btn-danger border border-3"
+              onClick={HostCaliforniaSpeed}
+            >
+              California Speed
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary border border-3"
+              onClick={HostRegularSpeed}
+            >
+              Regular Speed
+            </button>
           </div>
         </div>
       </Popup>

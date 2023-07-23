@@ -5,7 +5,7 @@ function Room({ hostName, speedType }) {
   return (
     <div className="text-light">
       <div
-        className={`card-body border border-3 p-3 ${
+        className={`h-100 card-body border border-3 p-3 d-flex flex-column ${
           speedType === SpeedTypes.REGULAR ? "bg-primary" : "bg-danger"
         }`}
       >
@@ -13,7 +13,7 @@ function Room({ hostName, speedType }) {
         <p className="card-text">
           Host: <span className="ms-start">@{hostName}</span>
         </p>
-        <div className="text-center">
+        <div className="text-center mt-auto">
           <Link to="/" className="btn btn-success primary w-50 border">
             Join
           </Link>

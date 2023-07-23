@@ -73,7 +73,7 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log(`Socket ${socket.id} disconnected`);
+    console.log(`Socket ${socket.id} disconnected from main namespace`);
   });
 });
 
@@ -81,14 +81,26 @@ io.on("connection", async (socket) => {
 const regularSpeedNameSpace = io.of("regular_speed");
 
 regularSpeedNameSpace.on("connection", (socket) => {
-  console.log(`${socket.id} has joined the regular namespace.`);
+  console.log(`${socket.id} has joined the regular speed namespace.`);
+
+  socket.on("disconnect", () => {
+    console.log(
+      `Socket ${socket.id} disconnected from regular speed namespace`
+    );
+  });
 });
 
 // California Speed namespace
-const californiaSpeedNameSpace = io.of("california");
+const californiaSpeedNameSpace = io.of("california_speed");
 
 californiaSpeedNameSpace.on("connection", (socket) => {
   console.log(`${socket.id} has joined the california namespace.`);
+
+  socket.on("disconnect", () => {
+    console.log(
+      `Socket ${socket.id} disconnected from california speed namespace`
+    );
+  });
 });
 
 // Game namespace
@@ -133,7 +145,7 @@ gameNameSpace.on("connection", (socket) => {
   ]);
   socket.on("back_at_ya", async (msg) => {
     console.log(msg);
-  })
+  });
 });
 
 // start server

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
+import InGameProtectedRoute from "./components/InGameProtectedRoute";
 import Login from "./pages/Login";
 import HelloWorld from "./pages/HelloWorld";
 import Error from "./pages/Error";
@@ -15,7 +16,7 @@ import "bootstrap/dist/js/bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
-import Game from "./pages/Game";
+import Game from "./components/Game";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
 import AlertContext from "./context/AlertContext";
@@ -28,7 +29,6 @@ axios.defaults.withCredentials = true;
 function App() {
   const [isAuth, setIsAuth] = useState(false);
   const alertContext = useContext(AlertContext);
-  const [gameInProcess, setGameInProcess] = useState(false);
 
   const navigate = useNavigate();
   const fetchUserAuth = async () => {
@@ -70,28 +70,23 @@ function App() {
 
   return (
     <>
-      <Navbar
-        setIsAuth={setIsAuth}
-        gameInProcess={gameInProcess}
-        setGameInProcess={setGameInProcess}
-      ></Navbar>
+      <Navbar setIsAuth={setIsAuth}></Navbar>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/hello-world" element={<HelloWorld />} />
         <Route path="/register" element={<Register setIsAuth={setIsAuth} />} />
         <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
         <Route element={<ProtectedRoute />}>
-          <Route
-            path="/lobby"
-            element={<Lobby setGameInProcess={setGameInProcess} />}
-          />
+          <Route path="/lobby" element={<Lobby />} />
           <Route
             path="/high-scores"
             element={<HighScores setIsAuth={setIsAuth} />}
           />
           <Route path="/game" element={<Game setIsAuth={setIsAuth} />} />
-          <Route path="/california/:hostname" element={<RegularSpeed />} />
-          <Route path="/regular/:hostname" element={<CaliforniaSpeed />} />
+          <Route element={<InGameProtectedRoute />}>
+            <Route path="/regular-speed" element={<RegularSpeed />} />
+            <Route path="/california-speed" element={<CaliforniaSpeed />} />
+          </Route>
         </Route>
         <Route path="*" element={<Error />} />
       </Routes>

@@ -18,6 +18,7 @@ export default function Navbar({
       await axios.delete("http://localhost:4000/users/logout");
       setIsAuth(false);
       localStorage.removeItem("userSession");
+      localStorage.removeItem("gameInSession");
       alertContext.success("You have logged out successfully!");
     } catch (error) {
       alertContext.error(GetErrorMessage(error));
@@ -28,9 +29,13 @@ export default function Navbar({
     <div className="sticky-top">
       <nav
         className={`navbar bg-primary navbar-expand-lg px-5 text-light ${
-          gameInProcess ? "opacity-50" : ""
+          localStorage.getItem("gameInSession") ? "opacity-50" : ""
         }`}
-        style={{ pointerEvents: gameInProcess ? "none" : "auto" }}
+        style={{
+          pointerEvents: localStorage.getItem("gameInSession")
+            ? "none"
+            : "auto",
+        }}
         data-bs-theme="dark"
       >
         <div className="container-fluid">
@@ -48,8 +53,11 @@ export default function Navbar({
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+          <div
+            className="collapse navbar-collapse justify-content-between"
+            id="navbarSupportedContent"
+          >
+            <ul className="navbar-nav mb-2 mb-lg-0 flex-grow-1">
               <li className="nav-item align-self-center">
                 <NavLink className={`nav-link`} to="/" as={NavLink}>
                   Home
@@ -79,43 +87,50 @@ export default function Navbar({
                       Game (TODO)
                     </NavLink>
                   </li>
+                  {localStorage.getItem("userSession") ? (
+                    <li className="ms-auto align-self-center">
+                      <ul className="navbar-nav dropdown">
+                        <li className="nav-item dropdown">
+                          <button
+                            className="nav-link dropdown-toggle"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                          >
+                            Welcome,{" "}
+                            {
+                              JSON.parse(localStorage.getItem("userSession"))
+                                .username
+                            }
+                          </button>
+                          <ul className="dropdown-menu">
+                            <li className="dropdown-item">
+                              <NavLink className="nav-link" onClick={Logout}>
+                                Logout
+                              </NavLink>
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </li>
+                  ) : (
+                    <li className="ms-auto align-self-center">
+                      <ul className="navbar-nav">
+                        <li className="nav-item align-self-center">
+                          <NavLink className="nav-link" to="/register">
+                            Register
+                          </NavLink>
+                        </li>
+                        <li className="nav-item align-self-center">
+                          <NavLink className="nav-link" to="/login">
+                            Login
+                          </NavLink>
+                        </li>
+                      </ul>
+                    </li>
+                  )}
                 </>
               )}
             </ul>
-            {localStorage.getItem("userSession") ? (
-              <ul className="navbar-nav dropdown">
-                <li className="nav-item dropdown align-self-center">
-                  <button
-                    className="nav-link dropdown-toggle"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Welcome,{" "}
-                    {JSON.parse(localStorage.getItem("userSession")).username}
-                  </button>
-                  <ul className="dropdown-menu">
-                    <li className="dropdown-item">
-                      <NavLink className="nav-link" onClick={Logout}>
-                        Logout
-                      </NavLink>
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            ) : (
-              <ul className="navbar-nav">
-                <li className="nav-item align-self-center">
-                  <NavLink className="nav-link" to="/register">
-                    Register
-                  </NavLink>
-                </li>
-                <li className="nav-item align-self-center">
-                  <NavLink className="nav-link" to="/login">
-                    Login
-                  </NavLink>
-                </li>
-              </ul>
-            )}
           </div>
         </div>
       </nav>

@@ -29,7 +29,7 @@ function HighScores() {
       try {
         const {
           data: { users_california, users_regular },
-        } = await axios.get("http://localhost:4000/users/");
+        } = await axios.get("http://localhost:4000/users/top-10-each");
         setUsersRegular(users_regular);
         setUsersCalifornia(users_california);
         setFetchStatusUsers(FetchStatus.SUCCESS);
