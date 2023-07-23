@@ -16,7 +16,6 @@ import "bootstrap/dist/js/bootstrap";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
-import Game from "./components/Game";
 import "reactjs-popup/dist/index.css";
 import "./App.css";
 import AlertContext from "./context/AlertContext";
@@ -27,6 +26,7 @@ import CaliforniaSpeed from "./pages/CaliforniaSpeed";
 axios.defaults.withCredentials = true;
 
 function App() {
+  // eslint-disable-next-line no-unused-vars
   const [isAuth, setIsAuth] = useState(false);
   const alertContext = useContext(AlertContext);
 
