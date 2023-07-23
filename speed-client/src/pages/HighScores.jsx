@@ -35,9 +35,7 @@ function HighScores() {
         setFetchStatusUsers(FetchStatus.SUCCESS);
 
         let playerFoundRegular = users_regular.find(
-          (player) =>
-            player.username ===
-            JSON.parse(localStorage.getItem("userSession")).username
+          (player) => player.username === localStorage.getItem("userSession")
         );
 
         if (playerFoundRegular) {
@@ -45,9 +43,7 @@ function HighScores() {
         }
 
         let playerFoundCalifornia = users_california.find(
-          (player) =>
-            player.username ===
-            JSON.parse(localStorage.getItem("userSession")).username
+          (player) => player.username === localStorage.getItem("userSession")
         );
 
         if (playerFoundCalifornia) {
@@ -61,9 +57,9 @@ function HighScores() {
 
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/users/regular/${
-            JSON.parse(localStorage.getItem("userSession")).username
-          }`
+          `http://localhost:4000/users/regular/${localStorage.getItem(
+            "userSession"
+          )}`
         );
         setUserRegular(data);
         setFetchStatusUserRegular(FetchStatus.SUCCESS);
@@ -74,9 +70,9 @@ function HighScores() {
       }
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/users/california/${
-            JSON.parse(localStorage.getItem("userSession")).username
-          }`
+          `http://localhost:4000/users/california/${localStorage.getItem(
+            "userSession"
+          )}`
         );
         setUserCalifornia(data);
         setFetchStatusUserCalifornia(FetchStatus.SUCCESS);

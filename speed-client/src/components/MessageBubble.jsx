@@ -8,19 +8,14 @@ function MessageBubble({ username, body, date, dateIsVisible }) {
       <div className={`d-flex flex-row`}>
         <div
           className={`d-flex flex-column
-        ${
-          username === JSON.parse(localStorage.getItem("userSession")).username
-            ? "ms-auto"
-            : ""
-        }
+        ${username === localStorage.getItem("userSession") ? "ms-auto" : ""}
         `}
         >
           <div className="d-flex flex-row">
             <div>
               <div
                 className={`card ${
-                  username ===
-                  JSON.parse(localStorage.getItem("userSession")).username
+                  username === localStorage.getItem("userSession")
                     ? "ms-auto"
                     : "me-auto"
                 }`}
@@ -28,8 +23,7 @@ function MessageBubble({ username, body, date, dateIsVisible }) {
                 <div
                   className={`card-body p-2 
                     ${
-                      username ===
-                      JSON.parse(localStorage.getItem("userSession")).username
+                      username === localStorage.getItem("userSession")
                         ? "bg-primary text-light rounded"
                         : ""
                     }
@@ -41,8 +35,7 @@ function MessageBubble({ username, body, date, dateIsVisible }) {
               <div
                 className={`
                   ${
-                    username ===
-                    JSON.parse(localStorage.getItem("userSession")).username
+                    username === localStorage.getItem("userSession")
                       ? "align-self-end"
                       : ""
                   }

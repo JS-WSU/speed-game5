@@ -90,7 +90,7 @@ export default function Navbar({
                 </>
               )}
               {localStorage.getItem("userSession") ? (
-                <li className="ms-lg-auto">
+                <li className="ms-lg-auto text-center">
                   <ul className="navbar-nav dropdown">
                     <li className="nav-item dropdown">
                       <button
@@ -98,11 +98,7 @@ export default function Navbar({
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                       >
-                        Welcome,{" "}
-                        {
-                          JSON.parse(localStorage.getItem("userSession"))
-                            .username
-                        }
+                        Welcome, {localStorage.getItem("userSession")}
                       </button>
                       <ul className="dropdown-menu">
                         <li className="dropdown-item">
@@ -115,7 +111,7 @@ export default function Navbar({
                   </ul>
                 </li>
               ) : (
-                <li className="ms-auto">
+                <li className="ms-lg-auto text-center">
                   <ul className="navbar-nav">
                     <li className="nav-item">
                       <NavLink className="nav-link" to="/register">

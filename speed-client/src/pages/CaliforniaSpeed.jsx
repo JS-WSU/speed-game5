@@ -7,6 +7,10 @@ const socket = io.connect("http://localhost:4000/california_speed", {
   autoConnect: false,
 });
 function CaliforniaSpeed() {
+
+  
+
+
   return <Game socket={socket}>This is California Speed</Game>;
 }
 

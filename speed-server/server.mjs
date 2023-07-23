@@ -67,8 +67,26 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("host_game", ({ hostName, speedType }) => {
-    socket.join(hostName);
-    rooms.push({ hostName, speedType });
+    rooms.push({ hostName, speedType, users: 1 });
+
+    console.log(rooms);
+    io.emit("rooms", rooms);
+  });
+
+  socket.on("join_game", ({ hostName }) => {
+    const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+
+    rooms[roomIndex] = { ...rooms[roomIndex], users: 2 };
+
+    io.emit("rooms", rooms);
+  });
+
+  socket.on("watch_game", ({ hostName }) => {
+    const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+
+    let numUsers = rooms[roomIndex].users;
+
+    rooms[roomIndex] = { ...rooms[roomIndex], users: ++numUsers };
     io.emit("rooms", rooms);
   });
 
@@ -88,6 +106,16 @@ regularSpeedNameSpace.on("connection", (socket) => {
       `Socket ${socket.id} disconnected from regular speed namespace`
     );
   });
+
+  socket.on("join_game", (hostName) => {
+    socket.join(hostName);
+
+    console.log(regularSpeedNameSpace.adapter.rooms);
+
+    const room = rooms.find((room) => room.hostName === hostName);
+
+    regularSpeedNameSpace.to(hostName).emit("room_status", room);
+  });
 });
 
 // California Speed namespace
@@ -101,52 +129,60 @@ californiaSpeedNameSpace.on("connection", (socket) => {
       `Socket ${socket.id} disconnected from california speed namespace`
     );
   });
-});
 
-// Game namespace
-const gameNameSpace = io.of("/games");
+  socket.on("join_game", (hostName) => {
+    socket.join(hostName);
 
-gameNameSpace.on("connection", (socket) => {
-  console.log(`${socket.id} has joined the game namespace.`);
+    const room = rooms.find((room) => room.hostName === hostName);
 
-  socket.on("disconnect", () => {
-    console.log(`Socket ${socket.id} disconnected`);
-  });
-
-  gameNameSpace.emit("receive_message", [
-    {
-      name: "Aleix Melon",
-      id: "E00245",
-      role: ["Dev", "DBA"],
-      age: 23,
-      doj: "11-12-2019",
-      married: false,
-      address: {
-        street: "32, Laham St.",
-        city: "Innsbruck",
-        country: "Austria",
-      },
-      referredby: "E0012",
-    },
-    {
-      name: "Bob Washington",
-      id: "E01245",
-      role: ["HR"],
-      age: 43,
-      doj: "10-06-2010",
-      married: true,
-      address: {
-        street: "45, Abraham Lane.",
-        city: "Washington",
-        country: "USA",
-      },
-      referredby: null,
-    },
-  ]);
-  socket.on("back_at_ya", async (msg) => {
-    console.log(msg);
+    californiaSpeedNameSpace.to(hostName).emit(room);
   });
 });
+
+// // Game namespace
+// const gameNameSpace = io.of("/games");
+
+// gameNameSpace.on("connection", (socket) => {
+//   console.log(`${socket.id} has joined the game namespace.`);
+
+//   socket.on("disconnect", () => {
+//     console.log(`Socket ${socket.id} disconnected`);
+//   });
+
+//   gameNameSpace.emit("receive_message", [
+//     {
+//       name: "Aleix Melon",
+//       id: "E00245",
+//       role: ["Dev", "DBA"],
+//       age: 23,
+//       doj: "11-12-2019",
+//       married: false,
+//       address: {
+//         street: "32, Laham St.",
+//         city: "Innsbruck",
+//         country: "Austria",
+//       },
+//       referredby: "E0012",
+//     },
+//     {
+//       name: "Bob Washington",
+//       id: "E01245",
+//       role: ["HR"],
+//       age: 43,
+//       doj: "10-06-2010",
+//       married: true,
+//       address: {
+//         street: "45, Abraham Lane.",
+//         city: "Washington",
+//         country: "USA",
+//       },
+//       referredby: null,
+//     },
+//   ]);
+//   socket.on("back_at_ya", async (msg) => {
+//     console.log(msg);
+//   });
+// });
 
 // start server
 server.listen(PORT, () => {

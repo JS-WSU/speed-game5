@@ -26,8 +26,7 @@ function Table({ users, user, onTable, speedType }) {
               <tr
                 key={index}
                 className={`${
-                  JSON.parse(localStorage.getItem("userSession")).username ===
-                  user.username
+                  localStorage.getItem("userSession") === user.username
                     ? "table-active"
                     : ""
                 }`}

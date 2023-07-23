@@ -17,3 +17,9 @@ export const SpeedTypes = {
   CALIFORNIA: "California Speed",
   REGULAR: "Regular Speed",
 };
+
+export const UserTypes = {
+  VIEWER: "viewer",
+  PLAYER_ONE: "player_one",
+  PLAYER_TWO: "player_two",
+};

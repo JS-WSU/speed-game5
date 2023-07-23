@@ -13,7 +13,7 @@ function Chat({ socket }) {
 
   function handleSendMessage(e) {
     socket.emit("new_chat_message", {
-      username: JSON.parse(localStorage.getItem("userSession")).username,
+      username: localStorage.getItem("userSession"),
       body: e.target.value,
     });
   }

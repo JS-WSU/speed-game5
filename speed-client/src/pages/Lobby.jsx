@@ -1,20 +1,17 @@
 import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { io } from "socket.io-client";
 import { SpeedTypes } from "../utils/Constants.mjs";
 import Rooms from "../components/Rooms";
+import { UserTypes } from "../utils/Constants.mjs";
 
 const socket = io.connect("http://localhost:4000/", { autoConnect: false });
 export default function Lobby() {
   const navigate = useNavigate();
 
-  const [show, setShow] = useState(false);
-
-  const chooseGameType = () => {
-    setShow(true);
-  };
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     socket.connect();
@@ -26,30 +23,43 @@ export default function Lobby() {
 
   const HostRegularSpeed = () => {
     socket.emit("host_game", {
-      hostName: JSON.parse(localStorage.getItem("userSession")).username,
+      hostName: localStorage.getItem("userSession"),
       speedType: SpeedTypes.REGULAR,
     });
 
     navigate("/regular-speed");
-    localStorage.setItem("gameInSession", true);
+
+    localStorage.setItem(
+      "gameInSession",
+      JSON.stringify({
+        hostName: localStorage.getItem("userSession"),
+        userType: UserTypes.PLAYER_ONE,
+      })
+    );
   };
 
   const HostCaliforniaSpeed = () => {
     socket.emit("host_game", {
-      hostName: JSON.parse(localStorage.getItem("userSession")).username,
+      hostName: localStorage.getItem("userSession"),
       speedType: SpeedTypes.CALIFORNIA,
     });
 
     navigate("/california-speed");
-    localStorage.setItem("gameInSession", true);
+    localStorage.setItem(
+      "gameInSession",
+      JSON.stringify({
+        hostName: localStorage.getItem("userSession"),
+        userType: UserTypes.PLAYER_ONE,
+      })
+    );
   };
 
   return (
     <>
       <Popup
-        open={show}
+        open={showPopup}
         className="popup-content"
-        onClose={() => setShow(false)}
+        onClose={() => setShowPopup(false)}
       >
         <div className="">
           <h5 className="text-center ">Select Speed Type</h5>
@@ -78,7 +88,7 @@ export default function Lobby() {
               <h1>Games</h1>
               <button
                 className="btn btn-primary ms-auto align-self-center border border-3"
-                onClick={chooseGameType}
+                onClick={() => setShowPopup(true)}
               >
                 Host Game
               </button>

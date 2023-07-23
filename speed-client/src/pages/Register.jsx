@@ -153,7 +153,7 @@ export default function Register({ setIsAuth }) {
         }
       );
       setIsAuth(true);
-      localStorage.setItem("userSession", JSON.stringify(data));
+      localStorage.setItem("userSession", data.username);
 
       alertContext.success(`Your account, ${form.username}, has been created!`);
     } catch (error) {
@@ -164,15 +164,21 @@ export default function Register({ setIsAuth }) {
         `Uh oh, your account, ${form.username}, was not registered! Reason: ${data}`
       );
     }
-    setForm((prev) => ({ ...prev, loading: false }));
+
+    setTimeout(() => {
+      setForm((prev) => ({ ...prev, loading: false }));
+    }, 500);
   };
 
   return localStorage.getItem("userSession") ? (
     <Navigate to="/lobby" />
   ) : form.loading ? (
-    <h1 className="spinner-border m-auto">
-      <span className="visually-hidden">Loading...</span>
-    </h1>
+    <div className="m-auto d-flex flex-column">
+      <h1>Registering account...</h1>
+      <h1 className="spinner-border align-self-center">
+        <span className="visually-hidden">Loading...</span>
+      </h1>
+    </div>
   ) : (
     <main className="container">
       <div className="small-container">
@@ -318,7 +324,10 @@ export default function Register({ setIsAuth }) {
             )}
           </ul>
 
-          <button type="submit" className="btn btn-primary w-100 mt-3 border border-3">
+          <button
+            type="submit"
+            className="btn btn-primary w-100 mt-3 border border-3"
+          >
             Register
           </button>
         </form>

@@ -1,7 +1,41 @@
-import { Link } from "react-router-dom";
-import { SpeedTypes } from "../utils/Constants.mjs";
+import { useNavigate } from "react-router-dom";
+import { SpeedTypes, UserTypes } from "../utils/Constants.mjs";
 
-function Room({ hostName, speedType }) {
+function Room({ hostName, speedType, users, socket }) {
+  const navigate = useNavigate();
+
+  const JoinGame = () => {
+    socket.emit("join_game", { hostName });
+    localStorage.setItem(
+      "gameInSession",
+      JSON.stringify({
+        hostName,
+        userType: UserTypes.PLAYER_TWO,
+      })
+    );
+    if (speedType === SpeedTypes.CALIFORNIA) {
+      navigate("/california-speed");
+    } else {
+      navigate("/regular-speed");
+    }
+  };
+
+  const WatchGame = () => {
+    socket.emit("watch_game", { hostName });
+    localStorage.setItem(
+      "gameInSession",
+      JSON.stringify({
+        hostName,
+        userType: UserTypes.VIEWER,
+      })
+    );
+    if (speedType === SpeedTypes.CALIFORNIA) {
+      navigate("/california-speed");
+    } else {
+      navigate("/regular-speed");
+    }
+  };
+
   return (
     <div className="text-light">
       <div
@@ -14,9 +48,18 @@ function Room({ hostName, speedType }) {
           Host: <span className="ms-start">@{hostName}</span>
         </p>
         <div className="text-center mt-auto">
-          <Link to="/" className="btn btn-success primary w-50 border">
-            Join
-          </Link>
+          {users < 2 ? (
+            <button onClick={JoinGame} className="btn btn-success w-50 border">
+              Join
+            </button>
+          ) : (
+            <button
+              onClick={WatchGame}
+              className="btn btn-secondary w-50 border"
+            >
+              Watch
+            </button>
+          )}
         </div>
       </div>
     </div>

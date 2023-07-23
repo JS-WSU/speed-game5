@@ -77,7 +77,7 @@ export default function Login({ setIsAuth }) {
         password: await SHA256(form.password + salt),
       });
       setIsAuth(true);
-      localStorage.setItem("userSession", JSON.stringify(data));
+      localStorage.setItem("userSession", data.username);
       alertContext.success(`Login successful ${data.username}, welcome!`);
     } catch (error) {
       const {
@@ -86,15 +86,20 @@ export default function Login({ setIsAuth }) {
       alertContext.error(data);
     }
 
-    setForm((prev) => ({ ...prev, loading: false }));
+    setTimeout(() => {
+      setForm((prev) => ({ ...prev, loading: false }));
+    }, 500);
   };
 
   return localStorage.getItem("userSession") ? (
     <Navigate to="/lobby" />
   ) : form.loading ? (
-    <h1 className="spinner-border m-auto">
-      <span className="visually-hidden">Loading...</span>
-    </h1>
+    <div className="m-auto d-flex flex-column">
+      <h1>Logging in...</h1>
+      <h1 className="spinner-border align-self-center">
+        <span className="visually-hidden">Loading...</span>
+      </h1>
+    </div>
   ) : (
     <main className="container">
       <div className="small-container">
@@ -150,7 +155,10 @@ export default function Login({ setIsAuth }) {
               </span>
             </div>
           )}
-          <button type="submit" className="btn btn-primary w-100 border border-3">
+          <button
+            type="submit"
+            className="btn btn-primary w-100 border border-3"
+          >
             Login
           </button>
         </form>

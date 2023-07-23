@@ -37,7 +37,7 @@ function App() {
       const { data } = await axios.get(
         `http://localhost:4000/users/authenticated`
       );
-      localStorage.setItem("userSession", JSON.stringify(data));
+      localStorage.setItem("userSession", data.username);
       setIsAuth(true);
     } catch (error) {
       // if session expired, remove from local storage
@@ -47,10 +47,12 @@ function App() {
         localStorage.getItem("userSession")
       ) {
         localStorage.removeItem("userSession");
+        localStorage.removeItem("gameInSession");
 
         alertContext.error("Session expired, please login again.");
       } else if (error.code === "ERR_NETWORK") {
         localStorage.removeItem("userSession");
+        localStorage.removeItem("gameInSession");
         alertContext.error(
           GetErrorMessage(error) + ", speed-server is not running"
         );
@@ -82,7 +84,6 @@ function App() {
             path="/high-scores"
             element={<HighScores setIsAuth={setIsAuth} />}
           />
-          <Route path="/game" element={<Game setIsAuth={setIsAuth} />} />
           <Route element={<InGameProtectedRoute />}>
             <Route path="/regular-speed" element={<RegularSpeed />} />
             <Route path="/california-speed" element={<CaliforniaSpeed />} />

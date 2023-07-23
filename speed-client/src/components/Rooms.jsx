@@ -32,12 +32,14 @@ function Rooms({ socket }) {
             key={index}
             hostName={room.hostName}
             speedType={room.speedType}
+            users={room.users}
+            socket={socket}
           />
         ))}
       </div>
     </div>
   ) : (
-    <div>Currently no games are being hosted</div>
+    <h2 className="text-center">Currently no games are being hosted</h2>
   );
 }
 
