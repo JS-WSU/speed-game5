@@ -6,15 +6,16 @@ import AlertContext from "../context/AlertContext";
 export default function Game({ socket, children }) {
   const navigate = useNavigate();
 
-  const [room, setRoom] = useState([]);
+  const [room, setRoom] = useState({});
 
   const alertContext = useContext(AlertContext);
 
-  const QuitGame = () => {
+  const Quit = () => {
     socket.emit(
-      "leave_game",
+      "quit",
       JSON.parse(localStorage.getItem("gameInSession")).hostName,
-      JSON.parse(localStorage.getItem("gameInSession")).userType
+      JSON.parse(localStorage.getItem("gameInSession")).userType,
+      localStorage.getItem("userSession")
     );
     localStorage.removeItem("gameInSession");
     navigate("/lobby");
@@ -28,8 +29,10 @@ export default function Game({ socket, children }) {
       setRoom(room);
     };
 
-    const Quit = (room, userType) => {
-      alertContext.error(`User of type ${userType} has left!`);
+    const Quit = (room, userType, username) => {
+      if (username && userType !== UserTypes.VIEWER) {
+        alertContext.error(`Player ${username} has left!`);
+      }
       setRoom(room);
     };
 
@@ -40,11 +43,13 @@ export default function Game({ socket, children }) {
 
     socket.on("room_status", GetRoomStatus);
     socket.on("quit", Quit);
+    socket.on("disconnect", Quit);
 
     return () => {
       socket.disconnect();
       socket.off("room_status", GetRoomStatus);
       socket.off("quit", Quit);
+      socket.off("disconnect", Quit);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
@@ -55,10 +60,18 @@ export default function Game({ socket, children }) {
         <div className="m-auto bg-light p-3">Waiting for opponent...</div>
       ) : (
         <>
+          {room.viewers.length ? (
+            <div className="bg-secondary align-self-end p-3">
+              Viewers:
+              {room.viewers.map((viewer) => (
+                <div>{viewer}</div>
+              ))}
+            </div>
+          ) : null}
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
             UserTypes.VIEWER && (
             <div>
-              <button onClick={QuitGame} className="btn btn-danger ms-auto">
+              <button onClick={Quit} className="btn btn-danger ms-auto">
                 Stop Watching Game
               </button>
             </div>
@@ -68,7 +81,7 @@ export default function Game({ socket, children }) {
             <div className="m-auto bg-light p-3">
               <div> Opponent {room.playerTwo} player has joined!</div>
               <div className="text-center mt-2">
-                <button onClick={QuitGame} className="btn btn-success">
+                <button onClick={Quit} className="btn btn-success">
                   Start Game
                 </button>
               </div>
@@ -86,7 +99,7 @@ export default function Game({ socket, children }) {
       {JSON.parse(localStorage.getItem("gameInSession")).userType !==
         UserTypes.VIEWER && (
         <div>
-          <button onClick={QuitGame} className="btn btn-danger">
+          <button onClick={Quit} className="btn btn-danger">
             Quit Game
           </button>
         </div>

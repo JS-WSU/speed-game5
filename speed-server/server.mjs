@@ -24,7 +24,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     name: "session-id",
     store: MongoDBStore,
-    cookie: { maxAge: 2678400, sameSite: false, secure: false },
+    cookie: { maxAge: 2629800000, sameSite: false, secure: false },
     resave: false,
     saveUninitialized: true,
   })
@@ -68,7 +68,13 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("host_game", (hostName, speedType) => {
-    rooms.push({ hostName, speedType, playerOne: hostName });
+    rooms.push({
+      hostName,
+      speedType,
+      playerOne: hostName,
+      playerTwo: undefined,
+      viewers: [],
+    });
 
     console.log(rooms);
     io.emit("rooms", rooms);
@@ -119,27 +125,28 @@ regularSpeedNameSpace.on("connection", (socket) => {
     regularSpeedNameSpace.to(hostName).emit("room_status", room);
   });
 
-  socket.on("leave_game", (hostName, userType) => {
+  socket.on("quit", (hostName, userType, username) => {
     socket.leave(hostName);
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
     if (userType === UserTypes.PLAYER_ONE) {
-      delete rooms[roomIndex].playerOne;
+      rooms[roomIndex].playerOne = undefined;
     } else if (userType === UserTypes.PLAYER_TWO) {
-      delete rooms[roomIndex].playerTwo;
+      rooms[roomIndex].playerTwo = undefined;
     } else {
+      let viewers = rooms[roomIndex].viewers;
+      viewers = viewers.filter((viewer) => viewer !== username);
+      rooms[roomIndex].viewers = viewers;
     }
 
-    if (
-      !rooms[roomIndex].playerOne &&
-      !rooms[roomIndex].playerTwo &&
-      !rooms[roomIndex].viewers
-    ) {
+    if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
       rooms = rooms.filter(
         (room) => room.hostName !== rooms[roomIndex].hostName
       );
     } else {
-      regularSpeedNameSpace.to(hostName).emit(rooms[roomIndex]);
+      regularSpeedNameSpace
+        .to(hostName)
+        .emit("quit", rooms[roomIndex], userType, username);
     }
 
     io.emit("rooms", rooms);
@@ -168,32 +175,32 @@ californiaSpeedNameSpace.on("connection", (socket) => {
     californiaSpeedNameSpace.to(hostName).emit("room_status", room);
   });
 
-  socket.on("leave_game", (hostName, userType) => {
-    socket.leave(hostName);
+  socket.on("quit", (hostName, userType, username) => {
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
     if (userType === UserTypes.PLAYER_ONE) {
-      delete rooms[roomIndex].playerOne;
+      rooms[roomIndex].playerOne = undefined;
     } else if (userType === UserTypes.PLAYER_TWO) {
-      delete rooms[roomIndex].playerTwo;
+      rooms[roomIndex].playerTwo = undefined;
     } else {
+      let viewers = rooms[roomIndex].viewers;
+      viewers = viewers.filter((viewer) => viewer !== username);
+      rooms[roomIndex].viewers = viewers;
     }
 
-    if (
-      !rooms[roomIndex].playerOne &&
-      !rooms[roomIndex].playerTwo &&
-      !rooms[roomIndex].viewers
-    ) {
+    if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
       rooms = rooms.filter(
         (room) => room.hostName !== rooms[roomIndex].hostName
       );
     } else {
       californiaSpeedNameSpace
         .to(hostName)
-        .emit("quit", rooms[roomIndex], userType);
+        .emit("quit", rooms[roomIndex], userType, username);
     }
 
     io.emit("rooms", rooms);
+
+    socket.leave(hostName);
   });
 });
 
