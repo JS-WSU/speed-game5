@@ -96,7 +96,7 @@ io.on("connection", async (socket) => {
     if (userType === UserTypes.PLAYER_TWO) {
       rooms[roomIndex] = { ...rooms[roomIndex], playerTwo: username };
     } else if (userType === UserTypes.VIEWER) {
-      const viewerFound = rooms[roomIndex].find(
+      const viewerFound = rooms[roomIndex].viewers.find(
         (viewer) => viewer === username
       );
       if (!viewerFound) {
