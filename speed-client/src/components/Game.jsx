@@ -27,8 +27,12 @@ export default function Game({ socket, children }) {
     };
 
     const LeftGame = (room, userType, username) => {
-      if (username && userType !== UserTypes.VIEWER) {
+      console.log(userType);
+      if (userType === UserTypes.PLAYER_TWO) {
         alertContext.error(`Player ${username} has left!`);
+      } else if (userType === UserTypes.PLAYER_ONE) {
+        alertContext.error(`Host ${username} has left!`);
+        navigate("/lobby");
       }
       setRoom(room);
     };
@@ -96,7 +100,7 @@ export default function Game({ socket, children }) {
         UserTypes.VIEWER && (
         <div>
           <button onClick={QuitGame} className="btn btn-danger">
-            QuitGame Game
+            QuitGame
           </button>
         </div>
       )}

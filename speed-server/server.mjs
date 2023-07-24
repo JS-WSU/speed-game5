@@ -115,24 +115,26 @@ io.on("connection", async (socket) => {
     socket.leave(hostName);
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    if (userType === UserTypes.PLAYER_ONE) {
-      rooms[roomIndex].playerOne = undefined;
-    } else if (userType === UserTypes.PLAYER_TWO) {
-      rooms[roomIndex].playerTwo = undefined;
-    } else {
-      let viewers = rooms[roomIndex].viewers;
-      viewers = viewers.filter((viewer) => viewer !== username);
-      rooms[roomIndex].viewers = viewers;
-    }
+    if (roomIndex !== -1) {
+      if (userType === UserTypes.PLAYER_ONE) {
+        rooms[roomIndex].playerOne = undefined;
+      } else if (userType === UserTypes.PLAYER_TWO) {
+        rooms[roomIndex].playerTwo = undefined;
+      } else {
+        let viewers = rooms[roomIndex].viewers;
+        viewers = viewers.filter((viewer) => viewer !== username);
+        rooms[roomIndex].viewers = viewers;
+      }
 
-    if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
-      rooms = rooms.filter(
-        (room) => room.hostName !== rooms[roomIndex].hostName
-      );
-    }
-    io.to(hostName).emit("left_game", rooms[roomIndex], userType, username);
+      if (!rooms[roomIndex].playerOne) {
+        rooms = rooms.filter(
+          (room) => room.hostName !== rooms[roomIndex].hostName
+        );
+      }
 
-    io.emit("rooms", rooms);
+      io.to(hostName).emit("left_game", rooms[roomIndex], userType, username);
+      io.to("lobby").emit("rooms", rooms);
+    }
   });
 
   socket.on("disconnect", () => {
