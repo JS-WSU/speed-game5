@@ -6,7 +6,7 @@ import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 import { SpeedTypes } from "../utils/Constants.mjs";
 
-export default function Register({ setIsAuth }) {
+export default function Register({ setIsAuth, socket }) {
   const alertContext = useContext(AlertContext);
 
   const [form, setForm] = useState({
@@ -157,6 +157,7 @@ export default function Register({ setIsAuth }) {
       localStorage.setItem("userSession", data.username);
 
       alertContext.success(`Your account, ${form.username}, has been created!`);
+      socket.connect();
     } catch (error) {
       const {
         response: { data },

@@ -14,48 +14,34 @@ export default function Lobby() {
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    socket.connect();
+    socket.emit("join_lobby");
 
     return () => {
-      socket.disconnect();
+      socket.emit("leave_lobby");
     };
   }, []);
 
-  const HostRegularSpeed = () => {
+  const HostGame = (e) => {
     socket.emit(
       "host_game",
       localStorage.getItem("userSession"),
-      SpeedTypes.REGULAR
+      e.currentTarget.value
     );
-
-    navigate("/regular-speed");
 
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({
         hostName: localStorage.getItem("userSession"),
         userType: UserTypes.PLAYER_ONE,
-        speedType: SpeedTypes.REGULAR,
+        speedType: e.currentTarget.value,
       })
     );
-  };
 
-  const HostCaliforniaSpeed = () => {
-    socket.emit(
-      "host_game",
-      localStorage.getItem("userSession"),
-      SpeedTypes.CALIFORNIA
-    );
-
-    navigate("/california-speed");
-    localStorage.setItem(
-      "gameInSession",
-      JSON.stringify({
-        hostName: localStorage.getItem("userSession"),
-        userType: UserTypes.PLAYER_ONE,
-        speedType: SpeedTypes.CALIFORNIA,
-      })
-    );
+    if (e.currentTarget.value === SpeedTypes.CALIFORNIA) {
+      navigate("/california-speed");
+    } else {
+      navigate("/regular-speed");
+    }
   };
 
   if (localStorage.getItem("gameInSession")) {
@@ -79,14 +65,16 @@ export default function Lobby() {
             <button
               type="button"
               className="btn btn-danger border border-3"
-              onClick={HostCaliforniaSpeed}
+              onClick={HostGame}
+              value={SpeedTypes.CALIFORNIA}
             >
               California Speed
             </button>
             <button
               type="button"
               className="btn btn-primary border border-3"
-              onClick={HostRegularSpeed}
+              onClick={HostGame}
+              value={SpeedTypes.REGULAR}
             >
               Regular Speed
             </button>

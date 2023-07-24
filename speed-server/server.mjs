@@ -49,8 +49,17 @@ let rooms = [];
 io.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the main namespace.`);
 
-  socket.emit("chat_messages", await ChatMessage.find({}));
-  socket.emit("rooms", rooms);
+  socket.on("join_lobby", async () => {
+    console.log(`${socket.id} has joined the lobby`);
+    socket.join("lobby");
+    socket.emit("chat_messages", await ChatMessage.find({}));
+    socket.emit("rooms", rooms);
+  });
+
+  socket.on("leave_lobby", () => {
+    console.log(`${socket.id} has left the lobby`);
+    socket.leave("lobby");
+  });
 
   socket.on("update_chat_messages", async () => {
     socket.emit("chat_messages", await ChatMessage.find({}));
@@ -76,25 +85,39 @@ io.on("connection", async (socket) => {
       viewers: [],
     });
 
-    console.log(rooms);
     io.emit("rooms", rooms);
   });
 
-  socket.on("join_game", (hostName, playerTwo) => {
+  socket.on("join_game", (hostName, userType, username) => {
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
     rooms[roomIndex] = { ...rooms[roomIndex], playerTwo };
 
-    io.emit("rooms", rooms);
+    io.to("lobby").emit("rooms", rooms);
+    io.to(hostName).emit("room_status", rooms[roomIndex], userType, username);
   });
 
-  socket.on("watch_game", (hostName, viewerName) => {
+  socket.on("quit", (hostName, userType, username) => {
+    socket.leave(hostName);
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    rooms[roomIndex] = {
-      ...rooms[roomIndex],
-      viewers: [...rooms[roomIndex].viewers, viewerName],
-    };
+    if (userType === UserTypes.PLAYER_ONE) {
+      rooms[roomIndex].playerOne = undefined;
+    } else if (userType === UserTypes.PLAYER_TWO) {
+      rooms[roomIndex].playerTwo = undefined;
+    } else {
+      let viewers = rooms[roomIndex].viewers;
+      viewers = viewers.filter((viewer) => viewer !== username);
+      rooms[roomIndex].viewers = viewers;
+    }
+
+    if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
+      rooms = rooms.filter(
+        (room) => room.hostName !== rooms[roomIndex].hostName
+      );
+    }
+    io.to(hostName).emit("quit", rooms[roomIndex], userType, username);
+
     io.emit("rooms", rooms);
   });
 
@@ -103,106 +126,106 @@ io.on("connection", async (socket) => {
   });
 });
 
-// Regular Speed namespace
-const regularSpeedNameSpace = io.of("regular_speed");
+// // Regular Speed namespace
+// const regularSpeedNameSpace = io.of("regular_speed");
 
-regularSpeedNameSpace.on("connection", (socket) => {
-  console.log(`${socket.id} has joined the regular speed namespace.`);
+// regularSpeedNameSpace.on("connection", (socket) => {
+//   console.log(`${socket.id} has joined the regular speed namespace.`);
 
-  socket.on("disconnect", () => {
-    console.log(
-      `Socket ${socket.id} disconnected from regular speed namespace`
-    );
-  });
+//   socket.on("disconnect", () => {
+//     console.log(
+//       `Socket ${socket.id} disconnected from regular speed namespace`
+//     );
+//   });
 
-  socket.on("join_game", (hostName) => {
-    socket.join(hostName);
+//   socket.on("join_game", (hostName) => {
+//     socket.join(hostName);
 
-    const room = rooms.find((room) => room.hostName === hostName);
+//     const room = rooms.find((room) => room.hostName === hostName);
 
-    console.log(rooms);
+//     console.log(rooms);
 
-    regularSpeedNameSpace.to(hostName).emit("room_status", room);
-  });
+//     regularSpeedNameSpace.to(hostName).emit("room_status", room);
+//   });
 
-  socket.on("quit", (hostName, userType, username) => {
-    socket.leave(hostName);
-    const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+//   socket.on("quit", (hostName, userType, username) => {
+//     socket.leave(hostName);
+//     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    if (userType === UserTypes.PLAYER_ONE) {
-      rooms[roomIndex].playerOne = undefined;
-    } else if (userType === UserTypes.PLAYER_TWO) {
-      rooms[roomIndex].playerTwo = undefined;
-    } else {
-      let viewers = rooms[roomIndex].viewers;
-      viewers = viewers.filter((viewer) => viewer !== username);
-      rooms[roomIndex].viewers = viewers;
-    }
+//     if (userType === UserTypes.PLAYER_ONE) {
+//       rooms[roomIndex].playerOne = undefined;
+//     } else if (userType === UserTypes.PLAYER_TWO) {
+//       rooms[roomIndex].playerTwo = undefined;
+//     } else {
+//       let viewers = rooms[roomIndex].viewers;
+//       viewers = viewers.filter((viewer) => viewer !== username);
+//       rooms[roomIndex].viewers = viewers;
+//     }
 
-    if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
-      rooms = rooms.filter(
-        (room) => room.hostName !== rooms[roomIndex].hostName
-      );
-    } else {
-      regularSpeedNameSpace
-        .to(hostName)
-        .emit("quit", rooms[roomIndex], userType, username);
-    }
+//     if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
+//       rooms = rooms.filter(
+//         (room) => room.hostName !== rooms[roomIndex].hostName
+//       );
+//     } else {
+//       regularSpeedNameSpace
+//         .to(hostName)
+//         .emit("quit", rooms[roomIndex], userType, username);
+//     }
 
-    io.emit("rooms", rooms);
-  });
-});
+//     io.emit("rooms", rooms);
+//   });
+// });
 
-// California Speed namespace
-const californiaSpeedNameSpace = io.of("california_speed");
+// // California Speed namespace
+// const californiaSpeedNameSpace = io.of("california_speed");
 
-californiaSpeedNameSpace.on("connection", (socket) => {
-  console.log(`${socket.id} has joined the california namespace.`);
+// californiaSpeedNameSpace.on("connection", (socket) => {
+//   console.log(`${socket.id} has joined the california namespace.`);
 
-  socket.on("disconnect", () => {
-    console.log(
-      `Socket ${socket.id} disconnected from california speed namespace`
-    );
-  });
+//   socket.on("disconnect", () => {
+//     console.log(
+//       `Socket ${socket.id} disconnected from california speed namespace`
+//     );
+//   });
 
-  socket.on("join_game", (hostName) => {
-    socket.join(hostName);
+//   socket.on("join_game", (hostName) => {
+//     socket.join(hostName);
 
-    const room = rooms.find((room) => room.hostName === hostName);
+//     const room = rooms.find((room) => room.hostName === hostName);
 
-    console.log(rooms);
+//     console.log(rooms);
 
-    californiaSpeedNameSpace.to(hostName).emit("room_status", room);
-  });
+//     californiaSpeedNameSpace.to(hostName).emit("room_status", room);
+//   });
 
-  socket.on("quit", (hostName, userType, username) => {
-    const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+//   socket.on("quit", (hostName, userType, username) => {
+//     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    if (userType === UserTypes.PLAYER_ONE) {
-      rooms[roomIndex].playerOne = undefined;
-    } else if (userType === UserTypes.PLAYER_TWO) {
-      rooms[roomIndex].playerTwo = undefined;
-    } else {
-      let viewers = rooms[roomIndex].viewers;
-      viewers = viewers.filter((viewer) => viewer !== username);
-      rooms[roomIndex].viewers = viewers;
-    }
+//     if (userType === UserTypes.PLAYER_ONE) {
+//       rooms[roomIndex].playerOne = undefined;
+//     } else if (userType === UserTypes.PLAYER_TWO) {
+//       rooms[roomIndex].playerTwo = undefined;
+//     } else {
+//       let viewers = rooms[roomIndex].viewers;
+//       viewers = viewers.filter((viewer) => viewer !== username);
+//       rooms[roomIndex].viewers = viewers;
+//     }
 
-    if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
-      rooms = rooms.filter(
-        (room) => room.hostName !== rooms[roomIndex].hostName
-      );
-    } else {
-      californiaSpeedNameSpace
-        .to(hostName)
-        .emit("quit", rooms[roomIndex], userType, username);
-    }
+//     if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
+//       rooms = rooms.filter(
+//         (room) => room.hostName !== rooms[roomIndex].hostName
+//       );
+//     } else {
+//       californiaSpeedNameSpace
+//         .to(hostName)
+//         .emit("quit", rooms[roomIndex], userType, username);
+//     }
 
-    io.emit("rooms", rooms);
+//     io.emit("rooms", rooms);
 
-    socket.leave(hostName);
-  });
-});
+//     socket.leave(hostName);
+//   });
+// });
 
 // // Game namespace
 // const gameNameSpace = io.of("/games");

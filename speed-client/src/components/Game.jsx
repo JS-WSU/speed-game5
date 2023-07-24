@@ -22,7 +22,7 @@ export default function Game({ socket, children }) {
   };
 
   useEffect(() => {
-    socket.connect();
+    socket.emit("join_room");
 
     const GetRoomStatus = (room) => {
       console.log(room);

@@ -6,7 +6,7 @@ import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 import { SpeedTypes } from "../utils/Constants.mjs";
 
-export default function Login({ setIsAuth }) {
+export default function Login({ setIsAuth, socket }) {
   const alertContext = useContext(AlertContext);
 
   const [form, setForm] = useState({
@@ -80,6 +80,7 @@ export default function Login({ setIsAuth }) {
       setIsAuth(true);
       localStorage.setItem("userSession", data.username);
       alertContext.success(`Login successful ${data.username}, welcome!`);
+      socket.connect();
     } catch (error) {
       const {
         response: { data },

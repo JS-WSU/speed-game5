@@ -22,9 +22,13 @@ import AlertContext from "./context/AlertContext";
 import GetErrorMessage from "./utils/GetErrorMessage.mjs";
 import RegularSpeed from "./pages/RegularSpeed";
 import CaliforniaSpeed from "./pages/CaliforniaSpeed";
+import { io } from "socket.io-client";
 
 axios.defaults.withCredentials = true;
 
+const socket = io.connect("http://localhost:4000/", {
+  autoConnect: false,
+});
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [isAuth, setIsAuth] = useState(false);
@@ -39,6 +43,7 @@ function App() {
       );
       localStorage.setItem("userSession", data.username);
       setIsAuth(true);
+      socket.connect();
     } catch (error) {
       // if session expired, remove from local storage
       console.log(error);
@@ -58,6 +63,7 @@ function App() {
         );
       }
       setIsAuth(false);
+      socket.disconnect();
     }
   };
 
@@ -76,17 +82,29 @@ function App() {
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/hello-world" element={<HelloWorld />} />
-        <Route path="/register" element={<Register setIsAuth={setIsAuth} />} />
-        <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
+        <Route
+          path="/register"
+          element={<Register setIsAuth={setIsAuth} socket={socket} />}
+        />
+        <Route
+          path="/login"
+          element={<Login setIsAuth={setIsAuth} socket={socket} />}
+        />
         <Route element={<ProtectedRoute />}>
-          <Route path="/lobby" element={<Lobby />} />
+          <Route path="/lobby" element={<Lobby socket={socket} />} />
           <Route
             path="/high-scores"
             element={<HighScores setIsAuth={setIsAuth} />}
           />
           <Route element={<InGameProtectedRoute />}>
-            <Route path="/regular-speed" element={<RegularSpeed />} />
-            <Route path="/california-speed" element={<CaliforniaSpeed />} />
+            <Route
+              path="/regular-speed"
+              element={<RegularSpeed socket={socket} />}
+            />
+            <Route
+              path="/california-speed"
+              element={<CaliforniaSpeed socket={socket} />}
+            />
           </Route>
         </Route>
         <Route path="*" element={<Error />} />
