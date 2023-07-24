@@ -7,8 +7,7 @@ import { SpeedTypes } from "../utils/Constants.mjs";
 import Rooms from "../components/Rooms";
 import { UserTypes } from "../utils/Constants.mjs";
 
-const socket = io.connect("http://localhost:4000/", { autoConnect: false });
-export default function Lobby() {
+export default function Lobby({ socket }) {
   const navigate = useNavigate();
 
   const [showPopup, setShowPopup] = useState(false);
@@ -19,7 +18,7 @@ export default function Lobby() {
     return () => {
       socket.emit("leave_lobby");
     };
-  }, []);
+  }, [socket]);
 
   const HostGame = (e) => {
     socket.emit(

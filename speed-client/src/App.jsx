@@ -52,12 +52,10 @@ function App() {
         localStorage.getItem("userSession")
       ) {
         localStorage.removeItem("userSession");
-        localStorage.removeItem("gameInSession");
 
         alertContext.error("Session expired, please login again.");
       } else if (error.code === "ERR_NETWORK") {
         localStorage.removeItem("userSession");
-        localStorage.removeItem("gameInSession");
         alertContext.error(
           GetErrorMessage(error) + ", speed-server is not running"
         );

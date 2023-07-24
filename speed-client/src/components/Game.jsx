@@ -10,46 +10,42 @@ export default function Game({ socket, children }) {
 
   const alertContext = useContext(AlertContext);
 
-  const Quit = () => {
-    socket.emit(
-      "quit",
-      JSON.parse(localStorage.getItem("gameInSession")).hostName,
-      JSON.parse(localStorage.getItem("gameInSession")).userType,
-      localStorage.getItem("userSession")
-    );
-    localStorage.removeItem("gameInSession");
+  const QuitGame = () => {
     navigate("/lobby");
   };
 
   useEffect(() => {
-    socket.emit("join_room");
+    socket.emit(
+      "join_game",
+      JSON.parse(localStorage.getItem("gameInSession")).hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType,
+      localStorage.getItem("userSession")
+    );
 
-    const GetRoomStatus = (room) => {
-      console.log(room);
+    const GetGameStatus = (room) => {
       setRoom(room);
     };
 
-    const Quit = (room, userType, username) => {
+    const LeftGame = (room, userType, username) => {
       if (username && userType !== UserTypes.VIEWER) {
         alertContext.error(`Player ${username} has left!`);
       }
       setRoom(room);
     };
 
-    socket.emit(
-      "join_game",
-      JSON.parse(localStorage.getItem("gameInSession")).hostName
-    );
-
-    socket.on("room_status", GetRoomStatus);
-    socket.on("quit", Quit);
-    socket.on("disconnect", Quit);
+    socket.on("game_status", GetGameStatus);
+    socket.on("left_game", LeftGame);
 
     return () => {
-      socket.disconnect();
-      socket.off("room_status", GetRoomStatus);
-      socket.off("quit", Quit);
-      socket.off("disconnect", Quit);
+      socket.emit(
+        "quit_game",
+        JSON.parse(localStorage.getItem("gameInSession")).hostName,
+        JSON.parse(localStorage.getItem("gameInSession")).userType,
+        localStorage.getItem("userSession")
+      );
+      localStorage.removeItem("gameInSession");
+      socket.off("game_status", GetGameStatus);
+      socket.off("left_game", LeftGame);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
@@ -71,7 +67,7 @@ export default function Game({ socket, children }) {
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
             UserTypes.VIEWER && (
             <div>
-              <button onClick={Quit} className="btn btn-danger ms-auto">
+              <button onClick={QuitGame} className="btn btn-danger ms-auto">
                 Stop Watching Game
               </button>
             </div>
@@ -81,7 +77,7 @@ export default function Game({ socket, children }) {
             <div className="m-auto bg-light p-3">
               <div> Opponent {room.playerTwo} player has joined!</div>
               <div className="text-center mt-2">
-                <button onClick={Quit} className="btn btn-success">
+                <button onClick={QuitGame} className="btn btn-success">
                   Start Game
                 </button>
               </div>
@@ -99,8 +95,8 @@ export default function Game({ socket, children }) {
       {JSON.parse(localStorage.getItem("gameInSession")).userType !==
         UserTypes.VIEWER && (
         <div>
-          <button onClick={Quit} className="btn btn-danger">
-            Quit Game
+          <button onClick={QuitGame} className="btn btn-danger">
+            QuitGame Game
           </button>
         </div>
       )}

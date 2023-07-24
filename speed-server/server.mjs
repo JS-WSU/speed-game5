@@ -50,15 +50,15 @@ io.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the main namespace.`);
 
   socket.on("join_lobby", async () => {
-    console.log(`${socket.id} has joined the lobby`);
     socket.join("lobby");
+    console.log(`${socket.id} has joined the lobby`);
     socket.emit("chat_messages", await ChatMessage.find({}));
     socket.emit("rooms", rooms);
   });
 
   socket.on("leave_lobby", () => {
-    console.log(`${socket.id} has left the lobby`);
     socket.leave("lobby");
+    console.log(`${socket.id} has left the lobby`);
   });
 
   socket.on("update_chat_messages", async () => {
@@ -85,19 +85,33 @@ io.on("connection", async (socket) => {
       viewers: [],
     });
 
-    io.emit("rooms", rooms);
+    io.to("lobby").emit("rooms", rooms);
   });
 
   socket.on("join_game", (hostName, userType, username) => {
+    socket.join(hostName);
+
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    rooms[roomIndex] = { ...rooms[roomIndex], playerTwo };
+    if (userType === UserTypes.PLAYER_TWO) {
+      rooms[roomIndex] = { ...rooms[roomIndex], playerTwo: username };
+    } else if (userType === UserTypes.VIEWER) {
+      const viewerFound = rooms[roomIndex].find(
+        (viewer) => viewer === username
+      );
+      if (!viewerFound) {
+        rooms[roomIndex] = {
+          ...rooms[roomIndex],
+          viewers: [...rooms[roomIndex].viewers, username],
+        };
+      }
+    }
 
     io.to("lobby").emit("rooms", rooms);
-    io.to(hostName).emit("room_status", rooms[roomIndex], userType, username);
+    io.to(hostName).emit("game_status", rooms[roomIndex]);
   });
 
-  socket.on("quit", (hostName, userType, username) => {
+  socket.on("quit_game", (hostName, userType, username) => {
     socket.leave(hostName);
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
@@ -116,7 +130,7 @@ io.on("connection", async (socket) => {
         (room) => room.hostName !== rooms[roomIndex].hostName
       );
     }
-    io.to(hostName).emit("quit", rooms[roomIndex], userType, username);
+    io.to(hostName).emit("left_game", rooms[roomIndex], userType, username);
 
     io.emit("rooms", rooms);
   });
@@ -145,7 +159,7 @@ io.on("connection", async (socket) => {
 
 //     console.log(rooms);
 
-//     regularSpeedNameSpace.to(hostName).emit("room_status", room);
+//     regularSpeedNameSpace.to(hostName).emit("game_status", room);
 //   });
 
 //   socket.on("quit", (hostName, userType, username) => {
@@ -195,7 +209,7 @@ io.on("connection", async (socket) => {
 
 //     console.log(rooms);
 
-//     californiaSpeedNameSpace.to(hostName).emit("room_status", room);
+//     californiaSpeedNameSpace.to(hostName).emit("game_status", room);
 //   });
 
 //   socket.on("quit", (hostName, userType, username) => {
