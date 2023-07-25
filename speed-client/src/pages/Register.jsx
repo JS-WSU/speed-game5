@@ -157,7 +157,6 @@ export default function Register({ setIsAuth, socket }) {
       localStorage.setItem("userSession", data.username);
 
       alertContext.success(`Your account, ${form.username}, has been created!`);
-      socket.connect();
     } catch (error) {
       const {
         response: { data },

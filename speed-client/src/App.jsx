@@ -67,7 +67,7 @@ function App() {
         );
         localStorage.removeItem("gameInSession");
       }
-      
+
       localStorage.removeItem("userSession");
       setIsAuth(false);
       socket.disconnect();
@@ -89,14 +89,8 @@ function App() {
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/hello-world" element={<HelloWorld />} />
-        <Route
-          path="/register"
-          element={<Register setIsAuth={setIsAuth} socket={socket} />}
-        />
-        <Route
-          path="/login"
-          element={<Login setIsAuth={setIsAuth} socket={socket} />}
-        />
+        <Route path="/register" element={<Register setIsAuth={setIsAuth} />} />
+        <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/lobby" element={<Lobby socket={socket} />} />
           <Route

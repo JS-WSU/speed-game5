@@ -80,7 +80,6 @@ export default function Login({ setIsAuth, socket }) {
       setIsAuth(true);
       localStorage.setItem("userSession", data.username);
       alertContext.success(`Login successful ${data.username}, welcome!`);
-      socket.connect();
     } catch (error) {
       const {
         response: { data },
