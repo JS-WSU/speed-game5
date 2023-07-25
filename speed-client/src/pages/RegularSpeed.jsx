@@ -19,7 +19,7 @@ function RegularSpeed({ socket }) {
     return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
       SpeedTypes.REGULAR ? (
       <Game socket={socket} game={game} setGame={setGame}>
-        This is Regular Speed
+        <div>This is Regular Speed Lets go!</div>
       </Game>
     ) : (
       <Navigate to="/california-speed" replace />

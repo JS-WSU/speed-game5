@@ -144,10 +144,12 @@ io.on("connection", async (socket) => {
         playerOne: {
           name: hostName,
           pile: [],
+          field: [],
         },
         playerTwo: {
           name: undefined,
           pile: [],
+          field: [],
         },
         viewers: [],
         gameState: GameStates.WAITING,
@@ -206,6 +208,14 @@ io.on("connection", async (socket) => {
       io.to(hostName).emit("left_game", games[gameIndex], userType, username);
       io.to("lobby").emit("gameRooms", games);
     }
+  });
+
+  socket.on("start_game", (hostName) => {
+    const gameIndex = games.findIndex((game) => game.hostName === hostName);
+
+    games[gameIndex].gameState = GameStates.RUNNING;
+
+    io.to(hostName).emit("game_status", games[gameIndex]);
   });
 
   socket.on("disconnect", () => {

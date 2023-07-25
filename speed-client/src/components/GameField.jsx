@@ -8,6 +8,13 @@ export default function Game({ socket, children, game, setGame }) {
 
   const alertContext = useContext(AlertContext);
 
+  const StartGame = () => {
+    socket.emit(
+      "start_game",
+      JSON.parse(localStorage.getItem("gameInSession")).hostName
+    );
+  };
+
   const QuitGame = () => {
     socket.emit(
       "quit_game",
@@ -82,7 +89,7 @@ export default function Game({ socket, children, game, setGame }) {
               <div className="m-auto bg-light p-3">
                 <div> Opponent {game.playerTwo.name} player has joined!</div>
                 <div className="text-center mt-2">
-                  <button onClick={QuitGame} className="btn btn-success">
+                  <button onClick={StartGame} className="btn btn-success">
                     Start Game
                   </button>
                 </div>
@@ -91,14 +98,18 @@ export default function Game({ socket, children, game, setGame }) {
             {JSON.parse(localStorage.getItem("gameInSession")).userType !==
               UserTypes.PLAYER_ONE && (
               <div className="m-auto bg-light p-3">
-                <div> Waiting for host {game.playerOne.name} to start game....</div>
+                <div>
+                  {" "}
+                  Waiting for host {game.playerOne.name} to start game....
+                </div>
               </div>
             )}
-            {children}
           </>
         )
+      ) : game.gameState === GameStates.RUNNING ? (
+        <div>{children}</div>
       ) : (
-        ""
+        <div>The Game is Over!</div>
       )}
 
       {JSON.parse(localStorage.getItem("gameInSession")).userType !==

@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import GameField from "../components/GameField";
-import { SpeedTypes } from "../utils/Constants.mjs";
+import { GameStates, SpeedTypes, UserTypes } from "../utils/Constants.mjs";
 import { useState } from "react";
 
 function CaliforniaSpeed({ socket }) {
@@ -12,7 +12,30 @@ function CaliforniaSpeed({ socket }) {
       <Navigate to="/regular-speed" replace />
     ) : (
       <GameField socket={socket} game={game} setGame={setGame}>
-        This is California Speed
+        {game.gameState === GameStates.RUNNING && (
+          <div>
+            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.VIEWER ? (
+              <div style={{ pointerEvents: "none" }}>
+                <div>
+                  <div>Opponent: {game.playerOne.name}</div>
+                  <div>{game.playerTwo.name}</div>
+                </div>
+              </div>
+            ) : JSON.parse(localStorage.getItem("gameInSession")).userType ===
+              UserTypes.PLAYER_ONE ? (
+              <div>
+                <div>Opponent: {game.playerOne.name}</div>
+                <div>{game.playerTwo.name}</div>
+              </div>
+            ) : (
+              <div>
+                <div>Opponent: {game.playerTwo.name}</div>
+                <div>{game.playerOne.name}</div>
+              </div>
+            )}
+          </div>
+        )}
       </GameField>
     );
   }
