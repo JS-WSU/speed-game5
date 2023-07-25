@@ -87,7 +87,7 @@ io.on("connection", async (socket) => {
     socket.join("lobby");
     console.log(`${socket.id} has joined the lobby`);
     socket.emit("chat_messages", await ChatMessage.find({}));
-    socket.emit("games", games);
+    socket.emit("gameRooms", games);
   });
 
   socket.on("leave_lobby", () => {
@@ -119,7 +119,7 @@ io.on("connection", async (socket) => {
       viewers: [],
     });
 
-    io.to("lobby").emit("games", games);
+    io.to("lobby").emit("gameRooms", games);
   });
 
   socket.on("join_game", (hostName, userType, username) => {
@@ -141,7 +141,7 @@ io.on("connection", async (socket) => {
       }
     }
 
-    io.to("lobby").emit("games", games);
+    io.to("lobby").emit("gameRooms", games);
     io.to(hostName).emit("game_status", games[gameIndex]);
   });
 
@@ -167,7 +167,7 @@ io.on("connection", async (socket) => {
       }
 
       io.to(hostName).emit("left_game", games[gameIndex], userType, username);
-      io.to("lobby").emit("games", games);
+      io.to("lobby").emit("gameRooms", games);
     }
   });
 
@@ -222,7 +222,7 @@ io.on("connection", async (socket) => {
 //         .emit("quit", games[gameIndex], userType, username);
 //     }
 
-//     io.emit("games", games);
+//     io.emit("gameRooms", games);
 //   });
 // });
 
@@ -271,7 +271,7 @@ io.on("connection", async (socket) => {
 //         .emit("quit", games[gameIndex], userType, username);
 //     }
 
-//     io.emit("games", games);
+//     io.emit("gameRooms", games);
 
 //     socket.leave(hostName);
 //   });
