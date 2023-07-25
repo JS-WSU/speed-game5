@@ -38,8 +38,7 @@ export default function Game({ socket, children }) {
         alertContext.error(`Player ${username} has left!`);
       } else if (userType === UserTypes.PLAYER_ONE) {
         alertContext.error(`Host ${username} has left!`);
-        localStorage.removeItem("gameInSession");
-        navigate("/lobby");
+        QuitGame();
       }
       setRoom(room);
     };
