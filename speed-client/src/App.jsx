@@ -45,6 +45,16 @@ function App() {
       setIsAuth(true);
       socket.connect();
     } catch (error) {
+      if (localStorage.getItem("gameInSession")) {
+        socket.emit(
+          "quit_game",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          localStorage.getItem("userSession")
+        );
+        localStorage.removeItem("gameInSession");
+      }
+
       // if session expired, remove from local storage
       console.log(error);
       if (

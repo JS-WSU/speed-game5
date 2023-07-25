@@ -11,6 +11,13 @@ export default function Game({ socket, children }) {
   const alertContext = useContext(AlertContext);
 
   const QuitGame = () => {
+    socket.emit(
+      "quit_game",
+      JSON.parse(localStorage.getItem("gameInSession")).hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType,
+      localStorage.getItem("userSession")
+    );
+    localStorage.removeItem("gameInSession");
     navigate("/lobby");
   };
 
@@ -32,7 +39,7 @@ export default function Game({ socket, children }) {
         alertContext.error(`Player ${username} has left!`);
       } else if (userType === UserTypes.PLAYER_ONE) {
         alertContext.error(`Host ${username} has left!`);
-        navigate("/lobby");
+        QuitGame();
       }
       setRoom(room);
     };
@@ -41,13 +48,6 @@ export default function Game({ socket, children }) {
     socket.on("left_game", LeftGame);
 
     return () => {
-      socket.emit(
-        "quit_game",
-        JSON.parse(localStorage.getItem("gameInSession")).hostName,
-        JSON.parse(localStorage.getItem("gameInSession")).userType,
-        localStorage.getItem("userSession")
-      );
-      localStorage.removeItem("gameInSession");
       socket.off("game_status", GetGameStatus);
       socket.off("left_game", LeftGame);
     };
