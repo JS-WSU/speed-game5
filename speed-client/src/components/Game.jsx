@@ -56,26 +56,29 @@ export default function Game({ socket, children }) {
 
   return (
     <main className="bg-success container-fluid">
+      <div className="d-flex">
+        {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+          UserTypes.VIEWER && (
+          <div>
+            <button onClick={QuitGame} className="btn btn-danger ms-auto">
+              Stop Watching Game
+            </button>
+          </div>
+        )}
+        {room.viewers ? (
+          <div className="bg-secondary ms-auto p-3">
+            Viewers:
+            {room.viewers.map((viewer) => (
+              <div>{viewer}</div>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
       {!room.playerTwo ? (
         <div className="m-auto bg-light p-3">Waiting for opponent...</div>
       ) : (
         <>
-          {room.viewers.length ? (
-            <div className="bg-secondary align-self-end p-3">
-              Viewers:
-              {room.viewers.map((viewer) => (
-                <div>{viewer}</div>
-              ))}
-            </div>
-          ) : null}
-          {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-            UserTypes.VIEWER && (
-            <div>
-              <button onClick={QuitGame} className="btn btn-danger ms-auto">
-                Stop Watching Game
-              </button>
-            </div>
-          )}
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
             UserTypes.PLAYER_ONE && (
             <div className="m-auto bg-light p-3">
@@ -100,7 +103,7 @@ export default function Game({ socket, children }) {
         UserTypes.VIEWER && (
         <div>
           <button onClick={QuitGame} className="btn btn-danger">
-            QuitGame
+            Quit Game
           </button>
         </div>
       )}
