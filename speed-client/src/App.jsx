@@ -45,6 +45,7 @@ function App() {
       setIsAuth(true);
       socket.connect();
     } catch (error) {
+      // make user quit if session expired and if ingame
       if (localStorage.getItem("gameInSession")) {
         socket.emit(
           "quit_game",

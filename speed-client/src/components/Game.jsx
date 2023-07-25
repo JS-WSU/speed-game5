@@ -34,12 +34,12 @@ export default function Game({ socket, children }) {
     };
 
     const LeftGame = (room, userType, username) => {
-      console.log(userType);
       if (userType === UserTypes.PLAYER_TWO) {
         alertContext.error(`Player ${username} has left!`);
       } else if (userType === UserTypes.PLAYER_ONE) {
         alertContext.error(`Host ${username} has left!`);
-        QuitGame();
+        localStorage.removeItem("gameInSession");
+        navigate("/lobby");
       }
       setRoom(room);
     };
