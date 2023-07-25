@@ -38,13 +38,25 @@ function App() {
   const fetchUserAuth = async () => {
     // check if session exists
     try {
-      const { data } = await axios.get(
-        `http://localhost:4000/users/authenticated`
-      );
-      localStorage.setItem("userSession", data.username);
+      const {
+        data: { username },
+      } = await axios.get(`http://localhost:4000/users/authenticated`);
+      localStorage.setItem("userSession", username);
       setIsAuth(true);
       socket.connect();
     } catch (error) {
+      // if session expired, remove from local storage
+      if (
+        error.code === "ERR_BAD_REQUEST" &&
+        localStorage.getItem("userSession")
+      ) {
+        alertContext.error("Session expired, please login again.");
+      } else if (error.code === "ERR_NETWORK") {
+        alertContext.error(
+          GetErrorMessage(error) + ", speed-server is not running"
+        );
+      }
+
       // make user quit if session expired and if ingame
       if (localStorage.getItem("gameInSession")) {
         socket.emit(
@@ -55,22 +67,8 @@ function App() {
         );
         localStorage.removeItem("gameInSession");
       }
-
-      // if session expired, remove from local storage
-      console.log(error);
-      if (
-        error.code === "ERR_BAD_REQUEST" &&
-        localStorage.getItem("userSession")
-      ) {
-        localStorage.removeItem("userSession");
-
-        alertContext.error("Session expired, please login again.");
-      } else if (error.code === "ERR_NETWORK") {
-        localStorage.removeItem("userSession");
-        alertContext.error(
-          GetErrorMessage(error) + ", speed-server is not running"
-        );
-      }
+      
+      localStorage.removeItem("userSession");
       setIsAuth(false);
       socket.disconnect();
     }
