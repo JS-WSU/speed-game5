@@ -3,10 +3,11 @@ import Room from "./Room";
 
 function Rooms({ socket }) {
   const [rooms, setRooms] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const GetRooms = (rooms) => {
+      setLoading(true);
       setRooms(rooms);
       setTimeout(() => {
         setLoading(false);

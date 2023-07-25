@@ -42,7 +42,7 @@ const io = new Server(server, {
   },
 });
 
-// Main lobby chat namespace
+// Main namespace
 
 let rooms = [];
 
@@ -115,26 +115,24 @@ io.on("connection", async (socket) => {
     socket.leave(hostName);
     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
 
-    if (roomIndex !== -1) {
-      if (userType === UserTypes.PLAYER_ONE) {
-        rooms[roomIndex].playerOne = undefined;
-      } else if (userType === UserTypes.PLAYER_TWO) {
-        rooms[roomIndex].playerTwo = undefined;
-      } else {
-        let viewers = rooms[roomIndex].viewers;
-        viewers = viewers.filter((viewer) => viewer !== username);
-        rooms[roomIndex].viewers = viewers;
-      }
-
-      if (!rooms[roomIndex].playerOne) {
-        rooms = rooms.filter(
-          (room) => room.hostName !== rooms[roomIndex].hostName
-        );
-      }
-
-      io.to(hostName).emit("left_game", rooms[roomIndex], userType, username);
-      io.to("lobby").emit("rooms", rooms);
+    if (userType === UserTypes.PLAYER_ONE) {
+      rooms[roomIndex].playerOne = undefined;
+    } else if (userType === UserTypes.PLAYER_TWO) {
+      rooms[roomIndex].playerTwo = undefined;
+    } else {
+      let viewers = rooms[roomIndex].viewers;
+      viewers = viewers.filter((viewer) => viewer !== username);
+      rooms[roomIndex].viewers = viewers;
     }
+
+    if (!rooms[roomIndex].playerOne) {
+      rooms = rooms.filter(
+        (room) => room.hostName !== rooms[roomIndex].hostName
+      );
+    }
+
+    io.to(hostName).emit("left_game", rooms[roomIndex], userType, username);
+    io.to("lobby").emit("rooms", rooms);
   });
 
   socket.on("disconnect", () => {
