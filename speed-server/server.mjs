@@ -11,7 +11,12 @@ import http from "http";
 import { Server } from "socket.io";
 import User from "./db/models/UserSchema.mjs";
 import ChatMessage from "./db/models/ChatMessageSchema.mjs";
-import { UserTypes } from "../speed-client/src/utils/Constants.mjs";
+import {
+  GameStates,
+  SpeedTypes,
+  UserTypes,
+} from "../speed-client/src/utils/Constants.mjs";
+import { Deck } from "./utils/Constants.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -111,13 +116,43 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("host_game", (hostName, speedType) => {
-    games.push({
-      hostName,
-      speedType,
-      playerOne: hostName,
-      playerTwo: undefined,
-      viewers: [],
-    });
+    if (speedType === SpeedTypes.REGULAR) {
+      games.push({
+        deck: Deck,
+        hostName,
+        speedType,
+        playerOne: {
+          name: hostName,
+          fieldCards: [],
+          pile: [],
+          sidePile: [],
+        },
+        playerTwo: {
+          name: undefined,
+          fieldCards: [],
+          pile: [],
+          sidePile: [],
+        },
+        viewers: [],
+        gameState: GameStates.WAITING,
+      });
+    } else {
+      games.push({
+        deck: Deck,
+        hostName,
+        speedType,
+        playerOne: {
+          name: hostName,
+          pile: [],
+        },
+        playerTwo: {
+          name: undefined,
+          pile: [],
+        },
+        viewers: [],
+        gameState: GameStates.WAITING,
+      });
+    }
 
     io.to("lobby").emit("gameRooms", games);
   });
@@ -128,7 +163,10 @@ io.on("connection", async (socket) => {
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
 
     if (userType === UserTypes.PLAYER_TWO) {
-      games[gameIndex] = { ...games[gameIndex], playerTwo: username };
+      games[gameIndex] = {
+        ...games[gameIndex],
+        playerTwo: { ...games[gameIndex].playerTwo, name: username },
+      };
     } else if (userType === UserTypes.VIEWER) {
       const viewerFound = games[gameIndex].viewers.find(
         (viewer) => viewer === username
@@ -151,21 +189,20 @@ io.on("connection", async (socket) => {
 
     if (gameIndex !== -1) {
       if (userType === UserTypes.PLAYER_ONE) {
-        games[gameIndex].playerOne = undefined;
+        games[gameIndex].playerOne.name = undefined;
       } else if (userType === UserTypes.PLAYER_TWO) {
-        games[gameIndex].playerTwo = undefined;
+        games[gameIndex].playerTwo.name = undefined;
       } else {
         let viewers = games[gameIndex].viewers;
         viewers = viewers.filter((viewer) => viewer !== username);
         games[gameIndex].viewers = viewers;
       }
 
-      if (!games[gameIndex].playerOne) {
+      if (!games[gameIndex].playerOne.name) {
         games = games.filter(
           (game) => game.hostName !== games[gameIndex].hostName
         );
       }
-
       io.to(hostName).emit("left_game", games[gameIndex], userType, username);
       io.to("lobby").emit("gameRooms", games);
     }

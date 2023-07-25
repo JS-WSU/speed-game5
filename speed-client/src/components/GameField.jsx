@@ -1,6 +1,6 @@
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserTypes } from "../utils/Constants.mjs";
+import { GameStates, UserTypes } from "../utils/Constants.mjs";
 import AlertContext from "../context/AlertContext";
 
 export default function Game({ socket, children, game, setGame }) {
@@ -72,30 +72,35 @@ export default function Game({ socket, children, game, setGame }) {
         ) : null}
       </div>
 
-      {!game.playerTwo ? (
-        <div className="m-auto bg-light p-3">Waiting for opponent...</div>
-      ) : (
-        <>
-          {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-            UserTypes.PLAYER_ONE && (
-            <div className="m-auto bg-light p-3">
-              <div> Opponent {game.playerTwo} player has joined!</div>
-              <div className="text-center mt-2">
-                <button onClick={QuitGame} className="btn btn-success">
-                  Start Game
-                </button>
+      {game.gameState === GameStates.WAITING ? (
+        !game.playerTwo.name ? (
+          <div className="m-auto bg-light p-3">Waiting for opponent...</div>
+        ) : (
+          <>
+            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+              UserTypes.PLAYER_ONE && (
+              <div className="m-auto bg-light p-3">
+                <div> Opponent {game.playerTwo.name} player has joined!</div>
+                <div className="text-center mt-2">
+                  <button onClick={QuitGame} className="btn btn-success">
+                    Start Game
+                  </button>
+                </div>
               </div>
-            </div>
-          )}
-          {JSON.parse(localStorage.getItem("gameInSession")).userType !==
-            UserTypes.PLAYER_ONE && (
-            <div className="m-auto bg-light p-3">
-              <div> Waiting for host {game.playerOne} to start game....</div>
-            </div>
-          )}
-          {children}
-        </>
+            )}
+            {JSON.parse(localStorage.getItem("gameInSession")).userType !==
+              UserTypes.PLAYER_ONE && (
+              <div className="m-auto bg-light p-3">
+                <div> Waiting for host {game.playerOne.name} to start game....</div>
+              </div>
+            )}
+            {children}
+          </>
+        )
+      ) : (
+        ""
       )}
+
       {JSON.parse(localStorage.getItem("gameInSession")).userType !==
         UserTypes.VIEWER && (
         <div>
