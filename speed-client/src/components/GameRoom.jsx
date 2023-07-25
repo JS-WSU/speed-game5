@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { SpeedTypes, UserTypes } from "../utils/Constants.mjs";
 
-function Room({ hostName, speedType, playerTwo, socket }) {
+function GameRoom({ hostName, speedType, playerTwo, socket }) {
   const navigate = useNavigate();
 
   const JoinGame = (e) => {
@@ -55,4 +55,4 @@ function Room({ hostName, speedType, playerTwo, socket }) {
   );
 }
 
-export default Room;
+export default GameRoom;

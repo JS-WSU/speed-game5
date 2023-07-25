@@ -1,12 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserTypes } from "../utils/Constants.mjs";
 import AlertContext from "../context/AlertContext";
 
-export default function Game({ socket, children }) {
+export default function Game({ socket, children, game, setGame }) {
   const navigate = useNavigate();
-
-  const [room, setRoom] = useState({});
 
   const alertContext = useContext(AlertContext);
 
@@ -29,18 +27,18 @@ export default function Game({ socket, children }) {
       localStorage.getItem("userSession")
     );
 
-    const GetGameStatus = (room) => {
-      setRoom(room);
+    const GetGameStatus = (game) => {
+      setGame(game);
     };
 
-    const LeftGame = (room, userType, username) => {
+    const LeftGame = (game, userType, username) => {
       if (userType === UserTypes.PLAYER_TWO) {
         alertContext.error(`Player ${username} has left!`);
       } else if (userType === UserTypes.PLAYER_ONE) {
         alertContext.error(`Host ${username} has left!`);
         QuitGame();
       }
-      setRoom(room);
+      setGame(game);
     };
 
     socket.on("game_status", GetGameStatus);
@@ -64,24 +62,24 @@ export default function Game({ socket, children }) {
             </button>
           </div>
         )}
-        {room.viewers ? (
+        {game.viewers ? (
           <div className="bg-secondary ms-auto p-3">
             Viewers:
-            {room.viewers.map((viewer) => (
+            {game.viewers.map((viewer) => (
               <div>{viewer}</div>
             ))}
           </div>
         ) : null}
       </div>
 
-      {!room.playerTwo ? (
+      {!game.playerTwo ? (
         <div className="m-auto bg-light p-3">Waiting for opponent...</div>
       ) : (
         <>
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
             UserTypes.PLAYER_ONE && (
             <div className="m-auto bg-light p-3">
-              <div> Opponent {room.playerTwo} player has joined!</div>
+              <div> Opponent {game.playerTwo} player has joined!</div>
               <div className="text-center mt-2">
                 <button onClick={QuitGame} className="btn btn-success">
                   Start Game
@@ -92,7 +90,7 @@ export default function Game({ socket, children }) {
           {JSON.parse(localStorage.getItem("gameInSession")).userType !==
             UserTypes.PLAYER_ONE && (
             <div className="m-auto bg-light p-3">
-              <div> Waiting for host {room.playerOne} to start game....</div>
+              <div> Waiting for host {game.playerOne} to start game....</div>
             </div>
           )}
           {children}

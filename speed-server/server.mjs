@@ -43,8 +43,42 @@ const io = new Server(server, {
 });
 
 // Main namespace
+// const california_game = {
+//   deck: [],
+//   fieldCards: [],
+//   hostName: undefined,
+//   playerOne: {
+//     name: undefined,
+//     pile: []
+//   },
+//   playerTwo: {
+//     name: undefined,
+//     pile: []
+//   },
+//   viewers: [],
+//   gameState: "waiting"
+// }
 
-let rooms = [];
+// const regular_game = {
+//   deck: [],
+//   hostName: undefined,
+//   playerOne: {
+//     name: undefined,
+//     fieldCards: [],
+//     pile: [],
+//     sidePile: []
+//   },
+//   playerTwo: {
+//     name: undefined,
+//     fieldCards: [],
+//     pile: [],
+//     sidePile: []
+//   },
+//   viewers: [],
+//   gameState: "waiting"
+// }
+
+let games = [];
 
 io.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the main namespace.`);
@@ -53,7 +87,7 @@ io.on("connection", async (socket) => {
     socket.join("lobby");
     console.log(`${socket.id} has joined the lobby`);
     socket.emit("chat_messages", await ChatMessage.find({}));
-    socket.emit("rooms", rooms);
+    socket.emit("games", games);
   });
 
   socket.on("leave_lobby", () => {
@@ -77,7 +111,7 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("host_game", (hostName, speedType) => {
-    rooms.push({
+    games.push({
       hostName,
       speedType,
       playerOne: hostName,
@@ -85,55 +119,55 @@ io.on("connection", async (socket) => {
       viewers: [],
     });
 
-    io.to("lobby").emit("rooms", rooms);
+    io.to("lobby").emit("games", games);
   });
 
   socket.on("join_game", (hostName, userType, username) => {
     socket.join(hostName);
 
-    const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+    const gameIndex = games.findIndex((game) => game.hostName === hostName);
 
     if (userType === UserTypes.PLAYER_TWO) {
-      rooms[roomIndex] = { ...rooms[roomIndex], playerTwo: username };
+      games[gameIndex] = { ...games[gameIndex], playerTwo: username };
     } else if (userType === UserTypes.VIEWER) {
-      const viewerFound = rooms[roomIndex].viewers.find(
+      const viewerFound = games[gameIndex].viewers.find(
         (viewer) => viewer === username
       );
       if (!viewerFound) {
-        rooms[roomIndex] = {
-          ...rooms[roomIndex],
-          viewers: [...rooms[roomIndex].viewers, username],
+        games[gameIndex] = {
+          ...games[gameIndex],
+          viewers: [...games[gameIndex].viewers, username],
         };
       }
     }
 
-    io.to("lobby").emit("rooms", rooms);
-    io.to(hostName).emit("game_status", rooms[roomIndex]);
+    io.to("lobby").emit("games", games);
+    io.to(hostName).emit("game_status", games[gameIndex]);
   });
 
   socket.on("quit_game", (hostName, userType, username) => {
     socket.leave(hostName);
-    const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+    const gameIndex = games.findIndex((room) => room.hostName === hostName);
 
-    if (roomIndex !== -1) {
+    if (gameIndex !== -1) {
       if (userType === UserTypes.PLAYER_ONE) {
-        rooms[roomIndex].playerOne = undefined;
+        games[gameIndex].playerOne = undefined;
       } else if (userType === UserTypes.PLAYER_TWO) {
-        rooms[roomIndex].playerTwo = undefined;
+        games[gameIndex].playerTwo = undefined;
       } else {
-        let viewers = rooms[roomIndex].viewers;
+        let viewers = games[gameIndex].viewers;
         viewers = viewers.filter((viewer) => viewer !== username);
-        rooms[roomIndex].viewers = viewers;
+        games[gameIndex].viewers = viewers;
       }
 
-      if (!rooms[roomIndex].playerOne) {
-        rooms = rooms.filter(
-          (room) => room.hostName !== rooms[roomIndex].hostName
+      if (!games[gameIndex].playerOne) {
+        games = games.filter(
+          (game) => game.hostName !== games[gameIndex].hostName
         );
       }
 
-      io.to(hostName).emit("left_game", rooms[roomIndex], userType, username);
-      io.to("lobby").emit("rooms", rooms);
+      io.to(hostName).emit("left_game", games[gameIndex], userType, username);
+      io.to("lobby").emit("games", games);
     }
   });
 
@@ -157,38 +191,38 @@ io.on("connection", async (socket) => {
 //   socket.on("join_game", (hostName) => {
 //     socket.join(hostName);
 
-//     const room = rooms.find((room) => room.hostName === hostName);
+//     const room = games.find((room) => room.hostName === hostName);
 
-//     console.log(rooms);
+//     console.log(games);
 
 //     regularSpeedNameSpace.to(hostName).emit("game_status", room);
 //   });
 
 //   socket.on("quit", (hostName, userType, username) => {
 //     socket.leave(hostName);
-//     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+//     const gameIndex = games.findIndex((room) => room.hostName === hostName);
 
 //     if (userType === UserTypes.PLAYER_ONE) {
-//       rooms[roomIndex].playerOne = undefined;
+//       games[gameIndex].playerOne = undefined;
 //     } else if (userType === UserTypes.PLAYER_TWO) {
-//       rooms[roomIndex].playerTwo = undefined;
+//       games[gameIndex].playerTwo = undefined;
 //     } else {
-//       let viewers = rooms[roomIndex].viewers;
+//       let viewers = games[gameIndex].viewers;
 //       viewers = viewers.filter((viewer) => viewer !== username);
-//       rooms[roomIndex].viewers = viewers;
+//       games[gameIndex].viewers = viewers;
 //     }
 
-//     if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
-//       rooms = rooms.filter(
-//         (room) => room.hostName !== rooms[roomIndex].hostName
+//     if (!games[gameIndex].playerOne && !games[gameIndex].playerTwo) {
+//       games = games.filter(
+//         (room) => room.hostName !== games[gameIndex].hostName
 //       );
 //     } else {
 //       regularSpeedNameSpace
 //         .to(hostName)
-//         .emit("quit", rooms[roomIndex], userType, username);
+//         .emit("quit", games[gameIndex], userType, username);
 //     }
 
-//     io.emit("rooms", rooms);
+//     io.emit("games", games);
 //   });
 // });
 
@@ -207,37 +241,37 @@ io.on("connection", async (socket) => {
 //   socket.on("join_game", (hostName) => {
 //     socket.join(hostName);
 
-//     const room = rooms.find((room) => room.hostName === hostName);
+//     const room = games.find((room) => room.hostName === hostName);
 
-//     console.log(rooms);
+//     console.log(games);
 
 //     californiaSpeedNameSpace.to(hostName).emit("game_status", room);
 //   });
 
 //   socket.on("quit", (hostName, userType, username) => {
-//     const roomIndex = rooms.findIndex((room) => room.hostName === hostName);
+//     const gameIndex = games.findIndex((room) => room.hostName === hostName);
 
 //     if (userType === UserTypes.PLAYER_ONE) {
-//       rooms[roomIndex].playerOne = undefined;
+//       games[gameIndex].playerOne = undefined;
 //     } else if (userType === UserTypes.PLAYER_TWO) {
-//       rooms[roomIndex].playerTwo = undefined;
+//       games[gameIndex].playerTwo = undefined;
 //     } else {
-//       let viewers = rooms[roomIndex].viewers;
+//       let viewers = games[gameIndex].viewers;
 //       viewers = viewers.filter((viewer) => viewer !== username);
-//       rooms[roomIndex].viewers = viewers;
+//       games[gameIndex].viewers = viewers;
 //     }
 
-//     if (!rooms[roomIndex].playerOne && !rooms[roomIndex].playerTwo) {
-//       rooms = rooms.filter(
-//         (room) => room.hostName !== rooms[roomIndex].hostName
+//     if (!games[gameIndex].playerOne && !games[gameIndex].playerTwo) {
+//       games = games.filter(
+//         (room) => room.hostName !== games[gameIndex].hostName
 //       );
 //     } else {
 //       californiaSpeedNameSpace
 //         .to(hostName)
-//         .emit("quit", rooms[roomIndex], userType, username);
+//         .emit("quit", games[gameIndex], userType, username);
 //     }
 
-//     io.emit("rooms", rooms);
+//     io.emit("games", games);
 
 //     socket.leave(hostName);
 //   });

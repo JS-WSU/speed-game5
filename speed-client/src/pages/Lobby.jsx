@@ -2,9 +2,8 @@ import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
-import { io } from "socket.io-client";
 import { SpeedTypes } from "../utils/Constants.mjs";
-import Rooms from "../components/Rooms";
+import GameRooms from "../components/GameRooms";
 import { UserTypes } from "../utils/Constants.mjs";
 
 export default function Lobby({ socket }) {
@@ -92,7 +91,7 @@ export default function Lobby({ socket }) {
                 Host Game
               </button>
             </div>
-            <Rooms socket={socket} />
+            <GameRooms socket={socket} />
           </div>
           <div className="col-12 col-md-3">
             <Chat socket={socket} />

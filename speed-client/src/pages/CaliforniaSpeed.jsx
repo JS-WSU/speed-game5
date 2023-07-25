@@ -1,15 +1,19 @@
 import { Navigate } from "react-router-dom";
-import { io } from "socket.io-client";
-import Game from "../components/Game";
+import GameField from "../components/GameField";
 import { SpeedTypes } from "../utils/Constants.mjs";
+import { useState } from "react";
 
-function CaliforniaSpeed({socket}) {
+function CaliforniaSpeed({ socket }) {
+  const [game, setGame] = useState({});
+
   if (localStorage.getItem("gameInSession")) {
     return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
       SpeedTypes.REGULAR ? (
       <Navigate to="/regular-speed" replace />
     ) : (
-      <Game socket={socket}>This is California Speed</Game>
+      <GameField socket={socket} game={game} setGame={setGame}>
+        This is California Speed
+      </GameField>
     );
   }
 }
