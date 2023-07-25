@@ -55,7 +55,7 @@ export default function Game({ socket, children }) {
   }, [socket]);
 
   return (
-    <main className="bg-success container-fluid">
+    <main className="bg-success container-fluid p-3">
       <div className="d-flex">
         {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.VIEWER && (
