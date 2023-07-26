@@ -2,6 +2,12 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameStates, UserTypes } from "../utils/Constants.mjs";
 import AlertContext from "../context/AlertContext";
+import ViewerWaiting from "./Screens/Waiting/ViewerWaiting";
+import PlayerOneWaiting from "./Screens/Waiting/PlayerOneWaiting";
+import PlayerTwoWaiting from "./Screens/Waiting/PlayerTwoWaiting";
+import ViewerEnd from "./Screens/End/ViewerEnd";
+import PlayerOneEnd from "./Screens/End/PlayerOneEnd";
+import PlayerTwoEnd from "./Screens/End/PlayerTwoEnd";
 
 export default function Game({ socket, children, game, setGame }) {
   const navigate = useNavigate();
@@ -38,6 +44,10 @@ export default function Game({ socket, children, game, setGame }) {
       setGame(game);
     };
 
+    const GameStarted = () => {
+      alertContext.success("Game has started!");
+    };
+
     const LeftGame = (game, userType, username) => {
       if (userType === UserTypes.PLAYER_TWO) {
         alertContext.error(`Player ${username} has left!`);
@@ -50,6 +60,7 @@ export default function Game({ socket, children, game, setGame }) {
 
     socket.on("game_status", GetGameStatus);
     socket.on("left_game", LeftGame);
+    socket.on("game_started", GameStarted);
 
     return () => {
       socket.off("game_status", GetGameStatus);
@@ -60,6 +71,30 @@ export default function Game({ socket, children, game, setGame }) {
 
   return (
     <main className="bg-success container-fluid p-3">
+      {game.gameState === GameStates.WAITING ? (
+        JSON.parse(localStorage.getItem("gameInSession")).userType ===
+        UserTypes.VIEWER ? (
+          <ViewerWaiting />
+        ) : JSON.parse(localStorage.getItem("gameInSession")).userType ===
+          UserTypes.PLAYER_ONE ? (
+          <PlayerOneWaiting />
+        ) : (
+          <PlayerTwoWaiting />
+        )
+      ) : game.gameState === GameStates.END ? (
+        JSON.parse(localStorage.getItem("gameInSession")).userType ===
+        UserTypes.VIEWER ? (
+          <ViewerEnd />
+        ) : JSON.parse(localStorage.getItem("gameInSession")).userType ===
+          UserTypes.PLAYER_ONE ? (
+          <PlayerOneEnd />
+        ) : (
+          <PlayerTwoEnd />
+        )
+      ) : (
+        <>{children}</>
+      )}
+
       <div className="d-flex">
         {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.VIEWER && (

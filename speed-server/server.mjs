@@ -216,6 +216,7 @@ io.on("connection", async (socket) => {
     games[gameIndex].gameState = GameStates.RUNNING;
 
     io.to(hostName).emit("game_status", games[gameIndex]);
+    io.to(hostName).emit("game_started");
   });
 
   socket.on("disconnect", () => {
