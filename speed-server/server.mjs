@@ -16,6 +16,8 @@ import {
   UserTypes,
 } from "../speed-client/src/utils/Constants.mjs";
 import { Deck } from "./utils/Constants.mjs";
+import FilteredGames from "./utils/FilteredGames.mjs";
+import FilterForPlayer from "./utils/FilterForPlayer.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -135,12 +137,16 @@ io.on("connection", async (socket) => {
           fieldCards: [Deck[1], Deck[2]],
           pile: [Deck[31], Deck[32]],
           sidePile: [],
+          deck: [],
+          ready: false,
         },
         playerTwo: {
-          name: undefined,
+          name: null,
           fieldCards: [Deck[1], Deck[2]],
           pile: [Deck[11], Deck[12]],
           sidePile: [],
+          deck: [],
+          ready: false,
         },
         viewers: [],
         gameState: GameStates.WAITING,
@@ -154,28 +160,20 @@ io.on("connection", async (socket) => {
           name: hostName,
           pile: [],
           field: [],
+          ready: false,
         },
         playerTwo: {
-          name: undefined,
+          name: null,
           pile: [],
           field: [],
+          ready: false,
         },
         viewers: [],
         gameState: GameStates.WAITING,
       });
     }
 
-    let filteredGames = [];
-
-    games.forEach((game) => {
-      filteredGames.push({
-        hostName: game.hostName,
-        speedType: game.speedType,
-        playerTwo: game.playerTwo.name,
-      });
-    });
-
-    io.to("lobby").emit("gameRooms", filteredGames);
+    io.to("lobby").emit("gameRooms", FilteredGames(games));
   });
 
   socket.on("join_game", (hostName, userType, username) => {
@@ -189,17 +187,11 @@ io.on("connection", async (socket) => {
         playerTwo: { ...games[gameIndex].playerTwo, name: username },
       };
 
-      let copyPlayerOne = {
-        ...games[gameIndex],
-        playerTwo: "hello from player two",
-      };
-
-      let copyPlayerTwo = {
-        ...games[gameIndex],
-        playerOne: "hello from player one",
-      };
-      socket.emit("game_status", copyPlayerOne);
-      io.to(games[gameIndex].hostName).emit("game_status", copyPlayerTwo);
+      socket.emit("game_status", FilterForPlayer(games[gameIndex], userType));
+      io.to(games[gameIndex].hostName).emit(
+        "game_status",
+        FilterForPlayer(games[gameIndex], UserTypes.PLAYER_ONE)
+      );
     } else if (userType === UserTypes.VIEWER) {
       const viewerFound = games[gameIndex].viewers.find(
         (viewer) => viewer === username
@@ -211,39 +203,20 @@ io.on("connection", async (socket) => {
         };
       }
 
-      let copyPlayerOne = {
-        ...games[gameIndex],
-        playerTwo: "hello from player two",
-      };
-
-      let copyPlayerTwo = {
-        ...games[gameIndex],
-        playerOne: "hello from player one",
-      };
-
       socket.emit("game_status", games[gameIndex]);
-      io.to(games[gameIndex].hostName).emit("game_status", copyPlayerOne);
-      io.to(games[gameIndex].playerTwo.name).emit("game_status", copyPlayerTwo);
+      io.to(games[gameIndex].hostName).emit(
+        "game_status",
+        FilterForPlayer(games[gameIndex], UserTypes.PLAYER_ONE)
+      );
+      io.to(games[gameIndex].playerTwo.name).emit(
+        "game_status",
+        FilterForPlayer(games[gameIndex], UserTypes.PLAYER_TWO)
+      );
     } else {
-      let copy = {
-        ...games[gameIndex],
-        playerTwo: "test",
-      };
-
-      socket.emit("game_status", copy);
+      socket.emit("game_status", FilterForPlayer(games[gameIndex], userType));
     }
 
-    let filteredGames = [];
-
-    games.forEach((game) => {
-      filteredGames.push({
-        hostName: game.hostName,
-        speedType: game.speedType,
-        playerTwo: game.playerTwo.name,
-      });
-    });
-
-    io.to("lobby").emit("gameRooms", filteredGames);
+    io.to("lobby").emit("gameRooms", FilteredGames(games));
   });
 
   socket.on("quit_game", (hostName, userType, username) => {
