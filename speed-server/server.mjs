@@ -122,14 +122,14 @@ io.on("connection", async (socket) => {
         speedType,
         playerOne: {
           name: hostName,
-          fieldCards: [],
-          pile: [],
+          fieldCards: [Deck[1], Deck[2]],
+          pile: [Deck[31], Deck[32]],
           sidePile: [],
         },
         playerTwo: {
           name: undefined,
-          fieldCards: [],
-          pile: [],
+          fieldCards: [Deck[1], Deck[2]],
+          pile: [Deck[11], Deck[12]],
           sidePile: [],
         },
         viewers: [],
