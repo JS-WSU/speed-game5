@@ -158,7 +158,7 @@ io.on("connection", async (socket) => {
         speedType,
         playerOne: {
           name: hostName,
-          pile: [],
+          deck: [],
           field: [],
           ready: false,
         },
@@ -266,8 +266,10 @@ io.on("connection", async (socket) => {
 
     games[gameIndex].gameState = GameStates.RUNNING;
 
-    io.to(hostName).emit("game_status", games[gameIndex]);
-    io.to(hostName).emit("game_started");
+    
+
+    io.to(games[gameIndex].hostName).emit("game_status", FilterForPlayer(games[gameIndex], UserTypes.PLAYER_ONE));
+    io.to(games[gameIndex].playerTwo.name).emit("game_status", FilterForPlayer(games[gameIndex], UserTypes.PLAYER_TWO));
   });
 
   socket.on("disconnect", () => {

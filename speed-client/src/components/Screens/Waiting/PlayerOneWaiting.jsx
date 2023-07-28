@@ -37,7 +37,7 @@ function PlayerOneWaiting({ game, quitGame, socket }) {
               <button
                 onClick={StartGame}
                 className="btn btn-success"
-                disabled={!game.playerOne.ready || !game.playerTwo.ready}
+                // disabled={!game.playerOne.ready || !game.playerTwo.ready}
               >
                 Start Game
               </button>
