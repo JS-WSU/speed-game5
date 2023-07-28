@@ -6,7 +6,6 @@ import express from "express";
 import cors from "cors";
 import records from "./routes/records.mjs";
 import users from "./routes/users.mjs";
-import cards from "./routes/cards.mjs";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./db/models/UserSchema.mjs";
@@ -37,7 +36,7 @@ app.use(
 
 app.use("/records", records);
 app.use("/users", users);
-app.use("/cards", cards);
+
 
 const server = http.createServer(app);
 
