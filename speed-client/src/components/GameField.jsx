@@ -22,13 +22,6 @@ export default function Game({ socket, children, game, setGame }) {
   };
 
   const QuitGame = () => {
-    socket.emit(
-      "quit_game",
-      JSON.parse(localStorage.getItem("gameInSession")).hostName,
-      JSON.parse(localStorage.getItem("gameInSession")).userType,
-      localStorage.getItem("userSession")
-    );
-    localStorage.removeItem("gameInSession");
     navigate("/lobby");
   };
 
@@ -59,12 +52,22 @@ export default function Game({ socket, children, game, setGame }) {
     };
 
     socket.on("game_status", GetGameStatus);
+
     socket.on("left_game", LeftGame);
     socket.on("game_started", GameStarted);
 
     return () => {
       socket.off("game_status", GetGameStatus);
       socket.off("left_game", LeftGame);
+      socket.off("game_status", GetGameStatus);
+
+      socket.emit(
+        "quit_game",
+        JSON.parse(localStorage.getItem("gameInSession")).hostName,
+        JSON.parse(localStorage.getItem("gameInSession")).userType,
+        localStorage.getItem("userSession")
+      );
+      localStorage.removeItem("gameInSession");
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
@@ -135,7 +138,8 @@ export default function Game({ socket, children, game, setGame }) {
               <div className="m-auto bg-light p-3">
                 <div>
                   {" "}
-                  Waiting for host {game.playerOne.name} to start game....
+                  Waiting for host {game.playerOne && game.playerOne.name} to
+                  start game....
                 </div>
               </div>
             )}

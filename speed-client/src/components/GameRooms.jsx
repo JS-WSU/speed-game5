@@ -3,11 +3,10 @@ import GameRoom from "./GameRoom";
 
 function GameRooms({ socket }) {
   const [gameRooms, setGameRooms] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const GetGameRooms = (gameRooms) => {
-      setLoading(true);
       setGameRooms(gameRooms);
       setTimeout(() => {
         setLoading(false);
@@ -33,7 +32,6 @@ function GameRooms({ socket }) {
             key={index}
             hostName={gameRoom.hostName}
             speedType={gameRoom.speedType}
-            users={gameRoom.users}
             playerTwo={gameRoom.playerTwo}
             socket={socket}
           />

@@ -31,7 +31,6 @@ const socket = io.connect("http://localhost:4000/", {
 });
 function App() {
   // eslint-disable-next-line no-unused-vars
-  const [isAuth, setIsAuth] = useState(false);
   const alertContext = useContext(AlertContext);
 
   const navigate = useNavigate();
@@ -42,7 +41,6 @@ function App() {
         data: { username },
       } = await axios.get(`http://localhost:4000/users/authenticated`);
       localStorage.setItem("userSession", username);
-      setIsAuth(true);
       socket.connect();
     } catch (error) {
       // if session expired, remove from local storage
@@ -57,20 +55,21 @@ function App() {
         );
       }
 
-      // make user quit if session expired and if ingame
-      if (localStorage.getItem("gameInSession")) {
-        socket.emit(
-          "quit_game",
-          JSON.parse(localStorage.getItem("gameInSession")).hostName,
-          JSON.parse(localStorage.getItem("gameInSession")).userType,
-          localStorage.getItem("userSession")
-        );
-        localStorage.removeItem("gameInSession");
-      }
-
       localStorage.removeItem("userSession");
-      setIsAuth(false);
       socket.disconnect();
+      // setIsAuth(false);
+      // make user quit if session expired and if ingame
+      // if (localStorage.getItem("gameInSession")) {
+      //   socket.emit(
+      //     "quit_game",
+      //     JSON.parse(localStorage.getItem("gameInSession")).hostName,
+      //     JSON.parse(localStorage.getItem("gameInSession")).userType,
+      //     localStorage.getItem("userSession")
+      //   );
+      //   localStorage.removeItem("gameInSession");
+      // }
+
+      
     }
   };
 
@@ -85,17 +84,17 @@ function App() {
 
   return (
     <>
-      <Navbar setIsAuth={setIsAuth}></Navbar>
+      <Navbar ></Navbar>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/hello-world" element={<HelloWorld />} />
-        <Route path="/register" element={<Register setIsAuth={setIsAuth} />} />
-        <Route path="/login" element={<Login setIsAuth={setIsAuth} />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/lobby" element={<Lobby socket={socket} />} />
           <Route
             path="/high-scores"
-            element={<HighScores setIsAuth={setIsAuth} />}
+            element={<HighScores />}
           />
           <Route element={<InGameProtectedRoute />}>
             <Route

@@ -32,7 +32,7 @@ function GameRoom({ hostName, speedType, playerTwo, socket }) {
           Host: <span className="ms-start">@{hostName}</span>
         </p>
         <div className="text-center mt-auto">
-          {!playerTwo.name ? (
+          {!playerTwo ? (
             <button
               onClick={JoinGame}
               className="btn btn-success w-50 border"
