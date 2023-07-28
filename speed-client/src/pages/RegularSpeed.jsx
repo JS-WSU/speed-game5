@@ -1,27 +1,65 @@
-import { Navigate } from "react-router-dom";
-import Game from "../components/GameField";
+import { Navigate, useNavigate } from "react-router-dom";
+import GameField from "../components/GameField";
 import Card from "../components/Card";
-import { SpeedTypes } from "../utils/Constants.mjs";
+import { GameStates, SpeedTypes, UserTypes } from "../utils/Constants.mjs";
 import { useEffect, useState } from "react";
+import ViewerRegularRunning from "../components/Screens/Running/ViewerRegularRunning";
+import PlayerOneRegularRunning from "../components/Screens/Running/PlayerOneRegularRunning";
+import PlayerTwoRegularRunning from "../components/Screens/Running/PlayerTwoRegularRunning";
 
 function RegularSpeed({ socket }) {
   const [game, setGame] = useState({});
 
-  useEffect(() => {
-    const Test = (message) => {
-      console.log(message);
-    };
-    socket.on("test", Test);
+  const navigate = useNavigate();
 
-    return () => Test;
-  }, [socket]);
+  const QuitGame = () => {
+    navigate("/lobby");
+  };
+
+  useEffect(() => {}, [socket]);
 
   if (localStorage.getItem("gameInSession")) {
     return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
       SpeedTypes.REGULAR ? (
-      <Game socket={socket} game={game} setGame={setGame}>
-        <div>This is Regular Speed Lets go!</div>
-      </Game>
+      <GameField
+        socket={socket}
+        game={game}
+        setGame={setGame}
+        quitGame={QuitGame}
+      >
+        {game.gameState === GameStates.RUNNING ? (
+          <>
+            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.VIEWER ? (
+              <ViewerRegularRunning
+                game={game}
+                socket={socket}
+                quitGame={QuitGame}
+              />
+            ) : JSON.parse(localStorage.getItem("gameInSession")).userType ===
+              UserTypes.PLAYER_ONE ? (
+              <PlayerOneRegularRunning
+                game={game}
+                socket={socket}
+                quitGame={QuitGame}
+              />
+            ) : (
+              <PlayerTwoRegularRunning
+                game={game}
+                socket={socket}
+                quitGame={QuitGame}
+              />
+            )}
+          </>
+        ) : (
+          <div className="m-auto d-flex flex-column align-items-center text-light">
+            <h1>Loading Game...</h1>
+            <div className="spinner-border">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        )}
+      </GameField>
     ) : (
       <Navigate to="/california-speed" replace />
     );
