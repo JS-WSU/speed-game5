@@ -1,5 +1,6 @@
 import { Navigate } from "react-router-dom";
 import Game from "../components/GameField";
+import Card from "../components/Card";
 import { SpeedTypes } from "../utils/Constants.mjs";
 import { useEffect, useState } from "react";
 

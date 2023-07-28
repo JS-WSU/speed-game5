@@ -1,8 +1,10 @@
 import React from 'react'
 
-function Card() {
+function Card({ name, src, value}) {
   return (
-    <div>Card</div>
+    <div  value={value}>
+      <img className="w-25" style={{ width: 100 }} src={src} alt={name} />
+    </div>
   )
 }
 

@@ -8,6 +8,7 @@ import PlayerTwoWaiting from "./Screens/Waiting/PlayerTwoWaiting";
 import ViewerEnd from "./Screens/End/ViewerEnd";
 import PlayerOneEnd from "./Screens/End/PlayerOneEnd";
 import PlayerTwoEnd from "./Screens/End/PlayerTwoEnd";
+import Card from "./Card"
 
 export default function Game({ socket, children, game, setGame }) {
   const navigate = useNavigate();
@@ -127,6 +128,7 @@ export default function Game({ socket, children, game, setGame }) {
                   <button onClick={StartGame} className="btn btn-success">
                     Start Game
                   </button>
+                  <Card name={game.playerOne.pile[0].name} src={game.playerOne.pile[0].src} value={game.playerOne.pile[0].value} />
                 </div>
               </div>
             )}
@@ -145,6 +147,14 @@ export default function Game({ socket, children, game, setGame }) {
         <div>{children}</div>
       ) : (
         <div>The Game is Over!</div>
+      )}
+
+      {JSON.parse(localStorage.getItem("gameInSession")).userType === UserTypes.PLAYER_ONE && (
+        <>
+          <Card name={game.playerOne.pile[0].name} src={game.playerOne.pile[0].src} value={game.playerOne.pile[0].value} />
+        </>
+
+        
       )}
 
       {JSON.parse(localStorage.getItem("gameInSession")).userType !==
