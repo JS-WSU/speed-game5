@@ -226,22 +226,39 @@ io.on("connection", async (socket) => {
 
     if (gameIndex !== -1) {
       if (userType === UserTypes.PLAYER_ONE) {
-        games[gameIndex].playerOne.name = undefined;
+        games[gameIndex].playerOne.name = null;
       } else if (userType === UserTypes.PLAYER_TWO) {
-        games[gameIndex].playerTwo.name = undefined;
+        games[gameIndex].playerTwo.name = null;
       } else {
         let viewers = games[gameIndex].viewers;
         viewers = viewers.filter((viewer) => viewer !== username);
         games[gameIndex].viewers = viewers;
       }
 
-      if (!games[gameIndex].playerOne.name) {
+      io.to(games[gameIndex].playerOne?.name).emit(
+        "left_game",
+        FilterForPlayer(games[gameIndex], UserTypes.PLAYER_ONE),
+        userType,
+        username
+      );
+      io.to(games[gameIndex].playerTwo?.name).emit(
+        "left_game",
+        FilterForPlayer(games[gameIndex], UserTypes.PLAYER_TWO),
+        userType,
+        username
+      );
+      games[gameIndex].viewers.map((viewer) => {
+        io.to(viewer).emit("left_game", games[gameIndex], userType, username);
+      });
+      if (
+        !games[gameIndex].playerOne.name ||
+        !games[gameIndex].playerTwo.name
+      ) {
         games = games.filter(
           (game) => game.hostName !== games[gameIndex].hostName
         );
       }
-      io.to(hostName).emit("left_game", games[gameIndex], userType, username);
-      io.to("lobby").emit("gameRooms", games);
+      io.to("lobby").emit("gameRooms", FilteredGames(games));
     }
   });
 
