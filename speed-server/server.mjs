@@ -91,7 +91,17 @@ io.on("connection", async (socket) => {
     socket.join("lobby");
     console.log(`${socket.id} has joined the lobby`);
     socket.emit("chat_messages", await ChatMessage.find({}));
-    socket.emit("gameRooms", games);
+
+    let filteredGames = [];
+
+    games.forEach((game) => {
+      filteredGames.push({
+        hostName: game.hostName,
+        speedType: game.speedType,
+        playerTwo: game.playerTwo.name,
+      });
+    });
+    socket.emit("gameRooms", filteredGames);
   });
 
   socket.on("leave_lobby", () => {
@@ -155,11 +165,21 @@ io.on("connection", async (socket) => {
       });
     }
 
-    io.to("lobby").emit("gameRooms", games);
+    let filteredGames = [];
+
+    games.forEach((game) => {
+      filteredGames.push({
+        hostName: game.hostName,
+        speedType: game.speedType,
+        playerTwo: game.playerTwo.name,
+      });
+    });
+
+    io.to("lobby").emit("gameRooms", filteredGames);
   });
 
   socket.on("join_game", (hostName, userType, username) => {
-    socket.join(hostName);
+    socket.join(username);
 
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
 
@@ -168,6 +188,18 @@ io.on("connection", async (socket) => {
         ...games[gameIndex],
         playerTwo: { ...games[gameIndex].playerTwo, name: username },
       };
+
+      let copyPlayerOne = {
+        ...games[gameIndex],
+        playerTwo: "hello from player two",
+      };
+
+      let copyPlayerTwo = {
+        ...games[gameIndex],
+        playerOne: "hello from player one",
+      };
+      socket.emit("game_status", copyPlayerOne);
+      io.to(games[gameIndex].hostName).emit("game_status", copyPlayerTwo);
     } else if (userType === UserTypes.VIEWER) {
       const viewerFound = games[gameIndex].viewers.find(
         (viewer) => viewer === username
@@ -178,14 +210,44 @@ io.on("connection", async (socket) => {
           viewers: [...games[gameIndex].viewers, username],
         };
       }
+
+      let copyPlayerOne = {
+        ...games[gameIndex],
+        playerTwo: "hello from player two",
+      };
+
+      let copyPlayerTwo = {
+        ...games[gameIndex],
+        playerOne: "hello from player one",
+      };
+
+      socket.emit("game_status", games[gameIndex]);
+      io.to(games[gameIndex].hostName).emit("game_status", copyPlayerOne);
+      io.to(games[gameIndex].playerTwo.name).emit("game_status", copyPlayerTwo);
+    } else {
+      let copy = {
+        ...games[gameIndex],
+        playerTwo: "test",
+      };
+
+      socket.emit("game_status", copy);
     }
 
-    io.to("lobby").emit("gameRooms", games);
-    io.to(hostName).emit("game_status", games[gameIndex]);
+    let filteredGames = [];
+
+    games.forEach((game) => {
+      filteredGames.push({
+        hostName: game.hostName,
+        speedType: game.speedType,
+        playerTwo: game.playerTwo.name,
+      });
+    });
+
+    io.to("lobby").emit("gameRooms", filteredGames);
   });
 
   socket.on("quit_game", (hostName, userType, username) => {
-    socket.leave(hostName);
+    socket.leave(username);
     const gameIndex = games.findIndex((room) => room.hostName === hostName);
 
     if (gameIndex !== -1) {

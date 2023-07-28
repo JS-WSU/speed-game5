@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import Alert from "../components/Alert.jsx";
 import AlertContext from "../context/AlertContext";
@@ -13,10 +13,11 @@ export default function Navbar({
 }) {
   const alertContext = useContext(AlertContext);
 
+  const navigate = useNavigate();
   const Logout = async () => {
     try {
       await axios.delete("http://localhost:4000/users/logout");
-      setIsAuth(false);
+      navigate("/login");
       localStorage.removeItem("userSession");
       localStorage.removeItem("gameInSession");
       alertContext.success("You have logged out successfully!");
