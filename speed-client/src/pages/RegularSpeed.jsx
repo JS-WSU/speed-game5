@@ -1,11 +1,7 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import GameField from "../components/GameField";
-import Card from "../components/Card";
 import { GameStates, SpeedTypes, UserTypes } from "../utils/Constants.mjs";
 import { useEffect, useState } from "react";
-import ViewerRegularRunning from "../components/Screens/Running/ViewerRegularRunning";
-import PlayerOneRegularRunning from "../components/Screens/Running/PlayerOneRegularRunning";
-import PlayerTwoRegularRunning from "../components/Screens/Running/PlayerTwoRegularRunning";
 
 function RegularSpeed({ socket }) {
   const [game, setGame] = useState({});

@@ -141,9 +141,9 @@ io.on("connection", async (socket) => {
           ready: false,
         },
         playerTwo: {
-          name: null,
-          fieldCards: [Deck[1], Deck[2]],
-          pile: [Deck[11], Deck[12]],
+          name: undefined,
+          fieldCards: [],
+          pile: [],
           sidePile: [],
           deck: [],
           ready: false,
