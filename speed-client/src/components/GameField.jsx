@@ -8,7 +8,6 @@ import PlayerTwoWaiting from "./Screens/Waiting/PlayerTwoWaiting";
 import ViewerEnd from "./Screens/End/ViewerEnd";
 import PlayerOneEnd from "./Screens/End/PlayerOneEnd";
 import PlayerTwoEnd from "./Screens/End/PlayerTwoEnd";
-import Card from "./Card"
 
 export default function GameField({
   socket,
@@ -99,67 +98,6 @@ export default function GameField({
         )
       ) : (
         <>{children}</>
-      )}
-
-      <div className="d-flex">
-        {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-          UserTypes.VIEWER && (
-          <div>
-            <button onClick={QuitGame} className="btn btn-danger ms-auto">
-              Stop Watching Game
-            </button>
-          </div>
-        )}
-        {game.viewers ? (
-          <div className="bg-secondary ms-auto p-3">
-            Viewers:
-            {game.viewers.map((viewer) => (
-              <div>{viewer}</div>
-            ))}
-          </div>
-        ) : null}
-      </div>
-
-      {game.gameState === GameStates.WAITING ? (
-        !game.playerTwo.name ? (
-          <div className="m-auto bg-light p-3">Waiting for opponent...</div>
-        ) : (
-          <>
-            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-              UserTypes.PLAYER_ONE && (
-              <div className="m-auto bg-light p-3">
-                <div> Opponent {game.playerTwo.name} player has joined!</div>
-                <div className="text-center mt-2">
-                  <button onClick={StartGame} className="btn btn-success">
-                    Start Game
-                  </button>
-                </div>
-              </div>
-            )}
-            {JSON.parse(localStorage.getItem("gameInSession")).userType !==
-              UserTypes.PLAYER_ONE && (
-              <div className="m-auto bg-light p-3">
-                <div>
-                  {" "}
-                  Waiting for host {game.playerOne.name} to start game....
-                </div>
-              </div>
-            )}
-          </>
-        )
-      ) : game.gameState === GameStates.RUNNING ? (
-        <div>{children}</div>
-      ) : (
-        <div>The Game is Over!</div>
-      )}
-
-      {JSON.parse(localStorage.getItem("gameInSession")).userType !==
-        UserTypes.VIEWER && (
-        <div>
-          <button onClick={QuitGame} className="btn btn-danger">
-            Quit Game
-          </button>
-        </div>
       )}
     </main>
   );
