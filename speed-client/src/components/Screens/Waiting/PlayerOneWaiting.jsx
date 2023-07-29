@@ -34,7 +34,7 @@ function PlayerOneWaiting({ game, quitGame, socket, readyUp }) {
                 {game.playerTwo.ready ? "Ready" : "Not Ready"}
               </div>
             </div>
-            <div className="bg-secondary ms-auto p-3">
+            <div className="bg-secondary align-self-start p-3 ms-auto">
               Viewers:
               {game.viewers.map((viewer) => (
                 <div>{viewer}</div>

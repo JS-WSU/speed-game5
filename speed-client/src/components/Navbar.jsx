@@ -27,7 +27,7 @@ export default function Navbar({
   };
 
   return (
-    <div className="sticky-top">
+    <div className="">
       <nav
         className={`navbar bg-primary navbar-expand-lg px-5 text-light ${
           localStorage.getItem("gameInSession") ? "opacity-50" : ""

@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
-function Card({ name, src, value}) {
+function Card({ name, src, value }) {
   return (
-    <div  value={value}>
-      <img className='img-fluid' src={src} alt={name} />
+    <div className="d-flex  me-2" style={{ maxWidth: "125px" }} value={value}>
+      <img className="w-100" src={src} alt={name} />
     </div>
-  )
+  );
 }
 
-export default Card
+export default Card;

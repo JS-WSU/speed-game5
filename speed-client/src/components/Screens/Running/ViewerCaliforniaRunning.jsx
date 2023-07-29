@@ -1,9 +1,9 @@
 import React from 'react'
 
-function ViewerRunning() {
+function ViewerCaliforniaRunning() {
   return (
-    <div>ViewerRunning</div>
+    <div>ViewerCaliforniaRunning</div>
   )
 }
 
-export default ViewerRunning
+export default ViewerCaliforniaRunning

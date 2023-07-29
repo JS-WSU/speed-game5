@@ -89,6 +89,10 @@ let games = [];
 io.on("connection", async (socket) => {
   console.log(`${socket.id} has joined the main namespace.`);
 
+  socket.on("test", (num) => {
+    console.log(num);
+  });
+
   socket.on("join_lobby", async () => {
     socket.join("lobby");
     console.log(`${socket.id} has joined the lobby`);
@@ -149,6 +153,7 @@ io.on("connection", async (socket) => {
           ready: false,
         },
         viewers: [],
+        winner: null,
         gameState: GameStates.WAITING,
       });
     } else {
@@ -164,11 +169,12 @@ io.on("connection", async (socket) => {
         },
         playerTwo: {
           name: null,
-          pile: [],
+          deck: [],
           field: [],
           ready: false,
         },
         viewers: [],
+        winner: null,
         gameState: GameStates.WAITING,
       });
     }

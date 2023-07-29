@@ -1,9 +1,9 @@
 import React from "react";
 import Card from "../../Card";
 
-function ViewerRunning({ game, socket, quitGame }) {
+function ViewerRegularRunning({ game, socket, quitGame }) {
   return (
-    <div className="d-flex flex-column flex-grow-1">
+    <div className="d-flex flex-column flex-grow-1 text-light">
       <div className="d-flex">
         <div>
           <button onClick={quitGame} className="btn btn-danger">
@@ -20,7 +20,7 @@ function ViewerRunning({ game, socket, quitGame }) {
             <Card name={card.name} src={card.src} value={card.value} />
           ))}
         </div>
-        <div className="bg-secondary ms-auto p-3">
+        <div className="bg-secondary align-self-start p-3 ms-auto">
           Viewers:
           {game.viewers.map((viewer) => (
             <div>{viewer}</div>
@@ -57,4 +57,4 @@ function ViewerRunning({ game, socket, quitGame }) {
   );
 }
 
-export default ViewerRunning;
+export default ViewerRegularRunning;

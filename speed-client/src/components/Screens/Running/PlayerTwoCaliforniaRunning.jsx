@@ -1,9 +1,9 @@
 import React from 'react'
 
-function PlayerTwoRunning() {
+function PlayerTwoCaliforniaRunning() {
   return (
-    <div>PlayerTwoRunning</div>
+    <div>PlayerTwoCaliforniaRunning</div>
   )
 }
 
-export default PlayerTwoRunning
+export default PlayerTwoCaliforniaRunning
