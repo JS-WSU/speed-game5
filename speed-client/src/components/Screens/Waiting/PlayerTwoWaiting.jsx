@@ -29,7 +29,7 @@ function PlayerTwoWaiting({ game, quitGame, socket, readyUp }) {
           ))}
         </div>
       </div>
-      <div className="m-auto bg-light p-3">
+      <div className="m-auto bg-light p-3 text-dark">
         <div>Waiting for host {game.playerOne.name} to start game...</div>
         <div className="d-flex justify-content-center mt-2 text-light">
           <button

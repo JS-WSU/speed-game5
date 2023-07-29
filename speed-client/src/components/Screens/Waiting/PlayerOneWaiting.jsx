@@ -41,7 +41,7 @@ function PlayerOneWaiting({ game, quitGame, socket, readyUp }) {
               ))}
             </div>
           </div>
-          <div className="m-auto bg-light p-3">
+          <div className="m-auto bg-light p-3 text-dark">
             <div> Opponent {game.playerTwo.name} player has joined!</div>
             <div className="d-flex justify-content-between mt-2 ">
               <button

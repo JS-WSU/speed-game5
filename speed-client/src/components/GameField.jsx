@@ -62,8 +62,6 @@ export default function GameField({
       socket.off("game_status", GetGameStatus);
       socket.off("left_game", LeftGame);
       socket.off("game_status", GetGameStatus);
-
-    
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);

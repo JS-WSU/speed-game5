@@ -153,7 +153,6 @@ io.on("connection", async (socket) => {
           ready: false,
         },
         viewers: [],
-        winner: null,
         gameState: GameStates.WAITING,
       });
     } else {
@@ -174,7 +173,6 @@ io.on("connection", async (socket) => {
           ready: false,
         },
         viewers: [],
-        winner: null,
         gameState: GameStates.WAITING,
       });
     }
@@ -212,10 +210,14 @@ io.on("connection", async (socket) => {
         };
       }
 
-      socket.emit(
-        "game_status",
-        FilterGameStatusForUser(games[gameIndex], UserTypes.VIEWER)
-      );
+      games[gameIndex].viewers.map((viewer) => {
+        io.to(viewer).emit(
+          "game_status",
+          FilterGameStatusForUser(games[gameIndex], userType),
+          userType,
+          username
+        );
+      });
       io.to(games[gameIndex].hostName).emit(
         "game_status",
         FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_ONE)

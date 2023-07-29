@@ -7,14 +7,16 @@ function PlayerTwoRegularRunning({ game, socket, quitGame }) {
     opponentHand.push(<Card src="/img/PNG-cards-1.3/cardback.png"></Card>);
   }
   return (
-    <div className="d-flex flex-column flex-grow-1 text-light">
+    <div className="row text-light g-3">
       <div className="d-flex">
-        <div className="d-flex flex-column">
-          <p>Opponent {game.playerOne.name} </p>
+        <div className="d-flex flex-column text-center me-auto">
+          <p>{game.playerOne.name} </p>
           <Card src="/img/PNG-cards-1.3/cardback.png" />
           <p>Deck Size: {game.playerOne.drawPile} </p>
         </div>
-        <div className="d-flex">{opponentHand.map((card) => card)}</div>
+        <div className="d-flex justify-content-evenly">
+          {opponentHand.map((card) => card)}
+        </div>
         <div className="bg-secondary align-self-start p-3 ms-auto">
           Viewers:
           {game.viewers.map((viewer) => (
@@ -22,7 +24,7 @@ function PlayerTwoRegularRunning({ game, socket, quitGame }) {
           ))}
         </div>
       </div>
-      <div className="d-flex">
+      <div className="d-flex justify-content-center">
         <Card src="/img/PNG-cards-1.3/cardback.png" />
         <Card
           name={game.playerOne.fieldCards[0].name}
@@ -36,18 +38,19 @@ function PlayerTwoRegularRunning({ game, socket, quitGame }) {
         />
         <Card src="/img/PNG-cards-1.3/cardback.png" />
       </div>
-      <div className="d-flex">
-        <div>
-          <button onClick={quitGame} className="btn btn-danger">
-            Quit Game
-          </button>
-        </div>
+      <div className="d-flex justify-content-center">
+        <button
+          onClick={quitGame}
+          className="btn btn-danger align-self-end me-auto"
+        >
+          Quit Game
+        </button>
         <div className="d-flex">
           {game.playerTwo.hand.map((card) => (
             <Card name={card.name} src={card.src} value={card.value} />
           ))}
         </div>
-        <div className="d-flex flex-column">
+        <div className="d-flex flex-column text-center ms-auto">
           <p>{game.playerTwo.name} </p>
           <Card src="/img/PNG-cards-1.3/cardback.png" />
           <p>Deck Size: {game.playerTwo.drawPile} </p>
