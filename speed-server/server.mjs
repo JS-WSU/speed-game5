@@ -23,7 +23,7 @@ import ShuffleCards from "./utils/ShuffleCards.mjs";
 const PORT = process.env.PORT || 5050;
 const app = express();
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
 app.use(
@@ -44,7 +44,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: true,
   },
 });
 
@@ -486,6 +486,6 @@ io.on("connection", async (socket) => {
 // });
 
 // start server
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Socket IO and express server listening on port: ${PORT}`);
 });

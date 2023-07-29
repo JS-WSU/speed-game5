@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
-import SHA256 from "../utils/SHA256.mjs";
+import {sha256} from "js-sha256";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 import { SpeedTypes } from "../utils/Constants.mjs";
@@ -77,12 +77,13 @@ export default function Login({ setIsAuth, socket }) {
     try {
       const { data } = await axios.post("http://localhost:4000/users/login", {
         email: form.email,
-        password: await SHA256(form.password + salt),
+        password: sha256(form.password + salt),
       });
       navigate("/lobby");
       localStorage.setItem("userSession", data.username);
       alertContext.success(`Login successful ${data.username}, welcome!`);
     } catch (error) {
+      console.log(error);
       const {
         response: { data },
       } = error;

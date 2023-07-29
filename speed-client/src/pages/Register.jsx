@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
-import SHA256 from "../utils/SHA256.mjs";
+import { sha256 } from "js-sha256";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
 import { SpeedTypes } from "../utils/Constants.mjs";
@@ -151,7 +151,7 @@ export default function Register({ setIsAuth, socket }) {
         {
           email: form.email,
           username: form.username,
-          password: await SHA256(form.password + salt),
+          password: sha256(form.password + salt),
           salt,
         }
       );
