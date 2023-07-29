@@ -7,57 +7,62 @@ const FilterForPlayer = (game, userType) => {
   if (game.speedType === SpeedTypes.REGULAR) {
     if (userType === UserTypes.PLAYER_ONE) {
       return {
+        //if user is Player One
         ...game,
         playerOne: {
           ...game.playerOne,
-          pile: game.playerOne.pile.length,
-          sidePile: game.playerOne.pile.length,
+          drawPile: game.playerOne.drawPile.length,
+          sidePile: game.playerOne.sidePile.length,
         },
         playerTwo: {
           ...game.playerTwo,
-          pile: game.playerTwo.pile.length,
+          drawPile: game.playerTwo.drawPile.length,
           sidePile: game.playerTwo.sidePile.length,
-          deck: game.playerTwo.deck.length,
+          hand: game.playerTwo.hand.length
         },
       };
     }
     return {
+      // if user is Player Two
       ...game,
       playerOne: {
         ...game.playerOne,
-        pile: game.playerOne.pile.length,
+        drawPile: game.playerOne.drawPile.length,
         sidePile: game.playerOne.sidePile.length,
-        deck: game.playerOne.deck.length,
+        hand: game.playerOne.hand.length,
       },
       playerTwo: {
         ...game.playerTwo,
-        pile: game.playerTwo.pile.length,
-        sidePile: game.playerTwo.pile.length,
+        drawPile: game.playerTwo.drawPile.length,
+        sidePile: game.playerTwo.sidePile.length,
       },
     };
   } else {
+    // California speed logic
     if (userType === UserTypes.PLAYER_ONE) {
+      // California player one
       return {
         ...game,
         playerOne: {
           ...game.playerOne,
-          pile: game.playerOne.pile.length,
+          drawPile: game.playerOne.drawPile.length,
         },
         playerTwo: {
           ...game.playerTwo,
-          pile: game.playerTwo.pile.length,
+          drawPile: game.playerTwo.drawPile.length,
         },
       };
     }
     return {
+      // California player two
       ...game,
       playerOne: {
         ...game.playerOne,
-        pile: game.playerOne.pile.length,
+        drawPile: game.playerOne.drawPile.length,
       },
       playerTwo: {
         ...game.playerTwo,
-        pile: game.playerTwo.pile.length,
+        drawPile: game.playerTwo.drawPile.length,
       },
     };
   }

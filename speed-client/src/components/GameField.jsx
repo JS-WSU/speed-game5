@@ -38,6 +38,7 @@ export default function GameField({
     }, 500);
 
     const GetGameStatus = (game) => {
+      console.log(game)
       setGame(game);
     };
 
