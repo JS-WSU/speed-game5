@@ -6,7 +6,6 @@ import express from "express";
 import cors from "cors";
 import records from "./routes/records.mjs";
 import users from "./routes/users.mjs";
-import cards from "./routes/cards.mjs";
 import http from "http";
 import { Server } from "socket.io";
 import User from "./db/models/UserSchema.mjs";
@@ -39,7 +38,7 @@ app.use(
 
 app.use("/records", records);
 app.use("/users", users);
-app.use("/cards", cards);
+
 
 const server = http.createServer(app);
 
@@ -136,17 +135,17 @@ io.on("connection", async (socket) => {
         playerOne: {
           name: hostName,
           fieldCards: [],
-          pile: [],
+          hand: [],
           sidePile: [],
-          deck: [],
+          drawPile: [],
           ready: false,
         },
         playerTwo: {
           name: null,
           fieldCards: [],
-          pile: [],
+          hand: [],
           sidePile: [],
-          deck: [],
+          drawPile: [],
           ready: false,
         },
         viewers: [],
@@ -159,7 +158,7 @@ io.on("connection", async (socket) => {
         speedType,
         playerOne: {
           name: hostName,
-          pile: [],
+          deck: [],
           field: [],
           ready: false,
         },
@@ -267,8 +266,43 @@ io.on("connection", async (socket) => {
 
     games[gameIndex].gameState = GameStates.RUNNING;
 
-    io.to(hostName).emit("game_status", games[gameIndex]);
-    io.to(hostName).emit("game_started");
+       
+    let shuffled = games[gameIndex].deck.map(value => ({ value, sort: Math.random() })).sort((a, b) => a.sort - b.sort).map(({ value }) => value);
+   games[gameIndex].deck = shuffled;
+
+  
+    for (let i = 0; i < 5; i++){
+      games[gameIndex].playerOne.sidePile.push(games[gameIndex].deck[i])
+      games[gameIndex].deck.splice(i,1);
+    }    
+    for (let i = 0; i < 5; i++){
+      games[gameIndex].playerTwo.sidePile.push(games[gameIndex].deck[i])
+      games[gameIndex].deck.splice(i,1);
+    }
+    games[gameIndex].playerOne.fieldCards.push(games[gameIndex].deck[0]);
+    games[gameIndex].playerTwo.fieldCards.push(games[gameIndex].deck[1]);
+    games[gameIndex].deck.splice(0,2);
+
+    for (let i = 0; i < 5; i++){
+      games[gameIndex].playerOne.hand.push(games[gameIndex].deck[i])
+      games[gameIndex].deck.splice(i,1);
+    }
+
+    for (let i = 0; i < 5; i++){
+      games[gameIndex].playerTwo.hand.push(games[gameIndex].deck[i])
+      games[gameIndex].deck.splice(i,1);
+    }
+
+    for (let i = 0; i < 15; i++){
+      games[gameIndex].playerOne.drawPile.push(games[gameIndex].deck[i])
+      games[gameIndex].deck.splice(i,1);
+    }
+    for (let i = 0; i < 15; i++){
+      games[gameIndex].playerTwo.drawPile.push(games[gameIndex].deck[i])
+    }    
+
+    io.to(games[gameIndex].hostName).emit("game_status", FilterForPlayer(games[gameIndex], UserTypes.PLAYER_ONE));
+    io.to(games[gameIndex].playerTwo.name).emit("game_status", FilterForPlayer(games[gameIndex], UserTypes.PLAYER_TWO));
   });
 
   socket.on("disconnect", () => {
