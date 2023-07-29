@@ -13,7 +13,7 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
       : game.playerOne.hand;
 
   for (let i = 0; i < opponentHandLength; i++) {
-    opponentHand.push(<Card src="/img/PNG-cards-1.3/cardback.png" />);
+    opponentHand.push(<Card key={i} src="/img/PNG-cards-1.3/cardback.png" />);
   }
   return (
     <div className="row text-light g-3 flex-grow-1">
@@ -39,8 +39,8 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
         </div>
         <div className="bg-secondary align-self-start p-3 ms-auto">
           Viewers:
-          {game.viewers.map((viewer) => (
-            <div>{viewer}</div>
+          {game.viewers.map((viewer, index) => (
+            <div key={index}>{viewer}</div>
           ))}
         </div>
       </div>
@@ -87,11 +87,21 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
         <div className="d-flex">
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE
-            ? game.playerOne.hand.map((card) => (
-                <Card name={card.name} src={card.src} value={card.value} />
+            ? game.playerOne.hand.map((card, index) => (
+                <Card
+                  key={index}
+                  name={card.name}
+                  src={card.src}
+                  value={card.value}
+                />
               ))
-            : game.playerTwo.hand.map((card) => (
-                <Card name={card.name} src={card.src} value={card.value} />
+            : game.playerTwo.hand.map((card, index) => (
+                <Card
+                  key={index}
+                  name={card.name}
+                  src={card.src}
+                  value={card.value}
+                />
               ))}
         </div>
         <div className="d-flex flex-column text-center ms-auto">
