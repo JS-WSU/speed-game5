@@ -21,7 +21,7 @@ const FilterGameStatusForUser = (game, userType) => {
           hand: game.playerTwo.hand.length,
         },
       };
-    } else if (userType === UserTypes.VIEWER) {
+    } else if (userType === UserTypes.PLAYER_TWO) {
       return {
         // if user is Player Two
         ...game,

@@ -1,7 +1,7 @@
 import { SpeedTypes } from "../../speed-client/src/utils/Constants.mjs";
 
 const ShuffleCards = (game) => {
-  if (game.gameState === SpeedTypes.REGULAR) {
+  if (game.speedType === SpeedTypes.REGULAR) {
     let shuffled = game.deck
       .map((value) => ({ value, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
