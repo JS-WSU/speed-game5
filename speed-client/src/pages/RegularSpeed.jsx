@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ViewerRegularRunning from "../components/Screens/Running/ViewerRegularRunning";
 import PlayerOneRegularRunning from "../components/Screens/Running/PlayerOneRegularRunning";
 import PlayerTwoRegularRunning from "../components/Screens/Running/PlayerTwoRegularRunning";
+import PlayerRegularRunning from "../components/Screens/Running/PlayerRegularRunning";
 
 function RegularSpeed({ socket }) {
   const [game, setGame] = useState({});
@@ -35,27 +36,36 @@ function RegularSpeed({ socket }) {
       >
         {game.gameState === GameStates.RUNNING ? (
           <>
-            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-            UserTypes.VIEWER ? (
-              <ViewerRegularRunning
-                game={game}
-                socket={socket}
-                quitGame={QuitGame}
-              />
-            ) : JSON.parse(localStorage.getItem("gameInSession")).userType ===
-              UserTypes.PLAYER_ONE ? (
-              <PlayerOneRegularRunning
-                game={game}
-                socket={socket}
-                quitGame={QuitGame}
-              />
-            ) : (
-              <PlayerTwoRegularRunning
-                game={game}
-                socket={socket}
-                quitGame={QuitGame}
-              />
-            )}
+            {
+              JSON.parse(localStorage.getItem("gameInSession")).userType ===
+              UserTypes.VIEWER ? (
+                <ViewerRegularRunning
+                  game={game}
+                  socket={socket}
+                  quitGame={QuitGame}
+                />
+              ) : (
+                <PlayerRegularRunning
+                  game={game}
+                  socket={socket}
+                  quitGame={QuitGame}
+                />
+              )
+              // JSON.parse(localStorage.getItem("gameInSession")).userType ===
+              //   UserTypes.PLAYER_ONE ? (
+              //   <PlayerOneRegularRunning
+              //     game={game}
+              //     socket={socket}
+              //     quitGame={QuitGame}
+              //   />
+              // ) : (
+              //   <PlayerTwoRegularRunning
+              //     game={game}
+              //     socket={socket}
+              //     quitGame={QuitGame}
+              //   />
+              // )
+            }
           </>
         ) : (
           <div className="m-auto d-flex flex-column align-items-center text-light">

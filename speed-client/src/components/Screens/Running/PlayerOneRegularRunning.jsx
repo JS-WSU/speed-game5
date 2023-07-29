@@ -10,7 +10,7 @@ function PlayerOneRegularRunning({ game, socket, quitGame }) {
   return (
     <div className="row text-light g-3 flex-grow-1">
       <div className="d-flex">
-        <div className="d-flex flex-column text-center">
+        <div className="d-flex flex-column text-center me-auto">
           <p className="m-0">{game.playerTwo.name} </p>
           <Card src="/img/PNG-cards-1.3/cardback.png" />
           <p className="m-0">Deck Size: {game.playerTwo.drawPile} </p>
