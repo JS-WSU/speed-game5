@@ -9,12 +9,15 @@ function ViewerWaiting({ game, quitGame, socket }) {
             Stop Watching Game
           </button>
         </div>
+        <div className="bg-secondary ms-auto p-3">
+          Viewers:
+          {game.viewers.map((viewer) => (
+            <div>{viewer}</div>
+          ))}
+        </div>
       </div>
-      <div className="bg-secondary ms-auto p-3">
-        Viewers:
-        {game.viewers.map((viewer) => (
-          <div>{viewer}</div>
-        ))}
+      <div className="m-auto bg-light p-3">
+        Waiting for host {game.playerOne.name} to start game...
       </div>
     </div>
   );
