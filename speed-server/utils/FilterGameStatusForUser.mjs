@@ -3,7 +3,7 @@ import {
   UserTypes,
 } from "../../speed-client/src/utils/Constants.mjs";
 
-const FilterForPlayer = (game, userType) => {
+const FilterGameStatusForUser = (game, userType) => {
   if (game.speedType === SpeedTypes.REGULAR) {
     if (userType === UserTypes.PLAYER_ONE) {
       return {
@@ -18,18 +18,34 @@ const FilterForPlayer = (game, userType) => {
           ...game.playerTwo,
           drawPile: game.playerTwo.drawPile.length,
           sidePile: game.playerTwo.sidePile.length,
-          hand: game.playerTwo.hand.length
+          hand: game.playerTwo.hand.length,
+        },
+      };
+    } else if (userType === UserTypes.VIEWER) {
+      return {
+        // if user is Player Two
+        ...game,
+        playerOne: {
+          ...game.playerOne,
+          drawPile: game.playerOne.drawPile.length,
+          sidePile: game.playerOne.sidePile.length,
+          hand: game.playerOne.hand.length,
+        },
+        playerTwo: {
+          ...game.playerTwo,
+          drawPile: game.playerTwo.drawPile.length,
+          sidePile: game.playerTwo.sidePile.length,
         },
       };
     }
+
+    // if user is viewer
     return {
-      // if user is Player Two
       ...game,
       playerOne: {
         ...game.playerOne,
         drawPile: game.playerOne.drawPile.length,
         sidePile: game.playerOne.sidePile.length,
-        hand: game.playerOne.hand.length,
       },
       playerTwo: {
         ...game.playerTwo,
@@ -38,34 +54,19 @@ const FilterForPlayer = (game, userType) => {
       },
     };
   } else {
-    // California speed logic
-    if (userType === UserTypes.PLAYER_ONE) {
-      // California player one
-      return {
-        ...game,
-        playerOne: {
-          ...game.playerOne,
-          drawPile: game.playerOne.drawPile.length,
-        },
-        playerTwo: {
-          ...game.playerTwo,
-          drawPile: game.playerTwo.drawPile.length,
-        },
-      };
-    }
+    // California speed logic stays same regardless of user
     return {
-      // California player two
       ...game,
       playerOne: {
         ...game.playerOne,
-        drawPile: game.playerOne.drawPile.length,
+        deck: game.playerOne.deck.length,
       },
       playerTwo: {
         ...game.playerTwo,
-        drawPile: game.playerTwo.drawPile.length,
+        deck: game.playerTwo.deck.length,
       },
     };
   }
 };
 
-export default FilterForPlayer;
+export default FilterGameStatusForUser;

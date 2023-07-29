@@ -1,7 +1,7 @@
 import React from "react";
 import { UserTypes } from "../../../utils/Constants.mjs";
 
-function PlayerOneWaiting({ game, quitGame, socket }) {
+function PlayerOneWaiting({ game, quitGame, socket, readyUp }) {
   const StartGame = () => {
     socket.emit(
       "start_game",
@@ -15,13 +15,23 @@ function PlayerOneWaiting({ game, quitGame, socket }) {
         <div className="m-auto bg-light p-3">Waiting for opponent...</div>
       ) : (
         <>
-          <div className="d-flex">
+          <div className="d-flex text-light">
             <div>
-              <div>
-                Player One: {game.playerOne.ready ? "Ready" : "Not Ready"}
+              <div
+                className={`mb-2 p-2 ${
+                  game.playerOne.ready ? "bg-primary" : "bg-danger"
+                }`}
+              >
+                Player One {game.playerOne.name}:{" "}
+                {game.playerOne.ready ? "Ready" : "Not Ready"}
               </div>
-              <div>
-                Player Two: {game.playerTwo.ready ? "Ready" : "Not Ready"}
+              <div
+                className={`${
+                  game.playerTwo.ready ? "bg-primary" : "bg-danger"
+                }`}
+              >
+                Player Two {game.playerTwo.name}:{" "}
+                {game.playerTwo.ready ? "Ready" : "Not Ready"}
               </div>
             </div>
             <div className="bg-secondary ms-auto p-3">
@@ -33,11 +43,19 @@ function PlayerOneWaiting({ game, quitGame, socket }) {
           </div>
           <div className="m-auto bg-light p-3">
             <div> Opponent {game.playerTwo.name} player has joined!</div>
-            <div className="text-center mt-2">
+            <div className="d-flex justify-content-between mt-2 ">
+              <button
+                onClick={readyUp}
+                className={`text-light btn ${
+                  game.playerOne.ready ? "bg-primary" : "bg-secondary"
+                }`}
+              >
+                {game.playerOne.ready ? "Not Ready" : "Ready Up"}
+              </button>
               <button
                 onClick={StartGame}
                 className="btn btn-success"
-                // disabled={!game.playerOne.ready || !game.playerTwo.ready}
+                disabled={!game.playerOne.ready || !game.playerTwo.ready}
               >
                 Start Game
               </button>

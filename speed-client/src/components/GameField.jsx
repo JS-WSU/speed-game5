@@ -18,7 +18,7 @@ export default function GameField({
 }) {
   const alertContext = useContext(AlertContext);
 
-  const Ready = () => {
+  const ReadyUp = () => {
     socket.emit(
       "ready_to_play",
       JSON.parse(localStorage.getItem("gameInSession")).hostName,
@@ -38,7 +38,7 @@ export default function GameField({
     }, 500);
 
     const GetGameStatus = (game) => {
-      console.log(game)
+      console.log(game);
       setGame(game);
     };
 
@@ -55,7 +55,6 @@ export default function GameField({
     };
 
     socket.on("game_status", GetGameStatus);
-
     socket.on("left_game", LeftGame);
     socket.on("game_started", GameStarted);
 
@@ -83,9 +82,19 @@ export default function GameField({
           <ViewerWaiting game={game} quitGame={quitGame} socket={socket} />
         ) : JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE ? (
-          <PlayerOneWaiting game={game} quitGame={quitGame} socket={socket} />
+          <PlayerOneWaiting
+            game={game}
+            quitGame={quitGame}
+            socket={socket}
+            readyUp={ReadyUp}
+          />
         ) : (
-          <PlayerTwoWaiting game={game} quitGame={quitGame} socket={socket} />
+          <PlayerTwoWaiting
+            game={game}
+            quitGame={quitGame}
+            socket={socket}
+            readyUp={ReadyUp}
+          />
         )
       ) : game.gameState === GameStates.END ? (
         JSON.parse(localStorage.getItem("gameInSession")).userType ===
