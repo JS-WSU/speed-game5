@@ -1,6 +1,3 @@
-import React from "react";
-import { UserTypes } from "../../../utils/Constants.mjs";
-
 function PlayerOneWaiting({ game, quitGame, socket, readyUp }) {
   const StartGame = () => {
     socket.emit(
@@ -43,7 +40,7 @@ function PlayerOneWaiting({ game, quitGame, socket, readyUp }) {
           </div>
           <div className="m-auto bg-light p-3 text-dark">
             <div> Opponent {game.playerTwo.name} player has joined!</div>
-            <div className="d-flex justify-content-between mt-2 ">
+            <div className="d-flex justify-content-between mt-2 text-light">
               <button
                 onClick={readyUp}
                 className={`text-light btn ${

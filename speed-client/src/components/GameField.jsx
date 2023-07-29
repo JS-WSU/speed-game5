@@ -2,12 +2,12 @@ import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameStates, UserTypes } from "../utils/Constants.mjs";
 import AlertContext from "../context/AlertContext";
-import ViewerWaiting from "./Screens/Waiting/ViewerWaiting";
-import PlayerOneWaiting from "./Screens/Waiting/PlayerOneWaiting";
-import PlayerTwoWaiting from "./Screens/Waiting/PlayerTwoWaiting";
-import ViewerEnd from "./Screens/End/ViewerEnd";
-import PlayerOneEnd from "./Screens/End/PlayerOneEnd";
-import PlayerTwoEnd from "./Screens/End/PlayerTwoEnd";
+import ViewerWaiting from "./Screens/Waiting/Viewer";
+import PlayerOneWaiting from "./Screens/Waiting/PlayerOne";
+import PlayerTwoWaiting from "./Screens/Waiting/PlayerTwo";
+import ViewerEnd from "./Screens/End/Viewer";
+import PlayerOneEnd from "./Screens/End/PlayerOne";
+import PlayerTwoEnd from "./Screens/End/PlayerTwo";
 
 export default function GameField({
   socket,
@@ -98,8 +98,15 @@ export default function GameField({
         ) : (
           <PlayerTwoEnd game={game} quitGame={quitGame} socket={socket} />
         )
-      ) : (
+      ) : game.gameState === GameStates.RUNNING ? (
         <>{children}</>
+      ) : (
+        <div className="m-auto d-flex flex-column align-items-center text-light">
+          <h1>Loading Game...</h1>
+          <div className="spinner-border">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
       )}
     </main>
   );

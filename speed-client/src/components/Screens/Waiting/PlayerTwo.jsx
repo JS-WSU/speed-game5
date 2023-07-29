@@ -1,5 +1,3 @@
-import React from "react";
-
 function PlayerTwoWaiting({ game, quitGame, socket, readyUp }) {
   return (
     <div className="d-flex flex-column flex-grow-1">
