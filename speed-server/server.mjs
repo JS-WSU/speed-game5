@@ -486,6 +486,6 @@ io.on("connection", async (socket) => {
 // });
 
 // start server
-server.listen(PORT, "0.0.0.0", () => {
+server.listen(PORT, () => {
   console.log(`Socket IO and express server listening on port: ${PORT}`);
 });
