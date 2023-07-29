@@ -7,12 +7,12 @@ function PlayerTwoRegularRunning({ game, socket, quitGame }) {
     opponentHand.push(<Card src="/img/PNG-cards-1.3/cardback.png"></Card>);
   }
   return (
-    <div className="row text-light g-3">
+    <div className="row text-light g-3 flex-grow-1">
       <div className="d-flex">
         <div className="d-flex flex-column text-center me-auto">
-          <p>{game.playerOne.name} </p>
+          <p className="m-0">{game.playerOne.name} </p>
           <Card src="/img/PNG-cards-1.3/cardback.png" />
-          <p>Deck Size: {game.playerOne.drawPile} </p>
+          <p className="m-0">Deck Size: {game.playerOne.drawPile} </p>
         </div>
         <div className="d-flex justify-content-evenly">
           {opponentHand.map((card) => card)}
@@ -51,9 +51,9 @@ function PlayerTwoRegularRunning({ game, socket, quitGame }) {
           ))}
         </div>
         <div className="d-flex flex-column text-center ms-auto">
-          <p>{game.playerTwo.name} </p>
+          <p className="m-0">{game.playerTwo.name} </p>
           <Card src="/img/PNG-cards-1.3/cardback.png" />
-          <p>Deck Size: {game.playerTwo.drawPile} </p>
+          <p className="m-0">Deck Size: {game.playerTwo.drawPile} </p>
         </div>
       </div>
     </div>
