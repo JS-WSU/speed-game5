@@ -2,10 +2,8 @@ import { Navigate, useNavigate } from "react-router-dom";
 import GameField from "../components/GameField";
 import { GameStates, SpeedTypes, UserTypes } from "../utils/Constants.mjs";
 import { useEffect, useState } from "react";
-import ViewerRegularRunning from "../components/Screens/Running/ViewerRegularRunning";
-import PlayerOneRegularRunning from "../components/Screens/Running/PlayerOneRegularRunning";
-import PlayerTwoRegularRunning from "../components/Screens/Running/PlayerTwoRegularRunning";
-import PlayerRegularRunning from "../components/Screens/Running/PlayerRegularRunning";
+import Viewer from "../components/Screens/Running/Regular/Viewer";
+import Player from "../components/Screens/Running/Regular/Player";
 
 function RegularSpeed({ socket }) {
   const [game, setGame] = useState({});
@@ -39,17 +37,9 @@ function RegularSpeed({ socket }) {
             {
               JSON.parse(localStorage.getItem("gameInSession")).userType ===
               UserTypes.VIEWER ? (
-                <ViewerRegularRunning
-                  game={game}
-                  socket={socket}
-                  quitGame={QuitGame}
-                />
+                <Viewer game={game} socket={socket} quitGame={QuitGame} />
               ) : (
-                <PlayerRegularRunning
-                  game={game}
-                  socket={socket}
-                  quitGame={QuitGame}
-                />
+                <Player game={game} socket={socket} quitGame={QuitGame} />
               )
               // JSON.parse(localStorage.getItem("gameInSession")).userType ===
               //   UserTypes.PLAYER_ONE ? (

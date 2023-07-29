@@ -1,24 +1,22 @@
 import React from "react";
-import Card from "../../Card";
+import Card from "../../../Card";
 
-function ViewerRegularRunning({ game, socket, quitGame }) {
+function PlayerOneRegularRunning({ game, socket, quitGame }) {
+  console.log(game);
+  let opponentHand = [];
+  for (let i = 0; i < game.playerTwo.hand; i++) {
+    opponentHand.push(<Card src="/img/PNG-cards-1.3/cardback.png" />);
+  }
   return (
     <div className="row text-light g-3 flex-grow-1">
       <div className="d-flex">
         <div className="d-flex flex-column text-center me-auto">
-        <p className="m-0">{game.playerTwo.name} </p>
+          <p className="m-0">{game.playerTwo.name} </p>
           <Card src="/img/PNG-cards-1.3/cardback.png" />
           <p className="m-0">Deck Size: {game.playerTwo.drawPile} </p>
         </div>
         <div className="d-flex justify-content-evenly">
-          {game.playerTwo.hand.map((card) => (
-            <Card
-              name={card.name}
-              src={card.src}
-              value={card.value}
-              flip={true}
-            />
-          ))}
+          {opponentHand.map((card) => card)}
         </div>
         <div className="bg-secondary align-self-start p-3 ms-auto">
           Viewers:
@@ -63,4 +61,4 @@ function ViewerRegularRunning({ game, socket, quitGame }) {
   );
 }
 
-export default ViewerRegularRunning;
+export default PlayerOneRegularRunning;

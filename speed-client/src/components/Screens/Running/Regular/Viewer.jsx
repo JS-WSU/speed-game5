@@ -1,12 +1,7 @@
 import React from "react";
-import Card from "../../Card";
+import Card from "../../../Card";
 
-function PlayerOneRegularRunning({ game, socket, quitGame }) {
-  console.log(game);
-  let opponentHand = [];
-  for (let i = 0; i < game.playerTwo.hand; i++) {
-    opponentHand.push(<Card src="/img/PNG-cards-1.3/cardback.png" />);
-  }
+function Viewer({ game, socket, quitGame }) {
   return (
     <div className="row text-light g-3 flex-grow-1">
       <div className="d-flex">
@@ -16,7 +11,14 @@ function PlayerOneRegularRunning({ game, socket, quitGame }) {
           <p className="m-0">Deck Size: {game.playerTwo.drawPile} </p>
         </div>
         <div className="d-flex justify-content-evenly">
-          {opponentHand.map((card) => card)}
+          {game.playerTwo.hand.map((card) => (
+            <Card
+              name={card.name}
+              src={card.src}
+              value={card.value}
+              flip={true}
+            />
+          ))}
         </div>
         <div className="bg-secondary align-self-start p-3 ms-auto">
           Viewers:
@@ -61,4 +63,4 @@ function PlayerOneRegularRunning({ game, socket, quitGame }) {
   );
 }
 
-export default PlayerOneRegularRunning;
+export default Viewer;

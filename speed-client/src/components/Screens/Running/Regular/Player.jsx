@@ -1,8 +1,8 @@
 import React from "react";
-import Card from "../../Card";
-import { UserTypes } from "../../../utils/Constants.mjs";
+import Card from "../../../Card";
+import { UserTypes } from "../../../../utils/Constants.mjs";
 
-function PlayerRegularRunning({ game, socket, quitGame }) {
+function Player({ game, socket, quitGame }) {
   console.log(game);
   let opponentHand = [];
 
@@ -114,4 +114,4 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
   );
 }
 
-export default PlayerRegularRunning;
+export default Player;

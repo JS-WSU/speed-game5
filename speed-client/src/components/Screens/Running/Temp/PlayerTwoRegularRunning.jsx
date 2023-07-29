@@ -1,5 +1,5 @@
 import React from "react";
-import Card from "../../Card";
+import Card from "../../../Card";
 
 function PlayerTwoRegularRunning({ game, socket, quitGame }) {
   let opponentHand = [];
