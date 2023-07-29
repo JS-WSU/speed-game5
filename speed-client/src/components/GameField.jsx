@@ -63,13 +63,7 @@ export default function GameField({
       socket.off("left_game", LeftGame);
       socket.off("game_status", GetGameStatus);
 
-      socket.emit(
-        "quit_game",
-        JSON.parse(localStorage.getItem("gameInSession")).hostName,
-        JSON.parse(localStorage.getItem("gameInSession")).userType,
-        localStorage.getItem("userSession")
-      );
-      localStorage.removeItem("gameInSession");
+    
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);

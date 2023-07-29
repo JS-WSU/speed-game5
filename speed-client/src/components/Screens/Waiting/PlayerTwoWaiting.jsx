@@ -6,7 +6,7 @@ function PlayerTwoWaiting({ game, quitGame, socket, readyUp }) {
       <div className="d-flex text-light">
         <div>
           <div
-            className={`mb-2 p-2 ${
+            className={`mb-2 p-3 ${
               game.playerOne.ready ? "bg-primary" : "bg-danger"
             }`}
           >
@@ -14,7 +14,7 @@ function PlayerTwoWaiting({ game, quitGame, socket, readyUp }) {
             {game.playerOne.ready ? "Ready" : "Not Ready"}
           </div>
           <div
-            className={`${game.playerTwo.ready ? "bg-primary" : "bg-danger"}`}
+            className={`p-3 ${game.playerTwo.ready ? "bg-primary" : "bg-danger"}`}
           >
             Player Two {game.playerTwo.name}:{" "}
             {game.playerTwo.ready ? "Ready" : "Not Ready"}

@@ -12,6 +12,13 @@ function CaliforniaSpeed({ socket }) {
   const navigate = useNavigate();
 
   const QuitGame = () => {
+    socket.emit(
+      "quit_game",
+      JSON.parse(localStorage.getItem("gameInSession")).hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType,
+      localStorage.getItem("userSession")
+    );
+    localStorage.removeItem("gameInSession");
     navigate("/lobby");
   };
 

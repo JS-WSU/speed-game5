@@ -54,22 +54,19 @@ function App() {
           GetErrorMessage(error) + ", speed-server is not running"
         );
       }
-
-      localStorage.removeItem("userSession");
-      socket.disconnect();
       // setIsAuth(false);
       // make user quit if session expired and if ingame
-      // if (localStorage.getItem("gameInSession")) {
-      //   socket.emit(
-      //     "quit_game",
-      //     JSON.parse(localStorage.getItem("gameInSession")).hostName,
-      //     JSON.parse(localStorage.getItem("gameInSession")).userType,
-      //     localStorage.getItem("userSession")
-      //   );
-      //   localStorage.removeItem("gameInSession");
-      // }
-
-      
+      if (localStorage.getItem("gameInSession")) {
+        socket.emit(
+          "quit_game",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          localStorage.getItem("userSession")
+        );
+        localStorage.removeItem("gameInSession");
+      }
+      localStorage.removeItem("userSession");
+      socket.disconnect();
     }
   };
 
@@ -84,7 +81,7 @@ function App() {
 
   return (
     <>
-      <Navbar ></Navbar>
+      <Navbar></Navbar>
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/hello-world" element={<HelloWorld />} />
@@ -92,10 +89,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/lobby" element={<Lobby socket={socket} />} />
-          <Route
-            path="/high-scores"
-            element={<HighScores />}
-          />
+          <Route path="/high-scores" element={<HighScores />} />
           <Route element={<InGameProtectedRoute />}>
             <Route
               path="/regular-speed"

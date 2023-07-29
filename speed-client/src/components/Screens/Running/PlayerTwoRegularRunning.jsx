@@ -1,31 +1,60 @@
-import React from 'react'
-import Card from '../../Card'
+import React from "react";
+import Card from "../../Card";
 
-function PlayerTwoRunning({game, socket, quitGame }) {
+function PlayerTwoRunning({ game, socket, quitGame }) {
   let opponentHand = [];
-  for(let i = 0; i < game.playerOne.hand; i++){
-    opponentHand.push(<Card src='/img/PNG-cards-1.3/cardback.png'></Card>)
+  for (let i = 0; i < game.playerOne.hand; i++) {
+    opponentHand.push(<Card src="/img/PNG-cards-1.3/cardback.png"></Card>);
   }
   return (
-    <div>PlayerTwoRunning
-      <div>
-          <p>Player One Hand: {game.playerOne.hand}</p>
-          <p>Player One Draw Pile: {game.playerOne.drawPile}</p>
+    <div className="d-flex flex-column flex-grow-1">
+      <div className="d-flex">
+        <div className="d-flex flex-column">
+          <p>Opponent {game.playerOne.name} </p>
+          <Card src="/img/PNG-cards-1.3/cardback.png" />
+          <p>Deck Size: {game.playerOne.drawPile} </p>
         </div>
-      
-      <div className='d-flex'>{opponentHand.map(card=>card)}</div>
-      <div className='d-flex'>
-      <Card src='/img/PNG-cards-1.3/cardback.png'></Card>
-      <Card name={game.playerTwo.fieldCards[0].name} src={game.playerTwo.fieldCards[0].src} value={game.playerTwo.fieldCards[0].value}></Card>
-      <Card name={game.playerOne.fieldCards[0].name} src={game.playerOne.fieldCards[0].src} value={game.playerOne.fieldCards[0].value}></Card>
-          
-      <Card src='/img/PNG-cards-1.3/cardback.png'></Card>
+        <div className="d-flex">{opponentHand.map((card) => card)}</div>
+        <div className="bg-secondary ms-auto p-3">
+          Viewers:
+          {game.viewers.map((viewer) => (
+            <div>{viewer}</div>
+          ))}
+        </div>
       </div>
-      <div className='d-flex'>
-      {game.playerTwo.hand.map(card=>(<Card name={card.name} src={card.src} value={card.value}></Card>))}        
+      <div className="d-flex">
+        <Card src="/img/PNG-cards-1.3/cardback.png" />
+        <Card
+          name={game.playerOne.fieldCards[0].name}
+          src={game.playerOne.fieldCards[0].src}
+          value={game.playerOne.fieldCards[0].value}
+        />
+        <Card
+          name={game.playerTwo.fieldCards[0].name}
+          src={game.playerTwo.fieldCards[0].src}
+          value={game.playerTwo.fieldCards[0].value}
+        />
+        <Card src="/img/PNG-cards-1.3/cardback.png" />
+      </div>
+      <div className="d-flex">
+        <div>
+          <button onClick={quitGame} className="btn btn-danger">
+            Quit Game
+          </button>
         </div>
+        <div className="d-flex">
+          {game.playerTwo.hand.map((card) => (
+            <Card name={card.name} src={card.src} value={card.value} />
+          ))}
+        </div>
+        <div className="d-flex flex-column">
+          <p>{game.playerTwo.name} </p>
+          <Card src="/img/PNG-cards-1.3/cardback.png" />
+          <p>Deck Size: {game.playerTwo.drawPile} </p>
+        </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default PlayerTwoRunning
+export default PlayerTwoRunning;
