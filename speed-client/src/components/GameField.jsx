@@ -48,8 +48,9 @@ export default function GameField({
       setGame(game);
     };
 
-    const GameStarted = () => {
+    const GameStarted = (game) => {
       alertContext.success("Game has started!");
+      setGame(game)
     };
 
     const LeftGame = (game, userType, username) => {

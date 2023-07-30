@@ -242,7 +242,7 @@ io.on("connection", async (socket) => {
 
     games[gameIndex] = ShuffleCards(games[gameIndex]);
 
-    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+    EmitToAllUsersInGame(io, games[gameIndex], "game_started");
   });
 
   socket.on("ready_to_play", (hostName, userType) => {

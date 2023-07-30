@@ -105,9 +105,21 @@ function Player({ game, socket, quitGame }) {
               ))}
         </div>
         <div className="d-flex flex-column text-center ms-auto">
-          <p>{game.playerOne.name} </p>
+          <p>
+            {" "}
+            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.PLAYER_ONE
+              ? game.playerOne.name
+              : game.playerTwo.name}{" "}
+          </p>
           <Card src="/img/PNG-cards-1.3/cardback.png" />
-          <p>Deck Size: {game.playerOne.drawPile} </p>
+          <p>
+            Deck Size:{" "}
+            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.PLAYER_ONE
+              ? game.playerOne.drawPile
+              : game.playerTwo.drawPile}{" "}
+          </p>
         </div>
       </div>
     </div>
