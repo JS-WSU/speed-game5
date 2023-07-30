@@ -18,6 +18,8 @@ export default function GameField({
 }) {
   const alertContext = useContext(AlertContext);
 
+  const navigate = useNavigate();
+
   const ReadyUp = () => {
     socket.emit(
       "ready_to_play",
@@ -39,6 +41,10 @@ export default function GameField({
 
     const GetGameStatus = (game) => {
       console.log(game);
+      if (!game.gameState) {
+        localStorage.removeItem("gameInSession");
+        navigate("/lobby");
+      }
       setGame(game);
     };
 

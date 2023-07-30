@@ -177,25 +177,29 @@ io.on("connection", async (socket) => {
 
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
 
-    if (userType === UserTypes.PLAYER_TWO) {
-      games[gameIndex] = {
-        ...games[gameIndex],
-        playerTwo: { ...games[gameIndex].playerTwo, name: username },
-      };
-    } else if (userType === UserTypes.VIEWER) {
-      const viewerFound = games[gameIndex].viewers.find(
-        (viewer) => viewer === username
-      );
-      if (!viewerFound) {
+    if (gameIndex === -1) {
+      socket.emit("game_status", -1);
+    } else {
+      if (userType === UserTypes.PLAYER_TWO) {
         games[gameIndex] = {
           ...games[gameIndex],
-          viewers: [...games[gameIndex].viewers, username],
+          playerTwo: { ...games[gameIndex].playerTwo, name: username },
         };
+      } else if (userType === UserTypes.VIEWER) {
+        const viewerFound = games[gameIndex].viewers.find(
+          (viewer) => viewer === username
+        );
+        if (!viewerFound) {
+          games[gameIndex] = {
+            ...games[gameIndex],
+            viewers: [...games[gameIndex].viewers, username],
+          };
+        }
       }
-    }
-    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+      EmitToAllUsersInGame(io, games[gameIndex], "game_status");
 
-    io.to("lobby").emit("gameRooms", FilteredGames(games));
+      io.to("lobby").emit("gameRooms", FilteredGames(games));
+    }
   });
 
   socket.on("quit_game", (hostName, userType, username) => {
