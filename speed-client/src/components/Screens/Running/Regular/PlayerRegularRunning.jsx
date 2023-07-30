@@ -19,14 +19,14 @@ function Player({ game, socket, quitGame }) {
     <div className="row text-light g-3 flex-grow-1">
       <div className="d-flex">
         <div className="d-flex flex-column text-center me-auto">
-          <p className="m-0">
+          <p>
             {JSON.parse(localStorage.getItem("gameInSession")).userType ===
             UserTypes.PLAYER_ONE
               ? game.playerTwo.name
               : game.playerOne.name}{" "}
           </p>
           <Card src="/img/PNG-cards-1.3/cardback.png" />
-          <p className="m-0">
+          <p>
             Deck Size:{" "}
             {JSON.parse(localStorage.getItem("gameInSession")).userType ===
             UserTypes.PLAYER_ONE
