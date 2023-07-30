@@ -9,23 +9,23 @@ function ViewerWaiting({ game, quitGame, socket }) {
             Stop Watching Game
           </button>
           <div className="mt-2">
-              <div
-                className={`mb-2 p-3 ${
-                  game.playerOne.ready ? "bg-primary" : "bg-danger"
-                }`}
-              >
-                Player One {game.playerOne.name}:{" "}
-                {game.playerOne.ready ? "Ready" : "Not Ready"}
-              </div>
-              <div
-                className={`p-3 ${
-                  game.playerTwo.ready ? "bg-primary" : "bg-danger"
-                }`}
-              >
-                Player Two {game.playerTwo.name}:{" "}
-                {game.playerTwo.ready ? "Ready" : "Not Ready"}
-              </div>
+            <div
+              className={`mb-2 p-3 ${
+                game.playerOne.ready ? "bg-primary" : "bg-danger"
+              }`}
+            >
+              Player One {game.playerOne.name}:{" "}
+              {game.playerOne.ready ? "Ready" : "Not Ready"}
             </div>
+            <div
+              className={`p-3 ${
+                game.playerTwo.ready ? "bg-primary" : "bg-danger"
+              }`}
+            >
+              Player Two {game.playerTwo.name}:{" "}
+              {game.playerTwo.ready ? "Ready" : "Not Ready"}
+            </div>
+          </div>
         </div>
         <div className="bg-secondary align-self-start p-3 ms-auto">
           Viewers:

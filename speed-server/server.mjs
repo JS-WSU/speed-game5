@@ -19,6 +19,7 @@ import { Deck } from "./utils/Constants.mjs";
 import FilteredGames from "./utils/FilteredGames.mjs";
 import FilterGameStatusForUser from "./utils/FilterGameStatusForUser.mjs";
 import ShuffleCards from "./utils/ShuffleCards.mjs";
+import EmitToAllUsersInGame from "./utils/EmitToAllUsersInGame.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -98,16 +99,7 @@ io.on("connection", async (socket) => {
     console.log(`${socket.id} has joined the lobby`);
     socket.emit("chat_messages", await ChatMessage.find({}));
 
-    let filteredGames = [];
-
-    games.forEach((game) => {
-      filteredGames.push({
-        hostName: game.hostName,
-        speedType: game.speedType,
-        playerTwo: game.playerTwo.name,
-      });
-    });
-    socket.emit("gameRooms", filteredGames);
+    socket.emit("gameRooms", FilteredGames(games));
   });
 
   socket.on("leave_lobby", () => {
@@ -190,15 +182,6 @@ io.on("connection", async (socket) => {
         ...games[gameIndex],
         playerTwo: { ...games[gameIndex].playerTwo, name: username },
       };
-
-      socket.emit(
-        "game_status",
-        FilterGameStatusForUser(games[gameIndex], userType)
-      );
-      io.to(games[gameIndex].hostName).emit(
-        "game_status",
-        FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_ONE)
-      );
     } else if (userType === UserTypes.VIEWER) {
       const viewerFound = games[gameIndex].viewers.find(
         (viewer) => viewer === username
@@ -209,29 +192,8 @@ io.on("connection", async (socket) => {
           viewers: [...games[gameIndex].viewers, username],
         };
       }
-
-      games[gameIndex].viewers.map((viewer) => {
-        io.to(viewer).emit(
-          "game_status",
-          FilterGameStatusForUser(games[gameIndex], userType),
-          userType,
-          username
-        );
-      });
-      io.to(games[gameIndex].hostName).emit(
-        "game_status",
-        FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_ONE)
-      );
-      io.to(games[gameIndex].playerTwo.name).emit(
-        "game_status",
-        FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_TWO)
-      );
-    } else {
-      socket.emit(
-        "game_status",
-        FilterGameStatusForUser(games[gameIndex], userType)
-      );
     }
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
 
     io.to("lobby").emit("gameRooms", FilteredGames(games));
   });
@@ -252,26 +214,11 @@ io.on("connection", async (socket) => {
         games[gameIndex].viewers = viewers;
       }
 
-      io.to(games[gameIndex].playerOne?.name).emit(
-        "left_game",
-        FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_ONE),
+      EmitToAllUsersInGame(io, games[gameIndex], "left_game", [
         userType,
-        username
-      );
-      io.to(games[gameIndex].playerTwo?.name).emit(
-        "left_game",
-        FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_TWO),
-        userType,
-        username
-      );
-      games[gameIndex].viewers.map((viewer) => {
-        io.to(viewer).emit(
-          "left_game",
-          FilterGameStatusForUser(games[gameIndex], userType),
-          userType,
-          username
-        );
-      });
+        username,
+      ]);
+
       if (
         !games[gameIndex].playerOne.name ||
         !games[gameIndex].playerTwo.name
@@ -291,21 +238,7 @@ io.on("connection", async (socket) => {
 
     games[gameIndex] = ShuffleCards(games[gameIndex]);
 
-    io.to(games[gameIndex].hostName).emit(
-      "game_status",
-      FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_ONE)
-    );
-    io.to(games[gameIndex].playerTwo.name).emit(
-      "game_status",
-      FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_TWO)
-    );
-
-    games[gameIndex].viewers.map((viewer) => {
-      io.to(viewer).emit(
-        "game_status",
-        FilterGameStatusForUser(games[gameIndex], UserTypes.VIEWER)
-      );
-    });
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
   socket.on("ready_to_play", (hostName, userType) => {
@@ -317,21 +250,7 @@ io.on("connection", async (socket) => {
       games[gameIndex].playerTwo.ready = !games[gameIndex].playerTwo.ready;
     }
 
-    io.to(games[gameIndex].playerOne.name).emit(
-      "game_status",
-      FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_ONE)
-    );
-    io.to(games[gameIndex].playerTwo.name).emit(
-      "game_status",
-      FilterGameStatusForUser(games[gameIndex], UserTypes.PLAYER_TWO)
-    );
-
-    games[gameIndex].viewers.map((viewer) => {
-      io.to(viewer).emit(
-        "game_status",
-        FilterGameStatusForUser(games[gameIndex], UserTypes.VIEWER)
-      );
-    });
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
   socket.on("disconnect", () => {

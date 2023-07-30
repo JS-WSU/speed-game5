@@ -44,7 +44,7 @@ function PlayerOneWaiting({ game, quitGame, socket, readyUp }) {
               <button
                 onClick={readyUp}
                 className={`text-light btn ${
-                  game.playerOne.ready ? "bg-primary" : "bg-secondary"
+                  game.playerOne.ready ? "bg-danger" : "bg-primary"
                 }`}
               >
                 {game.playerOne.ready ? "Not Ready" : "Ready Up"}
