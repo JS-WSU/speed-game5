@@ -33,10 +33,6 @@ export default function GameField({
     );
   };
 
-  const StartTimer = async () => {
-
-  }
-
   useEffect(() => {
     setTimeout(() => {
       socket.emit(
