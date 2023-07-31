@@ -64,8 +64,15 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
         </div>
       </div>
       <div className="d-flex justify-content-center">
-        <Card src="/img/PNG-cards-1.3/cardback.png" flip={true} />
-
+        <Card
+          src="/img/PNG-cards-1.3/cardback.png"
+          number={
+            JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.PLAYER_ONE
+              ? game.playerTwo.sidePile
+              : game.playerOne.sidePile
+          }
+        />
         {JSON.parse(localStorage.getItem("gameInSession")).userType ===
         UserTypes.PLAYER_ONE ? (
           <>
@@ -73,11 +80,13 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
               innerRef={dropPlayerTwoField}
               name={game.playerTwo.fieldCards[0].name}
               src={game.playerTwo.fieldCards[0].src}
+              number={game.playerTwo.fieldCards.length}
             />
             <Card
               innerRef={dropPlayerOneField}
               name={game.playerOne.fieldCards[0].name}
               src={game.playerOne.fieldCards[0].src}
+              number={game.playerOne.fieldCards.length}
             />
           </>
         ) : (
@@ -86,15 +95,25 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
               innerRef={dropPlayerOneField}
               name={game.playerOne.fieldCards[0].name}
               src={game.playerOne.fieldCards[0].src}
+              number={game.playerOne.fieldCards.length}
             />
             <Card
               innerRef={dropPlayerTwoField}
               name={game.playerTwo.fieldCards[0].name}
               src={game.playerTwo.fieldCards[0].src}
+              number={game.playerTwo.fieldCards.length}
             />
           </>
         )}
-        <Card src="/img/PNG-cards-1.3/cardback.png" />
+        <Card
+          src="/img/PNG-cards-1.3/cardback.png"
+          number={
+            JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.PLAYER_ONE
+              ? game.playerOne.sidePile
+              : game.playerTwo.sidePile
+          }
+        />
       </div>
       <div className="d-flex justify-content-center">
         <button

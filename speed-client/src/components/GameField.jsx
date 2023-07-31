@@ -40,7 +40,7 @@ export default function GameField({
         JSON.parse(localStorage.getItem("gameInSession")).userType,
         localStorage.getItem("userSession")
       );
-    }, 500);
+    }, 3000);
 
     const GetGameStatus = (game) => {
       console.log(game);
