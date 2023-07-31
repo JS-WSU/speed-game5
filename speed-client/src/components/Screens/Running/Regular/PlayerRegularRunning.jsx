@@ -1,10 +1,29 @@
-import React from "react";
 import Card from "../../../Card";
+import CardDraggable from "../../../CardDraggable";
 import { UserTypes } from "../../../../utils/Constants.mjs";
+import { useDrop } from "react-dnd";
 
-function Player({ game, socket, quitGame }) {
-  console.log(game);
+function PlayerRegularRunning({ game, socket, quitGame }) {
   let opponentHand = [];
+
+  const [{ isOverPlayerOneField }, dropPlayerOneField] = useDrop(() => ({
+    accept: "card",
+    drop: (card) => {
+      console.log(card);
+    },
+    collect: (monitor) => ({
+      isOverPlayerTwoField: monitor.isOver(),
+    }),
+  }));
+  const [{ isOverPlayerTwoField }, dropPlayerTwoField] = useDrop(() => ({
+    accept: "card",
+    drop: (card) => {
+      console.log(card);
+    },
+    collect: (monitor) => ({
+      isOverPlayerOneField: monitor.isOver(),
+    }),
+  }));
 
   const opponentHandLength =
     JSON.parse(localStorage.getItem("gameInSession")).userType ===
@@ -45,36 +64,36 @@ function Player({ game, socket, quitGame }) {
         </div>
       </div>
       <div className="d-flex justify-content-center">
-        <Card src="/img/PNG-cards-1.3/cardback.png" />
+        <Card src="/img/PNG-cards-1.3/cardback.png" flip={true} />
+
         {JSON.parse(localStorage.getItem("gameInSession")).userType ===
         UserTypes.PLAYER_ONE ? (
           <>
             <Card
+              innerRef={dropPlayerTwoField}
               name={game.playerTwo.fieldCards[0].name}
               src={game.playerTwo.fieldCards[0].src}
-              value={game.playerTwo.fieldCards[0].value}
             />
             <Card
+              innerRef={dropPlayerOneField}
               name={game.playerOne.fieldCards[0].name}
               src={game.playerOne.fieldCards[0].src}
-              value={game.playerOne.fieldCards[0].value}
             />
           </>
         ) : (
           <>
             <Card
+              innerRef={dropPlayerOneField}
               name={game.playerOne.fieldCards[0].name}
               src={game.playerOne.fieldCards[0].src}
-              value={game.playerOne.fieldCards[0].value}
             />
             <Card
+              innerRef={dropPlayerTwoField}
               name={game.playerTwo.fieldCards[0].name}
               src={game.playerTwo.fieldCards[0].src}
-              value={game.playerTwo.fieldCards[0].value}
             />
           </>
         )}
-
         <Card src="/img/PNG-cards-1.3/cardback.png" />
       </div>
       <div className="d-flex justify-content-center">
@@ -88,7 +107,7 @@ function Player({ game, socket, quitGame }) {
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE
             ? game.playerOne.hand.map((card, index) => (
-                <Card
+                <CardDraggable
                   key={index}
                   name={card.name}
                   src={card.src}
@@ -96,7 +115,7 @@ function Player({ game, socket, quitGame }) {
                 />
               ))
             : game.playerTwo.hand.map((card, index) => (
-                <Card
+                <CardDraggable
                   key={index}
                   name={card.name}
                   src={card.src}
@@ -126,4 +145,4 @@ function Player({ game, socket, quitGame }) {
   );
 }
 
-export default Player;
+export default PlayerRegularRunning;

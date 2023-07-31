@@ -1,14 +1,12 @@
-import React from "react";
-
-function Card({ name, src, value, flip }) {
+function Card({ name, src, value, flip, innerRef }) {
   return (
-    <div className="d-flex flex-grow-1 me-2" style={{ maxWidth: "125px" }} value={value}>
-      <img
-        className="w-100"
-        src={src}
-        alt={name}
-        style={{ transform: flip ? "rotate(180deg)" : "" }}
-      />
+    <div
+      ref={innerRef}
+      className={`d-flex flex-grow-1 me-2`}
+      style={{ maxWidth: "125px", transform: flip ? "rotate(180deg)" : "" }}
+      value={value}
+    >
+      <img className="img-fluid" src={src} alt={name} />
     </div>
   );
 }

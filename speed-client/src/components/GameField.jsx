@@ -8,6 +8,8 @@ import PlayerTwoWaiting from "./Screens/Waiting/PlayerTwoWaiting";
 import ViewerEnd from "./Screens/End/ViewerEnd";
 import PlayerOneEnd from "./Screens/End/PlayerOneEnd";
 import PlayerTwoEnd from "./Screens/End/PlayerTwoEnd";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 export default function GameField({
   socket,
@@ -50,7 +52,7 @@ export default function GameField({
 
     const GameStarted = (game) => {
       alertContext.success("Game has started!");
-      setGame(game)
+      setGame(game);
     };
 
     const LeftGame = (game, userType, username) => {
@@ -106,7 +108,7 @@ export default function GameField({
           <PlayerTwoEnd game={game} quitGame={quitGame} socket={socket} />
         )
       ) : game.gameState === GameStates.RUNNING ? (
-        <>{children}</>
+        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
       ) : (
         <div className="m-auto d-flex flex-column align-items-center text-light">
           <h1>Loading Game...</h1>

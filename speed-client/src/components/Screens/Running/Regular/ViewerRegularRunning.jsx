@@ -1,7 +1,7 @@
 import React from "react";
 import Card from "../../../Card";
 
-function Viewer({ game, socket, quitGame }) {
+function ViewerRegularRunning({ game, socket, quitGame }) {
   return (
     <div className="row text-light g-3 flex-grow-1">
       <div className="d-flex">
@@ -32,12 +32,11 @@ function Viewer({ game, socket, quitGame }) {
         <Card
           name={game.playerTwo.fieldCards[0].name}
           src={game.playerTwo.fieldCards[0].src}
-          value={game.playerTwo.fieldCards[0].value}
+          flip={true}
         />
         <Card
           name={game.playerOne.fieldCards[0].name}
           src={game.playerOne.fieldCards[0].src}
-          value={game.playerOne.fieldCards[0].value}
         />
         <Card src="/img/PNG-cards-1.3/cardback.png" />
       </div>
@@ -50,7 +49,7 @@ function Viewer({ game, socket, quitGame }) {
         </button>
         <div className="d-flex">
           {game.playerOne.hand.map((card) => (
-            <Card name={card.name} src={card.src} value={card.value} />
+            <Card name={card.name} src={card.src} />
           ))}
         </div>
         <div className="d-flex flex-column text-center ms-auto">
@@ -63,4 +62,4 @@ function Viewer({ game, socket, quitGame }) {
   );
 }
 
-export default Viewer;
+export default ViewerRegularRunning;
