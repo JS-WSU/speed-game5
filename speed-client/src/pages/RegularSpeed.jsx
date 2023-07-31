@@ -29,9 +29,9 @@ function RegularSpeed({ socket }) {
         {
           JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.VIEWER ? (
-            <Viewer game={game} socket={socket} quitGame={QuitGame} />
+            <ViewerRegularRunning game={game} socket={socket} quitGame={QuitGame} />
           ) : (
-            <Player game={game} socket={socket} quitGame={QuitGame} />
+            <PlayerRegularRunning game={game} socket={socket} quitGame={QuitGame} />
           )
           // JSON.parse(localStorage.getItem("gameInSession")).userType ===
           //   UserTypes.PLAYER_ONE ? (
