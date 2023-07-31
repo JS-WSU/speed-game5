@@ -8,6 +8,7 @@ function Card({ name, src, value }) {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
+    options: "copy",
   }));
 
   return (
@@ -17,13 +18,7 @@ function Card({ name, src, value }) {
       value={value}
       ref={drag}
     >
-      <img
-        draggable="false"
-        className="img-fluid"
-        src={src}
-        alt={name}
-        style={{ maxWidth: "125px" }}
-      />
+      <img draggable="false" className="img-fluid" src={src} alt={name} />
     </div>
   );
 }

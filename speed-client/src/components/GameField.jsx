@@ -18,7 +18,6 @@ export default function GameField({
   setGame,
   quitGame,
   setTimerIsGoing,
-  timerIsGoing
 }) {
   const alertContext = useContext(AlertContext);
 
@@ -54,9 +53,6 @@ export default function GameField({
 
     const GameStarted = (game) => {
       setTimerIsGoing(true);
-      setTimeout(() => {
-        setTimerIsGoing(false);
-      }, 6000);
       setGame(game);
     };
 
