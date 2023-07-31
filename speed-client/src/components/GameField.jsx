@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GameStates, UserTypes } from "../utils/Constants.mjs";
 import AlertContext from "../context/AlertContext";
@@ -10,6 +10,7 @@ import PlayerOneEnd from "./Screens/End/PlayerOneEnd";
 import PlayerTwoEnd from "./Screens/End/PlayerTwoEnd";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import Countdown from "react-countdown";
 
 export default function GameField({
   socket,
@@ -17,7 +18,6 @@ export default function GameField({
   game,
   setGame,
   quitGame,
-  setTimerIsGoing,
 }) {
   const alertContext = useContext(AlertContext);
 
@@ -76,6 +76,19 @@ export default function GameField({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
+  const [timerIsGoing, setTimerIsGoing] = useState(false);
+  const countdownRendered = ({ seconds, completed }) => {
+    if (completed) {
+      setTimerIsGoing(false);
+    }
+    return (
+      <div className="text-center m-auto text-black bg-light p-3">
+        <div>Game starting in...</div>
+        <span>{seconds}</span>
+      </div>
+    );
+  };
+
   return (
     <main className="bg-success container-fluid p-3">
       {game.gameState === GameStates.WAITING ? (
@@ -109,7 +122,15 @@ export default function GameField({
           <PlayerTwoEnd game={game} quitGame={quitGame} socket={socket} />
         )
       ) : game.gameState === GameStates.RUNNING ? (
-        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
+        timerIsGoing ? (
+          <Countdown
+            date={Date.now() + 3000}
+            precision={0}
+            renderer={countdownRendered}
+          ></Countdown>
+        ) : (
+          <DndProvider backend={HTML5Backend}>{children}</DndProvider>
+        )
       ) : (
         <div className="m-auto d-flex flex-column align-items-center text-light">
           <h1>Loading Game...</h1>
