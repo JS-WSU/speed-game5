@@ -17,6 +17,8 @@ export default function GameField({
   game,
   setGame,
   quitGame,
+  setTimerIsGoing,
+  timerIsGoing
 }) {
   const alertContext = useContext(AlertContext);
 
@@ -30,6 +32,10 @@ export default function GameField({
       localStorage.getItem("userSession")
     );
   };
+
+  const StartTimer = async () => {
+
+  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -51,7 +57,10 @@ export default function GameField({
     };
 
     const GameStarted = (game) => {
-      alertContext.success("Game has started!");
+      setTimerIsGoing(true);
+      setTimeout(() => {
+        setTimerIsGoing(false);
+      }, 6000);
       setGame(game);
     };
 
