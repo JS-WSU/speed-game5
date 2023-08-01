@@ -1,12 +1,15 @@
 import React, { useContext, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
-import SHA256 from "../utils/SHA256.mjs";
+import { sha256 } from "js-sha256";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
+import { SpeedTypes } from "../utils/Constants.mjs";
 
-export default function Register({ setIsAuth }) {
+export default function Register({ setIsAuth, socket }) {
   const alertContext = useContext(AlertContext);
+
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     email: "",
@@ -148,12 +151,12 @@ export default function Register({ setIsAuth }) {
         {
           email: form.email,
           username: form.username,
-          password: await SHA256(form.password + salt),
+          password: sha256(form.password + salt),
           salt,
         }
       );
-      setIsAuth(true);
-      localStorage.setItem("userSession", JSON.stringify(data));
+      navigate("/lobby");
+      localStorage.setItem("userSession", data.username);
 
       alertContext.success(`Your account, ${form.username}, has been created!`);
     } catch (error) {
@@ -164,15 +167,30 @@ export default function Register({ setIsAuth }) {
         `Uh oh, your account, ${form.username}, was not registered! Reason: ${data}`
       );
     }
-    setForm((prev) => ({ ...prev, loading: false }));
+
+    setTimeout(() => {
+      setForm((prev) => ({ ...prev, loading: false }));
+    }, 500);
   };
+
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
 
   return localStorage.getItem("userSession") ? (
     <Navigate to="/lobby" />
   ) : form.loading ? (
-    <h1 className="spinner-border m-auto">
-      <span className="visually-hidden">Loading...</span>
-    </h1>
+    <div className="m-auto d-flex flex-column">
+      <h1>Registering account...</h1>
+      <h1 className="spinner-border align-self-center">
+        <span className="visually-hidden">Loading...</span>
+      </h1>
+    </div>
   ) : (
     <main className="container">
       <div className="small-container">
@@ -318,7 +336,10 @@ export default function Register({ setIsAuth }) {
             )}
           </ul>
 
-          <button type="submit" className="btn btn-primary w-100 mt-3">
+          <button
+            type="submit"
+            className="btn btn-primary w-100 mt-3 border border-3"
+          >
             Register
           </button>
         </form>

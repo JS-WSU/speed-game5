@@ -13,7 +13,7 @@ function Chat({ socket }) {
 
   function handleSendMessage(e) {
     socket.emit("new_chat_message", {
-      username: JSON.parse(localStorage.getItem("userSession")).username,
+      username: localStorage.getItem("userSession"),
       body: e.target.value,
     });
   }
@@ -45,7 +45,7 @@ function Chat({ socket }) {
   }, [socket]);
 
   return (
-    <div className="w-100 h-100">
+    <div className="">
       {loading ? (
         <div className="d-flex flex-column align-items-center m-auto">
           <h2>Loading Chat...</h2>
@@ -89,7 +89,7 @@ function Chat({ socket }) {
             {MessageTypes.map((value) => (
               <button
                 type="button"
-                className="btn btn-primary m-1"
+                className="btn btn-primary m-1 border border-3"
                 key={value}
                 value={value}
                 onClick={handleSendMessage}

@@ -8,7 +8,7 @@ import { GameTypes, MONGO_DB_LIMIT } from "../utils/Constants.mjs";
 const router = express.Router();
 
 router.get(
-  "/",
+  "/top-10-each",
   asyncHandler(async (req, res) => {
     let users_california = await SortByWinsGameType(GameTypes.CALIFORNIA, 10);
 

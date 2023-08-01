@@ -27,3 +27,7 @@ div.small-container {
 .table-active {
   --bs-table-bg-state: yellow;
 }
+
+p {
+  margin: 0;
+}

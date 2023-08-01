@@ -1,10 +1,20 @@
 import React from "react";
 import { useState } from "react";
+import { SpeedTypes } from "../utils/Constants.mjs";
+import { Navigate } from "react-router-dom";
 
 function Home() {
   const [showCalifornia, setShowCalifornia] = useState(false);
   const [showRegular, setShowRegular] = useState(false);
 
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
   return (
     <main className="container">
       <h1>Welcome to Speed!</h1>
@@ -14,7 +24,7 @@ function Home() {
           <div className="d-flex flex-column mb-3 mb-lg-0">
             <button
               onClick={() => setShowCalifornia(!showCalifornia)}
-              className="btn btn-danger mx-auto mb-2"
+              className="btn btn-danger mx-auto mb-2 border border-3"
             >
               California Speed
             </button>
@@ -46,7 +56,7 @@ function Home() {
           <div className="d-flex flex-column">
             <button
               onClick={() => setShowRegular(!showRegular)}
-              className="btn btn-primary mx-auto mb-2"
+              className="btn btn-primary mx-auto mb-2 border border-3"
             >
               Regular Speed
             </button>

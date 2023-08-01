@@ -4,12 +4,14 @@ function Table({ users, user, onTable, speedType }) {
   return users.length ? (
     <div>
       {speedType === SpeedTypes.CALIFORNIA ? (
-        <h2 className="bg-danger text-light p-3 text-center">Regular Speed</h2>
+        <h2 className="bg-danger text-light p-3 text-center">
+          California Speed
+        </h2>
       ) : (
-        <h2 className="bg-info text-light p-3 text-center">California Speed</h2>
+        <h2 className="bg-info text-light p-3 text-center">Regular Speed</h2>
       )}
       <table
-        className={`table table-responsive table-bordered ${
+        className={`table table-responsive table-bordered mb-1 ${
           speedType === SpeedTypes.CALIFORNIA ? "table-danger" : "table-primary"
         }`}
       >
@@ -26,8 +28,7 @@ function Table({ users, user, onTable, speedType }) {
               <tr
                 key={index}
                 className={`${
-                  JSON.parse(localStorage.getItem("userSession")).username ===
-                  user.username
+                  localStorage.getItem("userSession") === user.username
                     ? "table-active"
                     : ""
                 }`}

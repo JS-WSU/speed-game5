@@ -1,70 +1,88 @@
 import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
-import { io } from "socket.io-client";
-import Room from "../components/Room";
 import { SpeedTypes } from "../utils/Constants.mjs";
-import Rooms from "../components/Rooms";
+import GameRooms from "../components/GameRooms";
+import { UserTypes } from "../utils/Constants.mjs";
 
-const socket = io.connect("http://localhost:4000/", { autoConnect: false });
-export default function Lobby({ setGameInProcess }) {
-  const [show, setShow] = useState(false);
+export default function Lobby({ socket }) {
+  const navigate = useNavigate();
 
-  const chooseGameType = () => {
-    setShow(true);
-  };
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    socket.connect();
+    socket.emit("join_lobby");
 
     return () => {
-      socket.disconnect();
+      socket.emit("leave_lobby");
     };
-  }, []);
+  }, [socket]);
 
-  const HostRegularSpeed = () => {
-    socket.emit("host_game", {
-      hostName: JSON.parse(localStorage.getItem("userSession")).username,
-      speedType: SpeedTypes.REGULAR,
-    });
+  const HostGame = (e) => {
+    socket.emit(
+      "host_game",
+      localStorage.getItem("userSession"),
+      e.currentTarget.value
+    );
+
+    socket.emit(
+      "join_game",
+      localStorage.getItem("userSession"),
+      UserTypes.PLAYER_ONE,
+      localStorage.getItem("userSession")
+    );
+
+    localStorage.setItem(
+      "gameInSession",
+      JSON.stringify({
+        hostName: localStorage.getItem("userSession"),
+        userType: UserTypes.PLAYER_ONE,
+        speedType: e.currentTarget.value,
+      })
+    );
+
+    if (e.currentTarget.value === SpeedTypes.CALIFORNIA) {
+      navigate("/california-speed");
+    } else {
+      navigate("/regular-speed");
+    }
   };
 
-  const HostCaliforniaSpeed = () => {
-    socket.emit("host_game", {
-      hostName: JSON.parse(localStorage.getItem("userSession")).username,
-      speedType: SpeedTypes.CALIFORNIA,
-    });
-  };
-
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
   return (
     <>
       <Popup
-        open={show}
+        open={showPopup}
         className="popup-content"
-        onClose={() => setShow(false)}
+        onClose={() => setShowPopup(false)}
       >
         <div className="">
           <h5 className="text-center ">Select Speed Type</h5>
           <div className="d-flex justify-content-evenly">
-            <Link to="/game">
-              <button
-                type="button"
-                className="btn btn-danger"
-                onClick={HostCaliforniaSpeed}
-              >
-                California Speed
-              </button>
-            </Link>
-            <Link to="/game">
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={HostRegularSpeed}
-              >
-                Regular Speed
-              </button>
-            </Link>
+            <button
+              type="button"
+              className="btn btn-danger border border-3"
+              onClick={HostGame}
+              value={SpeedTypes.CALIFORNIA}
+            >
+              California Speed
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary border border-3"
+              onClick={HostGame}
+              value={SpeedTypes.REGULAR}
+            >
+              Regular Speed
+            </button>
           </div>
         </div>
       </Popup>
@@ -74,13 +92,13 @@ export default function Lobby({ setGameInProcess }) {
             <div className="d-flex border-bottom border-5">
               <h1>Games</h1>
               <button
-                className="btn btn-primary ms-auto align-self-center"
-                onClick={chooseGameType}
+                className="btn btn-primary ms-auto align-self-center border border-3"
+                onClick={() => setShowPopup(true)}
               >
                 Host Game
               </button>
             </div>
-            <Rooms socket={socket} />
+            <GameRooms socket={socket} />
           </div>
           <div className="col-12 col-md-3">
             <Chat socket={socket} />

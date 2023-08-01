@@ -1,12 +1,15 @@
 import { useState, useContext } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import AlertContext from "../context/AlertContext";
-import SHA256 from "../utils/SHA256.mjs";
+import {sha256} from "js-sha256";
 import axios from "axios";
 import GetErrorMessage from "../utils/GetErrorMessage.mjs";
+import { SpeedTypes } from "../utils/Constants.mjs";
 
-export default function Login({ setIsAuth }) {
+export default function Login({ setIsAuth, socket }) {
   const alertContext = useContext(AlertContext);
+
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     email: "",
@@ -74,27 +77,41 @@ export default function Login({ setIsAuth }) {
     try {
       const { data } = await axios.post("http://localhost:4000/users/login", {
         email: form.email,
-        password: await SHA256(form.password + salt),
+        password: sha256(form.password + salt),
       });
-      setIsAuth(true);
-      localStorage.setItem("userSession", JSON.stringify(data));
+      navigate("/lobby");
+      localStorage.setItem("userSession", data.username);
       alertContext.success(`Login successful ${data.username}, welcome!`);
     } catch (error) {
+      console.log(error);
       const {
         response: { data },
       } = error;
       alertContext.error(data);
     }
 
-    setForm((prev) => ({ ...prev, loading: false }));
+    setTimeout(() => {
+      setForm((prev) => ({ ...prev, loading: false }));
+    }, 500);
   };
 
+  if (localStorage.getItem("gameInSession")) {
+    return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
+      SpeedTypes.REGULAR ? (
+      <Navigate to="/regular-speed" replace />
+    ) : (
+      <Navigate to="/california-speed" replace />
+    );
+  }
   return localStorage.getItem("userSession") ? (
     <Navigate to="/lobby" />
   ) : form.loading ? (
-    <h1 className="spinner-border m-auto">
-      <span className="visually-hidden">Loading...</span>
-    </h1>
+    <div className="m-auto d-flex flex-column">
+      <h1>Logging in...</h1>
+      <h1 className="spinner-border align-self-center">
+        <span className="visually-hidden">Loading...</span>
+      </h1>
+    </div>
   ) : (
     <main className="container">
       <div className="small-container">
@@ -150,7 +167,10 @@ export default function Login({ setIsAuth }) {
               </span>
             </div>
           )}
-          <button type="submit" className="btn btn-primary w-100">
+          <button
+            type="submit"
+            className="btn btn-primary w-100 border border-3"
+          >
             Login
           </button>
         </form>
