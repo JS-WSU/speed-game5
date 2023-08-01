@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDrag } from "react-dnd";
 
-function Card({ name, src, value }) {
+function CardDraggable({ name, src, value }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "card",
     item: { name, src, value },
@@ -23,4 +23,4 @@ function Card({ name, src, value }) {
   );
 }
 
-export default Card;
+export default CardDraggable;

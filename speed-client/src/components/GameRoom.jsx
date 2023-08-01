@@ -5,6 +5,12 @@ function GameRoom({ hostName, speedType, playerTwo, socket }) {
   const navigate = useNavigate();
 
   const JoinGame = (e) => {
+    socket.emit(
+      "join_game",
+      hostName,
+      e.currentTarget.value,
+      localStorage.getItem("userSession")
+    );
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({

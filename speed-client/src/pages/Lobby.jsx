@@ -26,6 +26,13 @@ export default function Lobby({ socket }) {
       e.currentTarget.value
     );
 
+    socket.emit(
+      "join_game",
+      localStorage.getItem("userSession"),
+      UserTypes.PLAYER_ONE,
+      localStorage.getItem("userSession")
+    );
+
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({

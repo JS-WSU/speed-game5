@@ -34,12 +34,14 @@ export default function GameField({
 
   useEffect(() => {
     setTimeout(() => {
-      socket.emit(
-        "join_game",
-        JSON.parse(localStorage.getItem("gameInSession")).hostName,
-        JSON.parse(localStorage.getItem("gameInSession")).userType,
-        localStorage.getItem("userSession")
-      );
+      if (localStorage.getItem("gameInSession")) {
+        socket.emit(
+          "join_game",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          localStorage.getItem("userSession")
+        );
+      }
     }, 3000);
 
     const GetGameStatus = (game) => {
