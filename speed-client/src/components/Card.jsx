@@ -7,7 +7,7 @@ function Card({ name, src, value, flip, innerRef, number }) {
       value={value}
     >
       {number && <div className="position-absolute text-warning bg-dark p-2 ">{number}</div>}
-      <img className="img-fluid" src={src} alt={name} />
+      <img className="img-fluid align-self-center" src={src} alt={name} />
     </div>
   );
 }

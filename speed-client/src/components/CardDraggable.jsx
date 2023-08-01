@@ -14,11 +14,11 @@ function Card({ name, src, value }) {
   return (
     <div
       className={`d-flex flex-grow-1 me-2`}
-      style={{ maxWidth: "125px" }}
+      style={{ maxWidth: "175px" }}
       value={value}
       ref={drag}
     >
-      <img draggable="false" className="img-fluid" src={src} alt={name} />
+      <img draggable="false" className="img-fluid align-self-center" src={src} alt={name} />
     </div>
   );
 }
