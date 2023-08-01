@@ -10,33 +10,36 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
 
   const alertContext = useContext(AlertContext);
 
-  const [{ isOverPlayerOneField }, dropPlayerOneField] = useDrop(() => ({
-    accept: "card",
-    drop: (card) => {
-      console.log(card);
-      console.log(game.playerOne.fieldCards[0]);
-      if (
-        card.value === game.playerOne.fieldCards[0].value + 1 ||
-        card.value === game.playerOne.fieldCards[0].value - 1 ||
-        (card.value === 13 && game.playerOne.fieldCards[0].value === 1) ||
-        (card.value === 1 && game.playerOne.fieldCards[0].value === 13)
-      ) {
-        socket.emit(
-          "place_card",
-          JSON.parse(localStorage.getItem("gameInSession")).hostName,
-          card,
-          UserTypes.PLAYER_ONE
-        );
-      } else {
-        alertContext.error(
-          `Invalid play, card ${card.name} is not one value higher or lower than card ${game.playerOne.fieldCards[0].name}`
-        );
-      }
-    },
-    collect: (monitor) => ({
-      isOverPlayerOneField: monitor.isOver(),
+  const [{ isOverPlayerOneField }, dropPlayerOneField] = useDrop(
+    () => ({
+      accept: "card",
+      drop: (card) => {
+        console.log(card);
+        console.log(game.playerOne.fieldCards[0]);
+        if (
+          card.value === game.playerOne.fieldCards[0].value + 1 ||
+          card.value === game.playerOne.fieldCards[0].value - 1 ||
+          (card.value === 13 && game.playerOne.fieldCards[0].value === 1) ||
+          (card.value === 1 && game.playerOne.fieldCards[0].value === 13)
+        ) {
+          socket.emit(
+            "place_card",
+            JSON.parse(localStorage.getItem("gameInSession")).hostName,
+            card,
+            UserTypes.PLAYER_ONE
+          );
+        } else {
+          alertContext.error(
+            `Invalid play, card ${card.name} is not one value higher or lower than card ${game.playerOne.fieldCards[0].name}`
+          );
+        }
+      },
+      collect: (monitor) => ({
+        isOverPlayerOneField: monitor.isOver(),
+      }),
     }),
-  }));
+    [game]
+  );
 
   const [{ isOverPlayerTwoField }, dropPlayerTwoField] = useDrop(() => ({
     accept: "card",
@@ -64,7 +67,7 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
     collect: (monitor) => ({
       isOverPlayerTwoField: monitor.isOver(),
     }),
-  }));
+  }),[game]);
 
   const opponentHandLength =
     JSON.parse(localStorage.getItem("gameInSession")).userType ===

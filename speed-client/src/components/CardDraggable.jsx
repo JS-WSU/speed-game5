@@ -7,7 +7,7 @@ function CardDraggable({ name, src, value }) {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-  }));
+  }), [name]);
 
   return (
     <div
