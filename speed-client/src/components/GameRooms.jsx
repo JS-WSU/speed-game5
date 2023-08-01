@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
-import Room from "./Room";
+import GameRoom from "./GameRoom";
 
-function Rooms({ socket }) {
-  const [rooms, setRooms] = useState([]);
+function GameRooms({ socket }) {
+  const [gameRooms, setGameRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const GetRooms = (rooms) => {
-      setRooms(rooms);
+    const GetGameRooms = (gameRooms) => {
+      setGameRooms(gameRooms);
       setTimeout(() => {
         setLoading(false);
       }, 500);
     };
-    socket.on("rooms", GetRooms);
+    socket.on("gameRooms", GetGameRooms);
 
-    return () => socket.off("rooms", GetRooms);
+    return () => socket.off("gameRooms", GetGameRooms);
   }, [socket]);
 
   return loading ? (
@@ -24,16 +24,15 @@ function Rooms({ socket }) {
         <span className="visually-hidden">Loading...</span>
       </div>
     </div>
-  ) : rooms.length ? (
+  ) : gameRooms.length ? (
     <div className="container-fluid p-2">
       <div className="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-3">
-        {rooms.map((room, index) => (
-          <Room
+        {gameRooms.map((gameRoom, index) => (
+          <GameRoom
             key={index}
-            hostName={room.hostName}
-            speedType={room.speedType}
-            users={room.users}
-            playerTwo={room.playerTwo}
+            hostName={gameRoom.hostName}
+            speedType={gameRoom.speedType}
+            playerTwo={gameRoom.playerTwo}
             socket={socket}
           />
         ))}
@@ -44,4 +43,4 @@ function Rooms({ socket }) {
   );
 }
 
-export default Rooms;
+export default GameRooms;

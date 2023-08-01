@@ -1,16 +1,52 @@
-import { Navigate } from "react-router-dom";
-import { io } from "socket.io-client";
-import Game from "../components/Game";
-import { SpeedTypes } from "../utils/Constants.mjs";
+import { Navigate, useNavigate } from "react-router-dom";
+import GameField from "../components/GameField";
+import { SpeedTypes, UserTypes } from "../utils/Constants.mjs";
+import { useEffect, useState } from "react";
+import ViewerRegularRunning from "../components/Screens/Running/Regular/ViewerRegularRunning";
+import PlayerRegularRunning from "../components/Screens/Running/Regular/PlayerRegularRunning";
 
-const socket = io.connect("http://localhost:4000/regular_speed", {
-  autoConnect: false,
-});
-function RegularSpeed() {
+function RegularSpeed({ socket }) {
+  const [game, setGame] = useState({});
+
+  const navigate = useNavigate();
+
+  const QuitGame = () => {
+    socket.emit(
+      "quit_game",
+      JSON.parse(localStorage.getItem("gameInSession")).hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType,
+      localStorage.getItem("userSession")
+    );
+    localStorage.removeItem("gameInSession");
+    navigate("/lobby");
+  };
+
+  useEffect(() => {}, [socket]);
+
   if (localStorage.getItem("gameInSession")) {
     return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
       SpeedTypes.REGULAR ? (
-      <Game socket={socket}>This is Regular Speed</Game>
+      <GameField
+        socket={socket}
+        game={game}
+        setGame={setGame}
+        quitGame={QuitGame}
+      >
+        {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+        UserTypes.VIEWER ? (
+          <ViewerRegularRunning
+            game={game}
+            socket={socket}
+            quitGame={QuitGame}
+          />
+        ) : (
+          <PlayerRegularRunning
+            game={game}
+            socket={socket}
+            quitGame={QuitGame}
+          />
+        )}
+      </GameField>
     ) : (
       <Navigate to="/california-speed" replace />
     );

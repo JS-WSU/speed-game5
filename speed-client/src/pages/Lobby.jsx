@@ -2,60 +2,51 @@ import Chat from "../components/Chat";
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
-import { io } from "socket.io-client";
 import { SpeedTypes } from "../utils/Constants.mjs";
-import Rooms from "../components/Rooms";
+import GameRooms from "../components/GameRooms";
 import { UserTypes } from "../utils/Constants.mjs";
 
-const socket = io.connect("http://localhost:4000/", { autoConnect: false });
-export default function Lobby() {
+export default function Lobby({ socket }) {
   const navigate = useNavigate();
 
   const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
-    socket.connect();
+    socket.emit("join_lobby");
 
     return () => {
-      socket.disconnect();
+      socket.emit("leave_lobby");
     };
-  }, []);
+  }, [socket]);
 
-  const HostRegularSpeed = () => {
+  const HostGame = (e) => {
     socket.emit(
       "host_game",
       localStorage.getItem("userSession"),
-      SpeedTypes.REGULAR
+      e.currentTarget.value
     );
 
-    navigate("/regular-speed");
+    socket.emit(
+      "join_game",
+      localStorage.getItem("userSession"),
+      UserTypes.PLAYER_ONE,
+      localStorage.getItem("userSession")
+    );
 
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({
         hostName: localStorage.getItem("userSession"),
         userType: UserTypes.PLAYER_ONE,
-        speedType: SpeedTypes.REGULAR,
+        speedType: e.currentTarget.value,
       })
     );
-  };
 
-  const HostCaliforniaSpeed = () => {
-    socket.emit(
-      "host_game",
-      localStorage.getItem("userSession"),
-      SpeedTypes.CALIFORNIA
-    );
-
-    navigate("/california-speed");
-    localStorage.setItem(
-      "gameInSession",
-      JSON.stringify({
-        hostName: localStorage.getItem("userSession"),
-        userType: UserTypes.PLAYER_ONE,
-        speedType: SpeedTypes.CALIFORNIA,
-      })
-    );
+    if (e.currentTarget.value === SpeedTypes.CALIFORNIA) {
+      navigate("/california-speed");
+    } else {
+      navigate("/regular-speed");
+    }
   };
 
   if (localStorage.getItem("gameInSession")) {
@@ -79,14 +70,16 @@ export default function Lobby() {
             <button
               type="button"
               className="btn btn-danger border border-3"
-              onClick={HostCaliforniaSpeed}
+              onClick={HostGame}
+              value={SpeedTypes.CALIFORNIA}
             >
               California Speed
             </button>
             <button
               type="button"
               className="btn btn-primary border border-3"
-              onClick={HostRegularSpeed}
+              onClick={HostGame}
+              value={SpeedTypes.REGULAR}
             >
               Regular Speed
             </button>
@@ -105,7 +98,7 @@ export default function Lobby() {
                 Host Game
               </button>
             </div>
-            <Rooms socket={socket} />
+            <GameRooms socket={socket} />
           </div>
           <div className="col-12 col-md-3">
             <Chat socket={socket} />

@@ -1,33 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { SpeedTypes, UserTypes } from "../utils/Constants.mjs";
 
-function Room({ hostName, speedType, playerTwo, socket }) {
+function GameRoom({ hostName, speedType, playerTwo, socket }) {
   const navigate = useNavigate();
 
-  const JoinGame = () => {
-    socket.emit("join_game", hostName, localStorage.getItem("userSession"));
-    localStorage.setItem(
-      "gameInSession",
-      JSON.stringify({
-        hostName,
-        userType: UserTypes.PLAYER_TWO,
-        speedType,
-      })
+  const JoinGame = (e) => {
+    socket.emit(
+      "join_game",
+      hostName,
+      e.currentTarget.value,
+      localStorage.getItem("userSession")
     );
-    if (speedType === SpeedTypes.CALIFORNIA) {
-      navigate("/california-speed");
-    } else {
-      navigate("/regular-speed");
-    }
-  };
-
-  const WatchGame = () => {
-    socket.emit("watch_game", hostName, localStorage.getItem("userSession"));
     localStorage.setItem(
       "gameInSession",
       JSON.stringify({
         hostName,
-        userType: UserTypes.VIEWER,
+        userType: e.currentTarget.value,
         speedType,
       })
     );
@@ -51,13 +39,18 @@ function Room({ hostName, speedType, playerTwo, socket }) {
         </p>
         <div className="text-center mt-auto">
           {!playerTwo ? (
-            <button onClick={JoinGame} className="btn btn-success w-50 border">
+            <button
+              onClick={JoinGame}
+              className="btn btn-success w-50 border"
+              value={UserTypes.PLAYER_TWO}
+            >
               Join
             </button>
           ) : (
             <button
-              onClick={WatchGame}
+              onClick={JoinGame}
               className="btn btn-secondary w-50 border"
+              value={UserTypes.VIEWER}
             >
               Watch
             </button>
@@ -68,4 +61,4 @@ function Room({ hostName, speedType, playerTwo, socket }) {
   );
 }
 
-export default Room;
+export default GameRoom;

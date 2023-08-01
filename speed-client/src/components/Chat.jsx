@@ -45,7 +45,7 @@ function Chat({ socket }) {
   }, [socket]);
 
   return (
-    <div className="w-100 h-100">
+    <div className="">
       {loading ? (
         <div className="d-flex flex-column align-items-center m-auto">
           <h2>Loading Chat...</h2>
