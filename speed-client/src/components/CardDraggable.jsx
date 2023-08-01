@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useDrag } from "react-dnd";
 
 function CardDraggable({ name, src, value }) {
@@ -8,17 +7,22 @@ function CardDraggable({ name, src, value }) {
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
-    options: "copy",
   }));
 
   return (
     <div
-      className={`d-flex flex-grow-1 me-2`}
-      style={{ maxWidth: "125px" }}
+      className={`d-flex flex-grow-1 me-2 ${isDragging ? "opacity-0" : ""}`}
+      style={{
+        maxWidth: "125px",
+      }}
       value={value}
       ref={drag}
+      draggable
+      onDragStart={() => {
+        console.log(`name ${name} src ${src} value ${value}`);
+      }}
     >
-      <img draggable="false" className="img-fluid" src={src} alt={name} />
+      <img className="img-fluid" src={src} alt={name} />
     </div>
   );
 }

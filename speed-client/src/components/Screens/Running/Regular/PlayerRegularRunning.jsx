@@ -2,26 +2,67 @@ import Card from "../../../Card";
 import CardDraggable from "../../../CardDraggable";
 import { UserTypes } from "../../../../utils/Constants.mjs";
 import { useDrop } from "react-dnd";
+import { useContext } from "react";
+import AlertContext from "../../../../context/AlertContext";
 
 function PlayerRegularRunning({ game, socket, quitGame }) {
   let opponentHand = [];
+
+  const alertContext = useContext(AlertContext);
 
   const [{ isOverPlayerOneField }, dropPlayerOneField] = useDrop(() => ({
     accept: "card",
     drop: (card) => {
       console.log(card);
+      console.log(game.playerOne.fieldCards[0]);
+      if (
+        card.value === game.playerOne.fieldCards[0].value + 1 ||
+        card.value === game.playerOne.fieldCards[0].value - 1 ||
+        (card.value === 13 && game.playerOne.fieldCards[0].value === 1) ||
+        (card.value === 1 && game.playerOne.fieldCards[0].value === 13)
+      ) {
+        socket.emit(
+          "place_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          card,
+          UserTypes.PLAYER_ONE
+        );
+      } else {
+        alertContext.error(
+          `Invalid play, card ${card.name} is not one value higher or lower than card ${game.playerOne.fieldCards[0].name}`
+        );
+      }
     },
     collect: (monitor) => ({
-      isOverPlayerTwoField: monitor.isOver(),
+      isOverPlayerOneField: monitor.isOver(),
     }),
   }));
+
   const [{ isOverPlayerTwoField }, dropPlayerTwoField] = useDrop(() => ({
     accept: "card",
     drop: (card) => {
       console.log(card);
+      console.log(game.playerTwo.fieldCards[0]);
+      if (
+        card.value === game.playerTwo.fieldCards[0].value + 1 ||
+        card.value === game.playerTwo.fieldCards[0].value - 1 ||
+        (card.value === 13 && game.playerTwo.fieldCards[0].value === 1) ||
+        (card.value === 1 && game.playerTwo.fieldCards[0].value === 13)
+      ) {
+        socket.emit(
+          "place_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          card,
+          UserTypes.PLAYER_TWO
+        );
+      } else {
+        alertContext.error(
+          `Invalid play, card ${card.name} is not one value higher or lower than card ${game.playerTwo.fieldCards[0].name}`
+        );
+      }
     },
     collect: (monitor) => ({
-      isOverPlayerOneField: monitor.isOver(),
+      isOverPlayerTwoField: monitor.isOver(),
     }),
   }));
 
@@ -80,13 +121,17 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
               innerRef={dropPlayerTwoField}
               name={game.playerTwo.fieldCards[0].name}
               src={game.playerTwo.fieldCards[0].src}
+              value={game.playerTwo.fieldCards[0].value}
               number={game.playerTwo.fieldCards.length}
+              hover={isOverPlayerTwoField}
             />
             <Card
               innerRef={dropPlayerOneField}
               name={game.playerOne.fieldCards[0].name}
               src={game.playerOne.fieldCards[0].src}
+              value={game.playerOne.fieldCards[0].value}
               number={game.playerOne.fieldCards.length}
+              hover={isOverPlayerOneField}
             />
           </>
         ) : (
@@ -95,13 +140,17 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
               innerRef={dropPlayerOneField}
               name={game.playerOne.fieldCards[0].name}
               src={game.playerOne.fieldCards[0].src}
+              value={game.playerOne.fieldCards[0].value}
               number={game.playerOne.fieldCards.length}
+              hover={isOverPlayerOneField}
             />
             <Card
               innerRef={dropPlayerTwoField}
               name={game.playerTwo.fieldCards[0].name}
               src={game.playerTwo.fieldCards[0].src}
+              value={game.playerTwo.fieldCards[0].value}
               number={game.playerTwo.fieldCards.length}
+              hover={isOverPlayerTwoField}
             />
           </>
         )}

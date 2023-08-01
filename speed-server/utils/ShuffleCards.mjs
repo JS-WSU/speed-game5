@@ -10,36 +10,38 @@ const ShuffleCards = (game) => {
 
     for (let i = 0; i < 5; i++) {
       game.playerOne.sidePile.push(game.deck[i]);
-      game.deck.splice(0, 1);
     }
+    game.deck.splice(0, 5);
+
     for (let i = 0; i < 5; i++) {
       game.playerTwo.sidePile.push(game.deck[i]);
-      game.deck.splice(0, 1);
     }
+    game.deck.splice(0, 5);
+
     game.playerOne.fieldCards.push(game.deck[0]);
     game.playerTwo.fieldCards.push(game.deck[1]);
     game.deck.splice(0, 2);
 
     for (let i = 0; i < 5; i++) {
       game.playerOne.hand.push(game.deck[i]);
-      game.deck.splice(0, 1);
     }
+    game.deck.splice(0, 5);
 
     for (let i = 0; i < 5; i++) {
       game.playerTwo.hand.push(game.deck[i]);
-      game.deck.splice(0, 1);
     }
+    game.deck.splice(0, 5);
 
     for (let i = 0; i < 15; i++) {
       game.playerOne.drawPile.push(game.deck[i]);
-      game.deck.splice(0, 1);
     }
+    game.deck.splice(0, 15);
     for (let i = 0; i < 15; i++) {
       game.playerTwo.drawPile.push(game.deck[i]);
-      game.deck.splice(0, 1);
     }
+    game.deck.splice(0, 15);
 
-    console.log(game.deck);
+    console.log(game);
   } else {
   }
 

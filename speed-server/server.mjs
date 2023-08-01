@@ -257,6 +257,39 @@ io.on("connection", async (socket) => {
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
+  socket.on("place_card", (hostName, card, userField) => {
+    const gameIndex = games.findIndex((game) => game.hostName === hostName);
+    console.log(games[gameIndex]);
+
+    let playerOneHand = games[gameIndex].playerOne.hand;
+    let playerTwoHand = games[gameIndex].playerTwo.hand;
+
+    playerOneHand = playerOneHand.filter(
+      (playerOneCard) => playerOneCard.name !== card.name
+    );
+    playerTwoHand = playerTwoHand.filter(
+      (playerTwoCard) => playerTwoCard.name !== card.name
+    );
+
+    if (userField === UserTypes.PLAYER_ONE) {
+      games[gameIndex].playerOne.fieldCards = [
+        card,
+        ...games[gameIndex].playerOne.fieldCards,
+      ];
+    } else {
+      games[gameIndex].playerTwo.fieldCards = [
+        card,
+        ...games[gameIndex].playerTwo.fieldCards,
+      ];
+    }
+
+    games[gameIndex].playerOne.hand = playerOneHand;
+    games[gameIndex].playerTwo.hand = playerTwoHand;
+
+    console.log(games[gameIndex])
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+  });
+
   socket.on("disconnect", () => {
     console.log(`Socket ${socket.id} disconnected from main namespace`);
   });
