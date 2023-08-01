@@ -28,17 +28,24 @@ function ViewerRegularRunning({ game, socket, quitGame }) {
         </div>
       </div>
       <div className="d-flex justify-content-center">
-        <Card src="/img/PNG-cards-1.3/cardback.png" />
+        <Card
+          src="/img/PNG-cards-1.3/cardback.png"
+          number={game.playerTwo.sidePile}
+        />
         <Card
           name={game.playerTwo.fieldCards[0].name}
           src={game.playerTwo.fieldCards[0].src}
-          flip={true}
+          number={game.playerTwo.fieldCards.length}
         />
         <Card
           name={game.playerOne.fieldCards[0].name}
           src={game.playerOne.fieldCards[0].src}
+          number={game.playerOne.fieldCards.length}
         />
-        <Card src="/img/PNG-cards-1.3/cardback.png" />
+        <Card
+          src="/img/PNG-cards-1.3/cardback.png"
+          number={game.playerOne.sidePile}
+        />
       </div>
       <div className="d-flex justify-content-center">
         <button
