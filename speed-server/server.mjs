@@ -288,6 +288,56 @@ io.on("connection", async (socket) => {
     games[gameIndex].playerOne.hand = playerOneHand;
     games[gameIndex].playerTwo.hand = playerTwoHand;
 
+    games[gameIndex].playerOne.hand.forEach((card) => {
+      if (
+        card.value === games[gameIndex].playerOne.fieldCards[0].value + 1 ||
+        card.value === games[gameIndex].playerOne.fieldCards[0].value - 1 ||
+        (card.value === 13 &&
+          games[gameIndex].playerOne.fieldCards[0].value === 1) ||
+        (card.value === 1 &&
+          games[gameIndex].playerOne.fieldCards[0].value === 13)
+      ) {
+        games[gameIndex].playerOne.unableToPlay = false;
+      }
+    });
+    games[gameIndex].playerOne.hand.forEach((card) => {
+      if (
+        card.value === games[gameIndex].playerTwo.fieldCards[0].value + 1 ||
+        card.value === games[gameIndex].playerTwo.fieldCards[0].value - 1 ||
+        (card.value === 13 &&
+          games[gameIndex].playerTwo.fieldCards[0].value === 1) ||
+        (card.value === 1 &&
+          games[gameIndex].playerTwo.fieldCards[0].value === 13)
+      ) {
+        games[gameIndex].playerOne.unableToPlay = false;
+      }
+    });
+
+    games[gameIndex].playerTwo.hand.forEach((card) => {
+      if (
+        card.value === games[gameIndex].playerOne.fieldCards[0].value + 1 ||
+        card.value === games[gameIndex].playerOne.fieldCards[0].value - 1 ||
+        (card.value === 13 &&
+          games[gameIndex].playerOne.fieldCards[0].value === 1) ||
+        (card.value === 1 &&
+          games[gameIndex].playerOne.fieldCards[0].value === 13)
+      ) {
+        games[gameIndex].playerTwo.unableToPlay = false;
+      }
+    });
+    games[gameIndex].playerTwo.hand.forEach((card) => {
+      if (
+        card.value === games[gameIndex].playerTwo.fieldCards[0].value + 1 ||
+        card.value === games[gameIndex].playerTwo.fieldCards[0].value - 1 ||
+        (card.value === 13 &&
+          games[gameIndex].playerTwo.fieldCards[0].value === 1) ||
+        (card.value === 1 &&
+          games[gameIndex].playerTwo.fieldCards[0].value === 13)
+      ) {
+        games[gameIndex].playerTwo.unableToPlay = false;
+      }
+    });
+
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
