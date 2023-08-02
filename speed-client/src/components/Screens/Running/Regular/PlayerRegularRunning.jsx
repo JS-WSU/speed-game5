@@ -10,6 +10,86 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
 
   const alertContext = useContext(AlertContext);
 
+  const [unableToPlay, setUnableToPlay] = useState(null);
+
+  useEffect(() => {
+    if (
+      JSON.parse(localStorage.getItem("gameInSession")).userType ===
+        UserTypes.PLAYER_ONE &&
+      (game.playerOne.hand.length === 5 || !game.playerOne.drawPile)
+    ) {
+      let canPlay = false;
+
+      game.playerOne.hand.forEach((card) => {
+        if (
+          card.value === game.playerOne.fieldCards[0].value + 1 ||
+          card.value === game.playerOne.fieldCards[0].value - 1 ||
+          (card.value === 13 && game.playerOne.fieldCards[0].value === 1) ||
+          (card.value === 1 && game.playerOne.fieldCards[0].value === 13)
+        ) {
+          canPlay = true;
+        }
+      });
+      game.playerOne.hand.forEach((card) => {
+        if (
+          card.value === game.playerTwo.fieldCards[0].value + 1 ||
+          card.value === game.playerTwo.fieldCards[0].value - 1 ||
+          (card.value === 13 && game.playerTwo.fieldCards[0].value === 1) ||
+          (card.value === 1 && game.playerTwo.fieldCards[0].value === 13)
+        ) {
+          canPlay = true;
+        }
+      });
+
+      if (canPlay) {
+        setUnableToPlay(false);
+      } else {
+        setUnableToPlay(true);
+      }
+    } else if (
+      JSON.parse(localStorage.getItem("gameInSession")).userType ===
+        UserTypes.PLAYER_TWO &&
+      (game.playerTwo.hand.length === 5 || !game.playerTwo.drawPile)
+    ) {
+      let canPlay = false;
+
+      game.playerTwo.hand.forEach((card) => {
+        if (
+          card.value === game.playerOne.fieldCards[0].value + 1 ||
+          card.value === game.playerOne.fieldCards[0].value - 1 ||
+          (card.value === 13 && game.playerOne.fieldCards[0].value === 1) ||
+          (card.value === 1 && game.playerOne.fieldCards[0].value === 13)
+        ) {
+          canPlay = true;
+        }
+      });
+      game.playerTwo.hand.forEach((card) => {
+        if (
+          card.value === game.playerTwo.fieldCards[0].value + 1 ||
+          card.value === game.playerTwo.fieldCards[0].value - 1 ||
+          (card.value === 13 && game.playerTwo.fieldCards[0].value === 1) ||
+          (card.value === 1 && game.playerTwo.fieldCards[0].value === 13)
+        ) {
+          canPlay = true;
+        }
+      });
+
+      if (canPlay) {
+        setUnableToPlay(false);
+      } else {
+        setUnableToPlay(true);
+      }
+    }
+  }, [game]);
+
+  const UnableToPlay = () => {
+    socket.emit(
+      "unable_to_play",
+      game.hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType
+    );
+  };
+
   const DrawCard = () => {
     if (
       JSON.parse(localStorage.getItem("gameInSession")).userType ===
@@ -237,10 +317,11 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
               ? game.playerOne.drawPile
               : game.playerTwo.drawPile}{" "}
           </p>
-
-          <button onClick={quitGame} className="btn btn-danger">
-            I Can't Play
-          </button>
+          {unableToPlay ? (
+            <button onClick={UnableToPlay} className="btn btn-danger">
+              Unable to Play
+            </button>
+          ) : null}
         </div>
       </div>
     </div>
