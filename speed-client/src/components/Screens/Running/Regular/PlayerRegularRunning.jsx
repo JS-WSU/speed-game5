@@ -5,12 +5,28 @@ import { useDrop } from "react-dnd";
 import { useContext, useEffect, useState } from "react";
 import AlertContext from "../../../../context/AlertContext";
 
-function PlayerRegularRunning({ game, socket, quitGame }) {
+function PlayerRegularRunning({ game, setGame, socket, quitGame }) {
   let opponentHand = [];
 
   const alertContext = useContext(AlertContext);
 
   const [unableToPlay, setUnableToPlay] = useState(null);
+
+  const [drawingFromSidePile, setDrawingFromSidePile] = useState(false);
+
+  useEffect(() => {
+    const DrawFromSidePile = (game) => {
+      setDrawingFromSidePile(true);
+      setTimeout(() => {
+        setGame(game);
+        setDrawingFromSidePile(false);
+      }, 5000);
+    };
+
+    socket.on("draw_from_side_pile", DrawFromSidePile);
+
+    return () => socket.off("draw_from_side_pile", DrawFromSidePile);
+  }, [socket, setGame]);
 
   useEffect(() => {
     if (
@@ -179,6 +195,16 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
   }
   return (
     <div className="row text-light g-3 flex-grow-1">
+      {game.playerOne.unableToPlay ? (
+        <div className="bg-danger mt-0 text-center">
+          {game.playerOne.name} unable to play!
+        </div>
+      ) : null}
+      {game.playerTwo.unableToPlay ? (
+        <div className="bg-danger mt-1 text-center">
+          {game.playerTwo.name} unable to play!
+        </div>
+      ) : null}
       <div className="d-flex">
         <div className="d-flex flex-column text-center me-auto">
           <p>
@@ -206,66 +232,72 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
           ))}
         </div>
       </div>
-      <div className="d-flex justify-content-center">
-        <Card
-          src="/img/PNG-cards-1.3/cardback.png"
-          number={
-            JSON.parse(localStorage.getItem("gameInSession")).userType ===
-            UserTypes.PLAYER_ONE
-              ? game.playerTwo.sidePile
-              : game.playerOne.sidePile
-          }
-        />
-        {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-        UserTypes.PLAYER_ONE ? (
-          <>
-            <Card
-              innerRef={dropPlayerTwoField}
-              name={game.playerTwo.fieldCards[0].name}
-              src={game.playerTwo.fieldCards[0].src}
-              value={game.playerTwo.fieldCards[0].value}
-              number={game.playerTwo.fieldCards.length}
-              hover={isOverPlayerTwoField}
-            />
-            <Card
-              innerRef={dropPlayerOneField}
-              name={game.playerOne.fieldCards[0].name}
-              src={game.playerOne.fieldCards[0].src}
-              value={game.playerOne.fieldCards[0].value}
-              number={game.playerOne.fieldCards.length}
-              hover={isOverPlayerOneField}
-            />
-          </>
-        ) : (
-          <>
-            <Card
-              innerRef={dropPlayerOneField}
-              name={game.playerOne.fieldCards[0].name}
-              src={game.playerOne.fieldCards[0].src}
-              value={game.playerOne.fieldCards[0].value}
-              number={game.playerOne.fieldCards.length}
-              hover={isOverPlayerOneField}
-            />
-            <Card
-              innerRef={dropPlayerTwoField}
-              name={game.playerTwo.fieldCards[0].name}
-              src={game.playerTwo.fieldCards[0].src}
-              value={game.playerTwo.fieldCards[0].value}
-              number={game.playerTwo.fieldCards.length}
-              hover={isOverPlayerTwoField}
-            />
-          </>
-        )}
-        <Card
-          src="/img/PNG-cards-1.3/cardback.png"
-          number={
-            JSON.parse(localStorage.getItem("gameInSession")).userType ===
-            UserTypes.PLAYER_ONE
-              ? game.playerOne.sidePile
-              : game.playerTwo.sidePile
-          }
-        />
-      </div>
+      {drawingFromSidePile ? (
+        <h2 className="m-auto text-center bg-info">
+          Nobody can play! Drawing a card from each side pile...
+        </h2>
+      ) : (
+        <div className="d-flex justify-content-center">
+          <Card
+            src="/img/PNG-cards-1.3/cardback.png"
+            number={
+              JSON.parse(localStorage.getItem("gameInSession")).userType ===
+              UserTypes.PLAYER_ONE
+                ? game.playerTwo.sidePile
+                : game.playerOne.sidePile
+            }
+          />
+          {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+          UserTypes.PLAYER_ONE ? (
+            <>
+              <Card
+                innerRef={dropPlayerTwoField}
+                name={game.playerTwo.fieldCards[0].name}
+                src={game.playerTwo.fieldCards[0].src}
+                value={game.playerTwo.fieldCards[0].value}
+                number={game.playerTwo.fieldCards.length}
+                hover={isOverPlayerTwoField}
+              />
+              <Card
+                innerRef={dropPlayerOneField}
+                name={game.playerOne.fieldCards[0].name}
+                src={game.playerOne.fieldCards[0].src}
+                value={game.playerOne.fieldCards[0].value}
+                number={game.playerOne.fieldCards.length}
+                hover={isOverPlayerOneField}
+              />
+            </>
+          ) : (
+            <>
+              <Card
+                innerRef={dropPlayerOneField}
+                name={game.playerOne.fieldCards[0].name}
+                src={game.playerOne.fieldCards[0].src}
+                value={game.playerOne.fieldCards[0].value}
+                number={game.playerOne.fieldCards.length}
+                hover={isOverPlayerOneField}
+              />
+              <Card
+                innerRef={dropPlayerTwoField}
+                name={game.playerTwo.fieldCards[0].name}
+                src={game.playerTwo.fieldCards[0].src}
+                value={game.playerTwo.fieldCards[0].value}
+                number={game.playerTwo.fieldCards.length}
+                hover={isOverPlayerTwoField}
+              />
+            </>
+          )}
+          <Card
+            src="/img/PNG-cards-1.3/cardback.png"
+            number={
+              JSON.parse(localStorage.getItem("gameInSession")).userType ===
+              UserTypes.PLAYER_ONE
+                ? game.playerOne.sidePile
+                : game.playerTwo.sidePile
+            }
+          />
+        </div>
+      )}
       <div className="d-flex justify-content-center">
         <button
           onClick={quitGame}

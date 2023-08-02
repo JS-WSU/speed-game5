@@ -135,6 +135,7 @@ io.on("connection", async (socket) => {
           sidePile: [],
           drawPile: [],
           ready: false,
+          unabletoPlay: false,
         },
         playerTwo: {
           name: null,
@@ -143,6 +144,7 @@ io.on("connection", async (socket) => {
           sidePile: [],
           drawPile: [],
           ready: false,
+          unableToPlay: false,
         },
         viewers: [],
         gameState: GameStates.WAITING,
@@ -157,14 +159,12 @@ io.on("connection", async (socket) => {
           deck: [],
           field: [],
           ready: false,
-          canPlay: null,
         },
         playerTwo: {
           name: null,
           deck: [],
           field: [],
           ready: false,
-          canPlay: null,
         },
         viewers: [],
         gameState: GameStates.WAITING,
@@ -309,6 +309,39 @@ io.on("connection", async (socket) => {
     }
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+  });
+
+  socket.on("unable_to_play", (hostName, userType) => {
+    const gameIndex = games.findIndex((game) => game.hostName === hostName);
+
+    if (userType === UserTypes.PLAYER_ONE) {
+      games[gameIndex].playerOne.unableToPlay = true;
+    } else {
+      games[gameIndex].playerTwo.unableToPlay = true;
+    }
+
+    if (
+      games[gameIndex].playerOne.unableToPlay &&
+      games[gameIndex].playerTwo.unableToPlay
+    ) {
+      games[gameIndex].playerOne.unableToPlay = false;
+      games[gameIndex].playerTwo.unableToPlay = false;
+
+      games[gameIndex].playerOne.fieldCards = [
+        games[gameIndex].playerOne.sidePile[0],
+        ...games[gameIndex].playerOne.fieldCards,
+      ];
+      games[gameIndex].playerOne.sidePile.splice(0, 1);
+      games[gameIndex].playerTwo.fieldCards = [
+        games[gameIndex].playerTwo.sidePile[0],
+        ...games[gameIndex].playerTwo.fieldCards,
+      ];
+      games[gameIndex].playerTwo.sidePile.splice(0, 1);
+
+      EmitToAllUsersInGame(io, games[gameIndex], "draw_from_side_pile");
+    } else {
+      EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+    }
   });
 
   socket.on("disconnect", () => {

@@ -42,6 +42,7 @@ function RegularSpeed({ socket }) {
         ) : (
           <PlayerRegularRunning
             game={game}
+            setGame={setGame}
             socket={socket}
             quitGame={QuitGame}
           />
