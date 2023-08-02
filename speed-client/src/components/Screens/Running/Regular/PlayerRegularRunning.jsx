@@ -5,7 +5,14 @@ import { useDrop } from "react-dnd";
 import { useContext, useEffect, useState } from "react";
 import AlertContext from "../../../../context/AlertContext";
 
-function PlayerRegularRunning({ game, setGame, socket, quitGame }) {
+function PlayerRegularRunning({
+  game,
+  setGame,
+  socket,
+  quitGame,
+  shufflingSidePile,
+  drawingSidePile,
+}) {
   let opponentHand = [];
 
   const alertContext = useContext(AlertContext);
@@ -234,7 +241,11 @@ function PlayerRegularRunning({ game, setGame, socket, quitGame }) {
       </div>
       {drawingFromSidePile ? (
         <h2 className="m-auto text-center bg-info">
-          Nobody can play! Drawing a card from each side pile...
+          Nobody can play! Drawing a card from each player's side pile...
+        </h2>
+      ) : shufflingSidePile ? (
+        <h2 className="m-auto text-center bg-info">
+          Side piles empty! Reshuffling....
         </h2>
       ) : (
         <div className="d-flex justify-content-center">

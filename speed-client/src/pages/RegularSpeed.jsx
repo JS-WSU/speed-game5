@@ -21,7 +21,7 @@ function RegularSpeed({ socket }) {
     navigate("/lobby");
   };
 
-  const [drawingFromSidePile, setDrawingFromSidePile] = useState(false);
+  const [drawingSidePile, setDrawingSidePile] = useState(false);
 
   const [shufflingSidePile, setShufflingSidePile] = useState(false);
 
@@ -31,7 +31,7 @@ function RegularSpeed({ socket }) {
       setTimeout(() => {
         setGame(game);
         setShufflingSidePile(false);
-      }, 5000);
+      }, 2000);
     };
 
     socket.on("shuffle_side_pile", ShuffleSidePile);
@@ -41,11 +41,11 @@ function RegularSpeed({ socket }) {
 
   useEffect(() => {
     const DrawFromSidePile = (game) => {
-      setDrawingFromSidePile(true);
+      setDrawingSidePile(true);
       setTimeout(() => {
         setGame(game);
-        setDrawingFromSidePile(false);
-      }, 5000);
+        setDrawingSidePile(false);
+      }, 2000);
     };
 
     socket.on("draw_from_side_pile", DrawFromSidePile);
@@ -68,7 +68,7 @@ function RegularSpeed({ socket }) {
             game={game}
             socket={socket}
             quitGame={QuitGame}
-            drawingFromSidePile={drawingFromSidePile}
+            drawingSidePile={drawingSidePile}
             shufflingSidePile={shufflingSidePile}
           />
         ) : (
@@ -77,7 +77,7 @@ function RegularSpeed({ socket }) {
             setGame={setGame}
             socket={socket}
             quitGame={QuitGame}
-            drawingFromSidePile={drawingFromSidePile}
+            drawingSidePile={drawingSidePile}
             shufflingSidePile={shufflingSidePile}
           />
         )}

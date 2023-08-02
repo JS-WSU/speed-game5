@@ -389,7 +389,11 @@ io.on("connection", async (socket) => {
       games[gameIndex].playerTwo.sidePile.splice(0, 1);
 
       EmitToAllUsersInGame(io, games[gameIndex], "draw_from_side_pile");
-    } else if (!games[gameIndex].playerOne.sidePile.length) {
+    } else if (
+      games[gameIndex].playerOne.unableToPlay &&
+      games[gameIndex].playerTwo.unableToPlay &&
+      !games[gameIndex].playerOne.sidePile.length
+    ) {
       games[gameIndex].playerOne.sidePile = games[
         gameIndex
       ].playerOne.fieldCards
