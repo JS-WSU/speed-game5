@@ -389,6 +389,32 @@ io.on("connection", async (socket) => {
       games[gameIndex].playerTwo.sidePile.splice(0, 1);
 
       EmitToAllUsersInGame(io, games[gameIndex], "draw_from_side_pile");
+    } else if (!games[gameIndex].playerOne.sidePile.length) {
+      games[gameIndex].playerOne.sidePile = games[
+        gameIndex
+      ].playerOne.fieldCards
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+
+      games[gameIndex].playerTwo.sidePile = games[
+        gameIndex
+      ].playerTwo.fieldCards
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+
+      games[gameIndex].playerOne.fieldCards = [
+        games[gameIndex].playerOne.sidePile[0],
+      ];
+      games[gameIndex].playerOne.sidePile.splice(0, 1);
+
+      games[gameIndex].playerTwo.fieldCards = [
+        games[gameIndex].playerTwo.sidePile[0],
+      ];
+      games[gameIndex].playerTwo.sidePile.splice(0, 1);
+
+      EmitToAllUsersInGame(io, games[gameIndex], "shuffle_side_pile");
     } else {
       EmitToAllUsersInGame(io, games[gameIndex], "game_status");
     }
