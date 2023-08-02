@@ -7,7 +7,6 @@ import AlertContext from "../../../../context/AlertContext";
 
 function PlayerRegularRunning({
   game,
-  setGame,
   socket,
   quitGame,
   shufflingSidePile,
@@ -19,27 +18,14 @@ function PlayerRegularRunning({
 
   const [unableToPlay, setUnableToPlay] = useState(null);
 
-  const [drawingFromSidePile, setDrawingFromSidePile] = useState(false);
-
-  useEffect(() => {
-    const DrawFromSidePile = (game) => {
-      setDrawingFromSidePile(true);
-      setTimeout(() => {
-        setGame(game);
-        setDrawingFromSidePile(false);
-      }, 5000);
-    };
-
-    socket.on("draw_from_side_pile", DrawFromSidePile);
-
-    return () => socket.off("draw_from_side_pile", DrawFromSidePile);
-  }, [socket, setGame]);
+  const [showSpeedButton, setShowSpeedButton] = useState(null);
 
   useEffect(() => {
     if (
       JSON.parse(localStorage.getItem("gameInSession")).userType ===
         UserTypes.PLAYER_ONE &&
-      (game.playerOne.hand.length === 5 || !game.playerOne.drawPile)
+      (game.playerOne.hand.length === 5 ||
+        (!game.playerOne.drawPile && game.playerOne.hand.length))
     ) {
       let canPlay = false;
 
@@ -72,7 +58,8 @@ function PlayerRegularRunning({
     } else if (
       JSON.parse(localStorage.getItem("gameInSession")).userType ===
         UserTypes.PLAYER_TWO &&
-      (game.playerTwo.hand.length === 5 || !game.playerTwo.drawPile)
+      (game.playerTwo.hand.length === 5 ||
+        (!game.playerTwo.drawPile && game.playerTwo.hand.length))
     ) {
       let canPlay = false;
 
@@ -113,12 +100,20 @@ function PlayerRegularRunning({
     );
   };
 
+  const SpeedWinner = () => {
+    console.log("You won!");
+    socket.emit(
+      "regular_speed_winner",
+      game.hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType
+    );
+  };
+
   const DrawCard = () => {
     if (
       JSON.parse(localStorage.getItem("gameInSession")).userType ===
       UserTypes.PLAYER_ONE
     ) {
-      console.log(game.playerOne.hand.length);
       game.playerOne.hand.length === 5
         ? alertContext.error("Cannot draw a card. You already have 5 cards.")
         : socket.emit("draw_card", game.hostName, UserTypes.PLAYER_ONE);
@@ -239,7 +234,7 @@ function PlayerRegularRunning({
           ))}
         </div>
       </div>
-      {drawingFromSidePile ? (
+      {drawingSidePile ? (
         <h2 className="m-auto text-center bg-info">
           Nobody can play! Drawing a card from each player's side pile...
         </h2>
@@ -312,31 +307,51 @@ function PlayerRegularRunning({
       <div className="d-flex justify-content-center">
         <button
           onClick={quitGame}
-          className="btn btn-danger align-self-end me-auto"
+          className="border btn btn-danger align-self-end me-auto"
         >
           Quit Game
         </button>
 
-        <div className="d-flex">
+        <div className="d-flex flex-column">
+          <div className="d-flex flex-grow-1">
+            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.PLAYER_ONE
+              ? game.playerOne.hand.map((card, index) => (
+                  <CardDraggable
+                    key={index}
+                    name={card.name}
+                    src={card.src}
+                    value={card.value}
+                  />
+                ))
+              : game.playerTwo.hand.map((card, index) => (
+                  <CardDraggable
+                    key={index}
+                    name={card.name}
+                    src={card.src}
+                    value={card.value}
+                  />
+                ))}
+          </div>
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-          UserTypes.PLAYER_ONE
-            ? game.playerOne.hand.map((card, index) => (
-                <CardDraggable
-                  key={index}
-                  name={card.name}
-                  src={card.src}
-                  value={card.value}
-                />
-              ))
-            : game.playerTwo.hand.map((card, index) => (
-                <CardDraggable
-                  key={index}
-                  name={card.name}
-                  src={card.src}
-                  value={card.value}
-                />
-              ))}
+          UserTypes.PLAYER_ONE ? (
+            !game.playerOne.hand.length && !game.playerOne.drawPile ? (
+              <button onClick={SpeedWinner} className="border btn btn-primary">
+                SPEED
+              </button>
+            ) : null
+          ) : !game.playerTwo.hand.length && !game.playerTwo.drawPile ? (
+            <button onClick={SpeedWinner} className="border btn btn-success">
+              YELL SPEED
+            </button>
+          ) : null}
+          {unableToPlay ? (
+            <button onClick={UnableToPlay} className="border btn btn-danger">
+              Unable to Play
+            </button>
+          ) : null}
         </div>
+
         <div className="d-flex flex-column text-center ms-auto">
           <p>
             {" "}
@@ -360,11 +375,6 @@ function PlayerRegularRunning({
               ? game.playerOne.drawPile
               : game.playerTwo.drawPile}{" "}
           </p>
-          {unableToPlay ? (
-            <button onClick={UnableToPlay} className="btn btn-danger">
-              Unable to Play
-            </button>
-          ) : null}
         </div>
       </div>
     </div>

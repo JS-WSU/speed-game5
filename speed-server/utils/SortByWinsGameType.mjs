@@ -41,7 +41,7 @@ const SortByWinsGameType = async (speedType, limit) => {
         },
       },
     },
-    { $sort: { percentage: -1, updatedAt: 1 } },
+    { $sort: { percentage: -1, totalGames: -1, updatedAt: 1 } },
     {
       $unset: [
         "_id",

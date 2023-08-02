@@ -49,42 +49,6 @@ const io = new Server(server, {
   },
 });
 
-// Main namespace
-// const california_game = {
-//   deck: [],
-//   fieldCards: [],
-//   hostName: undefined,
-//   playerOne: {
-//     name: undefined,
-//     pile: []
-//   },
-//   playerTwo: {
-//     name: undefined,
-//     pile: []
-//   },
-//   viewers: [],
-//   gameState: "waiting"
-// }
-
-// const regular_game = {
-//   deck: [],
-//   hostName: undefined,
-//   playerOne: {
-//     name: undefined,
-//     fieldCards: [],
-//     pile: [],
-//     sidePile: []
-//   },
-//   playerTwo: {
-//     name: undefined,
-//     fieldCards: [],
-//     pile: [],
-//     sidePile: []
-//   },
-//   viewers: [],
-//   gameState: "waiting"
-// }
-
 let games = [];
 
 io.on("connection", async (socket) => {
@@ -480,7 +444,6 @@ io.on("connection", async (socket) => {
   });
 });
 
-// // Regular Speed namespace
 // const regularSpeedNameSpace = io.of("regular_speed");
 
 // regularSpeedNameSpace.on("connection", (socket) => {
