@@ -157,12 +157,14 @@ io.on("connection", async (socket) => {
           deck: [],
           field: [],
           ready: false,
+          canPlay: null,
         },
         playerTwo: {
           name: null,
           deck: [],
           field: [],
           ready: false,
+          canPlay: null,
         },
         viewers: [],
         gameState: GameStates.WAITING,
@@ -196,6 +198,7 @@ io.on("connection", async (socket) => {
           };
         }
       }
+
       EmitToAllUsersInGame(io, games[gameIndex], "game_status");
 
       io.to("lobby").emit("gameRooms", FilteredGames(games));
@@ -257,9 +260,8 @@ io.on("connection", async (socket) => {
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
-  socket.on("place_card", (hostName, card, userField) => {
+  socket.on("place_card", (hostName, card, userType) => {
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
-    console.log(games[gameIndex]);
 
     let playerOneHand = games[gameIndex].playerOne.hand;
     let playerTwoHand = games[gameIndex].playerTwo.hand;
@@ -271,7 +273,7 @@ io.on("connection", async (socket) => {
       (playerTwoCard) => playerTwoCard.name !== card.name
     );
 
-    if (userField === UserTypes.PLAYER_ONE) {
+    if (userType === UserTypes.PLAYER_ONE) {
       games[gameIndex].playerOne.fieldCards = [
         card,
         ...games[gameIndex].playerOne.fieldCards,
@@ -286,7 +288,26 @@ io.on("connection", async (socket) => {
     games[gameIndex].playerOne.hand = playerOneHand;
     games[gameIndex].playerTwo.hand = playerTwoHand;
 
-    console.log(games[gameIndex])
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+  });
+
+  socket.on("draw_card", (hostName, userType) => {
+    const gameIndex = games.findIndex((game) => game.hostName === hostName);
+
+    if (userType === UserTypes.PLAYER_ONE) {
+      games[gameIndex].playerOne.hand = [
+        ...games[gameIndex].playerOne.hand,
+        games[gameIndex].playerOne.drawPile[0],
+      ];
+      games[gameIndex].playerOne.drawPile.splice(0, 1);
+    } else {
+      games[gameIndex].playerTwo.hand = [
+        ...games[gameIndex].playerTwo.hand,
+        games[gameIndex].playerTwo.drawPile[0],
+      ];
+      games[gameIndex].playerTwo.drawPile.splice(0, 1);
+    }
+
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 

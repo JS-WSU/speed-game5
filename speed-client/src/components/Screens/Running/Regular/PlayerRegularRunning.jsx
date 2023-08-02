@@ -2,13 +2,29 @@ import Card from "../../../Card";
 import CardDraggable from "../../../CardDraggable";
 import { UserTypes } from "../../../../utils/Constants.mjs";
 import { useDrop } from "react-dnd";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import AlertContext from "../../../../context/AlertContext";
 
 function PlayerRegularRunning({ game, socket, quitGame }) {
   let opponentHand = [];
 
   const alertContext = useContext(AlertContext);
+
+  const DrawCard = () => {
+    if (
+      JSON.parse(localStorage.getItem("gameInSession")).userType ===
+      UserTypes.PLAYER_ONE
+    ) {
+      console.log(game.playerOne.hand.length);
+      game.playerOne.hand.length === 5
+        ? alertContext.error("Cannot draw a card. You already have 5 cards.")
+        : socket.emit("draw_card", game.hostName, UserTypes.PLAYER_ONE);
+    } else {
+      game.playerTwo.hand.length === 5
+        ? alertContext.error("Cannot draw a card. You already have 5 cards.")
+        : socket.emit("draw_card", game.hostName, UserTypes.PLAYER_TWO);
+    }
+  };
 
   const [{ isOverPlayerOneField }, dropPlayerOneField] = useDrop(
     () => ({
@@ -41,33 +57,36 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
     [game]
   );
 
-  const [{ isOverPlayerTwoField }, dropPlayerTwoField] = useDrop(() => ({
-    accept: "card",
-    drop: (card) => {
-      console.log(card);
-      console.log(game.playerTwo.fieldCards[0]);
-      if (
-        card.value === game.playerTwo.fieldCards[0].value + 1 ||
-        card.value === game.playerTwo.fieldCards[0].value - 1 ||
-        (card.value === 13 && game.playerTwo.fieldCards[0].value === 1) ||
-        (card.value === 1 && game.playerTwo.fieldCards[0].value === 13)
-      ) {
-        socket.emit(
-          "place_card",
-          JSON.parse(localStorage.getItem("gameInSession")).hostName,
-          card,
-          UserTypes.PLAYER_TWO
-        );
-      } else {
-        alertContext.error(
-          `Invalid play, card ${card.name} is not one value higher or lower than card ${game.playerTwo.fieldCards[0].name}`
-        );
-      }
-    },
-    collect: (monitor) => ({
-      isOverPlayerTwoField: monitor.isOver(),
+  const [{ isOverPlayerTwoField }, dropPlayerTwoField] = useDrop(
+    () => ({
+      accept: "card",
+      drop: (card) => {
+        console.log(card);
+        console.log(game.playerTwo.fieldCards[0]);
+        if (
+          card.value === game.playerTwo.fieldCards[0].value + 1 ||
+          card.value === game.playerTwo.fieldCards[0].value - 1 ||
+          (card.value === 13 && game.playerTwo.fieldCards[0].value === 1) ||
+          (card.value === 1 && game.playerTwo.fieldCards[0].value === 13)
+        ) {
+          socket.emit(
+            "place_card",
+            JSON.parse(localStorage.getItem("gameInSession")).hostName,
+            card,
+            UserTypes.PLAYER_TWO
+          );
+        } else {
+          alertContext.error(
+            `Invalid play, card ${card.name} is not one value higher or lower than card ${game.playerTwo.fieldCards[0].name}`
+          );
+        }
+      },
+      collect: (monitor) => ({
+        isOverPlayerTwoField: monitor.isOver(),
+      }),
     }),
-  }),[game]);
+    [game]
+  );
 
   const opponentHandLength =
     JSON.parse(localStorage.getItem("gameInSession")).userType ===
@@ -174,6 +193,7 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
         >
           Quit Game
         </button>
+
         <div className="d-flex">
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE
@@ -202,7 +222,14 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
               ? game.playerOne.name
               : game.playerTwo.name}{" "}
           </p>
-          <Card src="/img/PNG-cards-1.3/cardback.png" />
+          {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+          UserTypes.PLAYER_ONE ? (
+            game.playerOne.drawPile ? (
+              <Card src="/img/PNG-cards-1.3/cardback.png" onClick={DrawCard} />
+            ) : null
+          ) : game.playerTwo.drawPile ? (
+            <Card src="/img/PNG-cards-1.3/cardback.png" onClick={DrawCard} />
+          ) : null}
           <p>
             Deck Size:{" "}
             {JSON.parse(localStorage.getItem("gameInSession")).userType ===
@@ -210,6 +237,10 @@ function PlayerRegularRunning({ game, socket, quitGame }) {
               ? game.playerOne.drawPile
               : game.playerTwo.drawPile}{" "}
           </p>
+
+          <button onClick={quitGame} className="btn btn-danger">
+            I Can't Play
+          </button>
         </div>
       </div>
     </div>

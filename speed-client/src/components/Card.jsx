@@ -1,11 +1,20 @@
-function Card({ name, src, value, flip, innerRef, number, hover }) {
+function Card({ name, src, value, flip, innerRef, number, hover, onClick }) {
+
+
+
+  
   return (
     <div
       ref={innerRef}
       className={`d-flex flex-column flex-grow-1 me-2 ${number ? "border " : ""}
      `}
-      style={{ maxWidth: "125px", transform: flip ? "rotate(180deg)" : "" }}
+      style={{
+        maxWidth: "125px",
+        transform: flip ? "rotate(180deg)" : "",
+        cursor: onClick ? "pointer" : "auto",
+      }}
       value={value}
+      onClick={onClick}
     >
       {number && (
         <div>

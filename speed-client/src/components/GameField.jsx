@@ -82,6 +82,7 @@ export default function GameField({
   const countdownRendered = ({ seconds, completed }) => {
     if (completed) {
       setTimerIsGoing(false);
+      return;
     }
     return (
       <div className="text-center m-auto text-black bg-light p-3">
