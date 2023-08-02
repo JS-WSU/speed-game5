@@ -21,7 +21,37 @@ function RegularSpeed({ socket }) {
     navigate("/lobby");
   };
 
-  useEffect(() => {}, [socket]);
+  const [drawingFromSidePile, setDrawingFromSidePile] = useState(false);
+
+  const [shufflingSidePile, setShufflingSidePile] = useState(false);
+
+  useEffect(() => {
+    const ShuffleSidePile = (game) => {
+      setShufflingSidePile(true);
+      setTimeout(() => {
+        setGame(game);
+        setShufflingSidePile(false);
+      }, 5000);
+    };
+
+    socket.on("shuffle_side_pile", ShuffleSidePile);
+
+    return () => socket.off("shuffle_side_pile", ShuffleSidePile);
+  }, [socket]);
+
+  useEffect(() => {
+    const DrawFromSidePile = (game) => {
+      setDrawingFromSidePile(true);
+      setTimeout(() => {
+        setGame(game);
+        setDrawingFromSidePile(false);
+      }, 5000);
+    };
+
+    socket.on("draw_from_side_pile", DrawFromSidePile);
+
+    return () => socket.off("draw_from_side_pile", DrawFromSidePile);
+  }, [socket]);
 
   if (localStorage.getItem("gameInSession")) {
     return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
@@ -38,6 +68,8 @@ function RegularSpeed({ socket }) {
             game={game}
             socket={socket}
             quitGame={QuitGame}
+            drawingFromSidePile={drawingFromSidePile}
+            shufflingSidePile={shufflingSidePile}
           />
         ) : (
           <PlayerRegularRunning
@@ -45,6 +77,8 @@ function RegularSpeed({ socket }) {
             setGame={setGame}
             socket={socket}
             quitGame={QuitGame}
+            drawingFromSidePile={drawingFromSidePile}
+            shufflingSidePile={shufflingSidePile}
           />
         )}
       </GameField>
