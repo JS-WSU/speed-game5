@@ -18,7 +18,6 @@ function PlayerRegularRunning({
 
   const [unableToPlay, setUnableToPlay] = useState(null);
 
-
   useEffect(() => {
     if (
       JSON.parse(localStorage.getItem("gameInSession")).userType ===
@@ -92,7 +91,6 @@ function PlayerRegularRunning({
   }, [game]);
 
   const UnableToPlay = () => {
-    setUnableToPlay(false);
     socket.emit(
       "unable_to_play",
       game.hostName,
@@ -336,17 +334,26 @@ function PlayerRegularRunning({
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE ? (
             !game.playerOne.hand.length && !game.playerOne.drawPile ? (
-              <button onClick={SpeedWinner} className="border btn btn-primary">
+              <button
+                onClick={SpeedWinner}
+                className="border btn btn-primary mx-auto mt-1"
+              >
                 SPEED
               </button>
             ) : null
           ) : !game.playerTwo.hand.length && !game.playerTwo.drawPile ? (
-            <button onClick={SpeedWinner} className="border btn btn-success mx-auto mt-1">
-              YELL SPEED
+            <button
+              onClick={SpeedWinner}
+              className="border btn btn-primary mx-auto mt-1"
+            >
+              SPEED
             </button>
           ) : null}
           {unableToPlay ? (
-            <button onClick={UnableToPlay} className="border btn btn-danger mx-auto mt-1">
+            <button
+              onClick={UnableToPlay}
+              className="border btn btn-danger mx-auto mt-1"
+            >
               Unable to Play
             </button>
           ) : null}

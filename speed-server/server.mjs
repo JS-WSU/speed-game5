@@ -289,6 +289,8 @@ io.on("connection", async (socket) => {
       games[gameIndex].playerTwo.unableToPlay = true;
     }
 
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+
     if (
       games[gameIndex].playerOne.unableToPlay &&
       games[gameIndex].playerTwo.unableToPlay &&
@@ -341,8 +343,6 @@ io.on("connection", async (socket) => {
       games[gameIndex].playerTwo.unableToPlay = false;
 
       EmitToAllUsersInGame(io, games[gameIndex], "shuffle_side_pile");
-    } else {
-      EmitToAllUsersInGame(io, games[gameIndex], "game_status");
     }
   });
 
