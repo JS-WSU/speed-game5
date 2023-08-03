@@ -21,9 +21,10 @@ function ViewerRegularRunning({
       ) : null}
       <div className="d-flex">
         <div className="d-flex flex-column text-center me-auto">
-          <p className="m-0">{game.playerTwo.name} </p>
-          <Card src="/img/PNG-cards-1.3/cardback.png" />
-          <p className="m-0">Deck Size: {game.playerTwo.drawPile} </p>
+          <Card
+            src="/img/PNG-cards-1.3/cardback.png"
+            number={game.playerTwo.sidePile}
+          />
         </div>
         <div className="d-flex justify-content-evenly">
           {game.playerTwo.hand.map((card) => (
@@ -87,9 +88,10 @@ function ViewerRegularRunning({
           ))}
         </div>
         <div className="d-flex flex-column text-center ms-auto">
-          <p>{game.playerOne.name} </p>
-          <Card src="/img/PNG-cards-1.3/cardback.png" />
-          <p>Deck Size: {game.playerOne.drawPile} </p>
+          <Card
+            src="/img/PNG-cards-1.3/cardback.png"
+            number={game.playerOne.sidePile}
+          />
         </div>
       </div>
     </div>

@@ -19,7 +19,7 @@ function Card({
       style={{
         maxWidth: "125px",
         transform: flip ? "rotate(180deg)" : "",
-        cursor: number ? "pointer" : "auto",
+        cursor: onClick && number ? "pointer" : "auto",
       }}
       value={value}
       onClick={number ? onClick : null}

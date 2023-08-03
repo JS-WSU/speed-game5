@@ -101,6 +101,7 @@ io.on("connection", async (socket) => {
           drawPile: [],
           ready: false,
           unabletoPlay: false,
+          rematch: null,
         },
         playerTwo: {
           name: null,
@@ -110,6 +111,7 @@ io.on("connection", async (socket) => {
           drawPile: [],
           ready: false,
           unableToPlay: false,
+          rematch: null,
         },
         viewers: [],
         gameState: GameStates.WAITING,
@@ -396,6 +398,51 @@ io.on("connection", async (socket) => {
         { username: playerOneName },
         { $inc: { regular_losses: 1 } }
       );
+    }
+
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+  });
+
+  socket.on("rematch", (hostName, userType) => {
+    const gameIndex = games.findIndex((game) => game.hostName === hostName);
+
+    if (userType === UserTypes.PLAYER_ONE) {
+      games[gameIndex].playerOne.rematch = true;
+    } else {
+      games[gameIndex].playerTwo.rematch = true;
+    }
+
+    if (
+      games[gameIndex].playerOne.rematch &&
+      games[gameIndex].playerTwo.rematch
+    ) {
+      games[gameIndex] = {
+        deck: Deck,
+        hostName,
+        speedType: SpeedTypes.REGULAR,
+        playerOne: {
+          name: hostName,
+          fieldCards: [],
+          hand: [],
+          sidePile: [],
+          drawPile: [],
+          ready: false,
+          unabletoPlay: false,
+          rematch: null,
+        },
+        playerTwo: {
+          name: games[gameIndex].playerTwo.name,
+          fieldCards: [],
+          hand: [],
+          sidePile: [],
+          drawPile: [],
+          ready: false,
+          unableToPlay: false,
+          rematch: null,
+        },
+        viewers: games[gameIndex].viewers,
+        gameState: GameStates.WAITING,
+      };
     }
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
