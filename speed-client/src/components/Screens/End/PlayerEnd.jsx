@@ -18,10 +18,10 @@ function PlayerEnd({ game, quitGame, socket }) {
     ${
       JSON.parse(localStorage.getItem("gameInSession")).userType ===
       UserTypes.PLAYER_ONE
-        ? !game.playerOne.hand.length && !game.playerOne.drawPile
+        ? game.winner === game.playerOne.name
           ? "bg-primary"
           : "bg-danger"
-        : !game.playerTwo.hand.length && !game.playerTwo.drawPile
+        : game.winner === game.playerTwo.name
         ? "bg-primary"
         : "bg-danger"
     }
@@ -29,14 +29,14 @@ function PlayerEnd({ game, quitGame, socket }) {
     >
       {JSON.parse(localStorage.getItem("gameInSession")).userType ===
       UserTypes.PLAYER_ONE ? (
-        !game.playerOne.hand.length && !game.playerOne.drawPile ? (
+        game.winner === game.playerOne.name ? (
           <div className="fs-2 my-4">
             You won against {game.playerTwo.name}!
           </div>
         ) : (
           <div className="fs-2 my-4">You lost to {game.playerTwo.name}!</div>
         )
-      ) : !game.playerTwo.hand.length && !game.playerTwo.drawPile ? (
+      ) : game.winner === game.playerTwo.name ? (
         <div className="fs-2 my-4">You won against {game.playerOne.name}!</div>
       ) : (
         <div className="fs-2 my-4">You lost to {game.playerOne.name}!</div>
@@ -55,10 +55,10 @@ function PlayerEnd({ game, quitGame, socket }) {
         ${
           JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE
-            ? !game.playerOne.hand.length && !game.playerOne.drawPile
+            ? game.winner !== game.playerOne.name
               ? "bg-danger"
               : "bg-primary"
-            : !game.playerTwo.hand.length && !game.playerTwo.drawPile
+            : game.winner !== game.playerTwo.name
             ? "bg-danger"
             : "bg-primary"
         }

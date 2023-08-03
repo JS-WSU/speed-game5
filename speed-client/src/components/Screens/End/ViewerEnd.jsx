@@ -14,14 +14,14 @@ function ViewerEnd({ game, quitGame }) {
 
       <div className="fs-3 bg-primary">
         Winner:{" "}
-        {!game.playerOne.hand.length && !game.playerOne.drawPile
+        {game.winner === game.playerOne.name
           ? game.playerOne.name
           : game.playerTwo.name}
         !
       </div>
       <div className="fs-3 bg-danger">
         Loser:{" "}
-        {game.playerOne.hand.length || game.playerOne.drawPile
+        {game.winner !== game.playerOne.name
           ? game.playerOne.name
           : game.playerTwo.name}
         !

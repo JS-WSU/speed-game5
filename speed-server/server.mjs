@@ -93,6 +93,7 @@ io.on("connection", async (socket) => {
         deck: Deck,
         hostName,
         speedType,
+        winner: null,
         playerOne: {
           name: hostName,
           fieldCards: [],
@@ -411,6 +412,8 @@ io.on("connection", async (socket) => {
     games[gameIndex].gameState = GameStates.END;
 
     if (userType === UserTypes.PLAYER_ONE) {
+      games[gameIndex].winner = playerOneName;
+
       await User.findOneAndUpdate(
         { username: playerOneName },
         { $inc: { regular_wins: 1 } }
@@ -420,6 +423,7 @@ io.on("connection", async (socket) => {
         { $inc: { regular_losses: 1 } }
       );
     } else {
+      games[gameIndex].winner = playerTwoName;
       await User.findOneAndUpdate(
         { username: playerTwoName },
         { $inc: { regular_wins: 1 } }
@@ -450,6 +454,7 @@ io.on("connection", async (socket) => {
         deck: Deck,
         hostName,
         speedType: SpeedTypes.REGULAR,
+        winner: null,
         playerOne: {
           name: hostName,
           fieldCards: [],
