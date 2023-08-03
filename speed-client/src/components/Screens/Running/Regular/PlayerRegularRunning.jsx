@@ -18,7 +18,6 @@ function PlayerRegularRunning({
 
   const [unableToPlay, setUnableToPlay] = useState(null);
 
-  const [showSpeedButton, setShowSpeedButton] = useState(null);
 
   useEffect(() => {
     if (
@@ -93,6 +92,7 @@ function PlayerRegularRunning({
   }, [game]);
 
   const UnableToPlay = () => {
+    setUnableToPlay(false);
     socket.emit(
       "unable_to_play",
       game.hostName,
@@ -198,12 +198,12 @@ function PlayerRegularRunning({
   return (
     <div className="row text-light g-3 flex-grow-1">
       {game.playerOne.unableToPlay ? (
-        <div className="bg-danger mt-0 text-center">
+        <div className="bg-danger mt-0 text-center text-light">
           {game.playerOne.name} unable to play!
         </div>
       ) : null}
       {game.playerTwo.unableToPlay ? (
-        <div className="bg-danger mt-1 text-center">
+        <div className="bg-danger mt-1 text-center text-light">
           {game.playerTwo.name} unable to play!
         </div>
       ) : null}

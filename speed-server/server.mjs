@@ -20,6 +20,7 @@ import FilteredGames from "./utils/FilteredGames.mjs";
 import FilterGameStatusForUser from "./utils/FilterGameStatusForUser.mjs";
 import ShuffleCards from "./utils/ShuffleCards.mjs";
 import EmitToAllUsersInGame from "./utils/EmitToAllUsersInGame.mjs";
+import CheckIfPlayersCanPlay from "./utils/CheckIfPlayersCanPlay.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -252,56 +253,8 @@ io.on("connection", async (socket) => {
     games[gameIndex].playerOne.hand = playerOneHand;
     games[gameIndex].playerTwo.hand = playerTwoHand;
 
-    games[gameIndex].playerOne.hand.forEach((card) => {
-      if (
-        card.value === games[gameIndex].playerOne.fieldCards[0].value + 1 ||
-        card.value === games[gameIndex].playerOne.fieldCards[0].value - 1 ||
-        (card.value === 13 &&
-          games[gameIndex].playerOne.fieldCards[0].value === 1) ||
-        (card.value === 1 &&
-          games[gameIndex].playerOne.fieldCards[0].value === 13)
-      ) {
-        games[gameIndex].playerOne.unableToPlay = false;
-      }
-    });
-    games[gameIndex].playerOne.hand.forEach((card) => {
-      if (
-        card.value === games[gameIndex].playerTwo.fieldCards[0].value + 1 ||
-        card.value === games[gameIndex].playerTwo.fieldCards[0].value - 1 ||
-        (card.value === 13 &&
-          games[gameIndex].playerTwo.fieldCards[0].value === 1) ||
-        (card.value === 1 &&
-          games[gameIndex].playerTwo.fieldCards[0].value === 13)
-      ) {
-        games[gameIndex].playerOne.unableToPlay = false;
-      }
-    });
-
-    games[gameIndex].playerTwo.hand.forEach((card) => {
-      if (
-        card.value === games[gameIndex].playerOne.fieldCards[0].value + 1 ||
-        card.value === games[gameIndex].playerOne.fieldCards[0].value - 1 ||
-        (card.value === 13 &&
-          games[gameIndex].playerOne.fieldCards[0].value === 1) ||
-        (card.value === 1 &&
-          games[gameIndex].playerOne.fieldCards[0].value === 13)
-      ) {
-        games[gameIndex].playerTwo.unableToPlay = false;
-      }
-    });
-    games[gameIndex].playerTwo.hand.forEach((card) => {
-      if (
-        card.value === games[gameIndex].playerTwo.fieldCards[0].value + 1 ||
-        card.value === games[gameIndex].playerTwo.fieldCards[0].value - 1 ||
-        (card.value === 13 &&
-          games[gameIndex].playerTwo.fieldCards[0].value === 1) ||
-        (card.value === 1 &&
-          games[gameIndex].playerTwo.fieldCards[0].value === 13)
-      ) {
-        games[gameIndex].playerTwo.unableToPlay = false;
-      }
-    });
-
+    games[gameIndex].playerOne.unableToPlay = false;
+    games[gameIndex].playerTwo.unableToPlay = false;
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
@@ -314,12 +267,14 @@ io.on("connection", async (socket) => {
         games[gameIndex].playerOne.drawPile[0],
       ];
       games[gameIndex].playerOne.drawPile.splice(0, 1);
+      games[gameIndex].playerOne.unableToPlay = false;
     } else {
       games[gameIndex].playerTwo.hand = [
         ...games[gameIndex].playerTwo.hand,
         games[gameIndex].playerTwo.drawPile[0],
       ];
       games[gameIndex].playerTwo.drawPile.splice(0, 1);
+      games[gameIndex].playerTwo.unableToPlay = false;
     }
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
@@ -339,9 +294,6 @@ io.on("connection", async (socket) => {
       games[gameIndex].playerTwo.unableToPlay &&
       games[gameIndex].playerOne.sidePile.length
     ) {
-      games[gameIndex].playerOne.unableToPlay = false;
-      games[gameIndex].playerTwo.unableToPlay = false;
-
       games[gameIndex].playerOne.fieldCards = [
         games[gameIndex].playerOne.sidePile[0],
         ...games[gameIndex].playerOne.fieldCards,
@@ -353,6 +305,8 @@ io.on("connection", async (socket) => {
       ];
       games[gameIndex].playerTwo.sidePile.splice(0, 1);
 
+      games[gameIndex].playerOne.unableToPlay = false;
+      games[gameIndex].playerTwo.unableToPlay = false;
       EmitToAllUsersInGame(io, games[gameIndex], "draw_from_side_pile");
     } else if (
       games[gameIndex].playerOne.unableToPlay &&
@@ -383,55 +337,8 @@ io.on("connection", async (socket) => {
       ];
       games[gameIndex].playerTwo.sidePile.splice(0, 1);
 
-      games[gameIndex].playerOne.hand.forEach((card) => {
-        if (
-          card.value === games[gameIndex].playerOne.fieldCards[0].value + 1 ||
-          card.value === games[gameIndex].playerOne.fieldCards[0].value - 1 ||
-          (card.value === 13 &&
-            games[gameIndex].playerOne.fieldCards[0].value === 1) ||
-          (card.value === 1 &&
-            games[gameIndex].playerOne.fieldCards[0].value === 13)
-        ) {
-          games[gameIndex].playerOne.unableToPlay = false;
-        }
-      });
-      games[gameIndex].playerOne.hand.forEach((card) => {
-        if (
-          card.value === games[gameIndex].playerTwo.fieldCards[0].value + 1 ||
-          card.value === games[gameIndex].playerTwo.fieldCards[0].value - 1 ||
-          (card.value === 13 &&
-            games[gameIndex].playerTwo.fieldCards[0].value === 1) ||
-          (card.value === 1 &&
-            games[gameIndex].playerTwo.fieldCards[0].value === 13)
-        ) {
-          games[gameIndex].playerOne.unableToPlay = false;
-        }
-      });
-
-      games[gameIndex].playerTwo.hand.forEach((card) => {
-        if (
-          card.value === games[gameIndex].playerOne.fieldCards[0].value + 1 ||
-          card.value === games[gameIndex].playerOne.fieldCards[0].value - 1 ||
-          (card.value === 13 &&
-            games[gameIndex].playerOne.fieldCards[0].value === 1) ||
-          (card.value === 1 &&
-            games[gameIndex].playerOne.fieldCards[0].value === 13)
-        ) {
-          games[gameIndex].playerTwo.unableToPlay = false;
-        }
-      });
-      games[gameIndex].playerTwo.hand.forEach((card) => {
-        if (
-          card.value === games[gameIndex].playerTwo.fieldCards[0].value + 1 ||
-          card.value === games[gameIndex].playerTwo.fieldCards[0].value - 1 ||
-          (card.value === 13 &&
-            games[gameIndex].playerTwo.fieldCards[0].value === 1) ||
-          (card.value === 1 &&
-            games[gameIndex].playerTwo.fieldCards[0].value === 13)
-        ) {
-          games[gameIndex].playerTwo.unableToPlay = false;
-        }
-      });
+      games[gameIndex].playerOne.unableToPlay = false;
+      games[gameIndex].playerTwo.unableToPlay = false;
 
       EmitToAllUsersInGame(io, games[gameIndex], "shuffle_side_pile");
     } else {
