@@ -203,7 +203,7 @@ function PlayerRegularRunning({
         </div>
       ) : null}
       {game.playerTwo.unableToPlay ? (
-        <div className="bg-danger mt-1 text-center text-light position-absolute" style={{top: "50px"}}>
+        <div className="bg-danger mt-1 text-center text-light position-absolute">
           {game.playerTwo.name} unable to play!
         </div>
       ) : null}
@@ -241,7 +241,7 @@ function PlayerRegularRunning({
           Nobody can play! Drawing a card from each player's side pile...
         </h2>
       ) : shufflingSidePile ? (
-        <h2 className="m-auto text-center bg-info">
+        <h2 className="m-auto text-center bg-info ">
           Side piles empty! Reshuffling....
         </h2>
       ) : (
