@@ -17,10 +17,8 @@ import {
 } from "../speed-client/src/utils/Constants.mjs";
 import { Deck } from "./utils/Constants.mjs";
 import FilteredGames from "./utils/FilteredGames.mjs";
-import FilterGameStatusForUser from "./utils/FilterGameStatusForUser.mjs";
 import ShuffleCards from "./utils/ShuffleCards.mjs";
 import EmitToAllUsersInGame from "./utils/EmitToAllUsersInGame.mjs";
-import CheckIfPlayersCanPlay from "./utils/CheckIfPlayersCanPlay.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -280,9 +278,8 @@ io.on("connection", async (socket) => {
     games[gameIndex].playerOne.hand = playerOneHand;
     games[gameIndex].playerTwo.hand = playerTwoHand;
 
-    // games[gameIndex].playerOne.unableToPlay = false;
-    // games[gameIndex].playerTwo.unableToPlay = false;
-    CheckIfPlayersCanPlay(games[gameIndex]);
+    games[gameIndex].playerOne.unableToPlay = false;
+    games[gameIndex].playerTwo.unableToPlay = false;
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
@@ -320,7 +317,7 @@ io.on("connection", async (socket) => {
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
 
-    while (
+    if (
       games[gameIndex].playerOne.unableToPlay &&
       games[gameIndex].playerTwo.unableToPlay &&
       games[gameIndex].playerOne.sidePile.length
@@ -336,14 +333,11 @@ io.on("connection", async (socket) => {
       ];
       games[gameIndex].playerTwo.sidePile.splice(0, 1);
 
-      // games[gameIndex].playerOne.unableToPlay = false;
-      // games[gameIndex].playerTwo.unableToPlay = false;
-      CheckIfPlayersCanPlay(games[gameIndex]);
+      games[gameIndex].playerOne.unableToPlay = false;
+      games[gameIndex].playerTwo.unableToPlay = false;
 
       EmitToAllUsersInGame(io, games[gameIndex], "draw_from_side_pile");
-    }
-
-    if (
+    } else if (
       games[gameIndex].playerOne.unableToPlay &&
       games[gameIndex].playerTwo.unableToPlay &&
       !games[gameIndex].playerOne.sidePile.length
@@ -372,34 +366,10 @@ io.on("connection", async (socket) => {
       ];
       games[gameIndex].playerTwo.sidePile.splice(0, 1);
 
-      // games[gameIndex].playerOne.unableToPlay = false;
-      // games[gameIndex].playerTwo.unableToPlay = false;
-      CheckIfPlayersCanPlay(games[gameIndex]);
+      games[gameIndex].playerOne.unableToPlay = false;
+      games[gameIndex].playerTwo.unableToPlay = false;
 
       EmitToAllUsersInGame(io, games[gameIndex], "shuffle_side_pile");
-
-      while (
-        games[gameIndex].playerOne.unableToPlay &&
-        games[gameIndex].playerTwo.unableToPlay &&
-        games[gameIndex].playerOne.sidePile.length
-      ) {
-        games[gameIndex].playerOne.fieldCards = [
-          games[gameIndex].playerOne.sidePile[0],
-          ...games[gameIndex].playerOne.fieldCards,
-        ];
-        games[gameIndex].playerOne.sidePile.splice(0, 1);
-        games[gameIndex].playerTwo.fieldCards = [
-          games[gameIndex].playerTwo.sidePile[0],
-          ...games[gameIndex].playerTwo.fieldCards,
-        ];
-        games[gameIndex].playerTwo.sidePile.splice(0, 1);
-
-        // games[gameIndex].playerOne.unableToPlay = false;
-        // games[gameIndex].playerTwo.unableToPlay = false;
-        CheckIfPlayersCanPlay(games[gameIndex]);
-
-        EmitToAllUsersInGame(io, games[gameIndex], "draw_from_side_pile");
-      }
     }
   });
 
