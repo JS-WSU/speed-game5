@@ -1,12 +1,20 @@
-function Card({ name, src, value, flip, innerRef, number, hover, onClick }) {
-
-
-
-  
+function Card({
+  name,
+  src,
+  value,
+  flip,
+  innerRef,
+  number,
+  hover,
+  onClick,
+  border,
+}) {
   return (
     <div
       ref={innerRef}
-      className={`d-flex flex-column flex-grow-1 me-2 ${number ? "border " : ""}
+      className={`d-flex flex-column flex-grow-1 me-2 ${
+        border ? "border p-2" : number ? "border" : ""
+      }
      `}
       style={{
         maxWidth: "125px",
@@ -31,7 +39,9 @@ function Card({ name, src, value, flip, innerRef, number, hover, onClick }) {
       ${hover ? "bg-dark p-3" : ""} `}
       >
         <img
-          className={`img-fluid ${hover ? "opacity-25" : ""}`}
+          className={`img-fluid ${hover ? "opacity-25" : ""} ${
+            number === 0 ? "opacity-0" : "opacity-100"
+          }`}
           src={src}
           alt={name}
         />

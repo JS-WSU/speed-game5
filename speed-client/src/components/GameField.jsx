@@ -6,8 +6,7 @@ import ViewerWaiting from "./Screens/Waiting/ViewerWaiting";
 import PlayerOneWaiting from "./Screens/Waiting/PlayerOneWaiting";
 import PlayerTwoWaiting from "./Screens/Waiting/PlayerTwoWaiting";
 import ViewerEnd from "./Screens/End/ViewerEnd";
-import PlayerOneEnd from "./Screens/End/PlayerOneEnd";
-import PlayerTwoEnd from "./Screens/End/PlayerTwoEnd";
+import PlayerEnd from "./Screens/End/PlayerEnd";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import Countdown from "react-countdown";
@@ -118,11 +117,8 @@ export default function GameField({
         JSON.parse(localStorage.getItem("gameInSession")).userType ===
         UserTypes.VIEWER ? (
           <ViewerEnd game={game} quitGame={quitGame} socket={socket} />
-        ) : JSON.parse(localStorage.getItem("gameInSession")).userType ===
-          UserTypes.PLAYER_ONE ? (
-          <PlayerOneEnd game={game} quitGame={quitGame} socket={socket} />
         ) : (
-          <PlayerTwoEnd game={game} quitGame={quitGame} socket={socket} />
+          <PlayerEnd game={game} quitGame={quitGame} socket={socket} />
         )
       ) : game.gameState === GameStates.RUNNING ? (
         timerIsGoing ? (

@@ -213,7 +213,7 @@ function PlayerRegularRunning({
               ? game.playerTwo.name
               : game.playerOne.name}{" "}
           </p>
-          <Card src="/img/PNG-cards-1.3/cardback.png" />
+          <Card src="/img/PNG-cards-1.3/cardback.png" border={true} />
           <p>
             Deck Size:{" "}
             {JSON.parse(localStorage.getItem("gameInSession")).userType ===
@@ -352,6 +352,7 @@ function PlayerRegularRunning({
           {unableToPlay ? (
             <button
               onClick={UnableToPlay}
+              disabled={drawingSidePile || shufflingSidePile}
               className="border btn btn-danger mx-auto mt-1"
             >
               Unable to Play
@@ -370,10 +371,18 @@ function PlayerRegularRunning({
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE ? (
             game.playerOne.drawPile ? (
-              <Card src="/img/PNG-cards-1.3/cardback.png" onClick={DrawCard} />
+              <Card
+                src="/img/PNG-cards-1.3/cardback.png"
+                onClick={DrawCard}
+                border={true}
+              />
             ) : null
           ) : game.playerTwo.drawPile ? (
-            <Card src="/img/PNG-cards-1.3/cardback.png" onClick={DrawCard} />
+            <Card
+              src="/img/PNG-cards-1.3/cardback.png"
+              onClick={DrawCard}
+              border={true}
+            />
           ) : null}
           <p>
             Deck Size:{" "}
