@@ -7,7 +7,6 @@ function Card({
   number,
   hover,
   onClick,
-  mySide,
   small,
 }) {
   return (
@@ -26,15 +25,7 @@ function Card({
       onClick={number ? onClick : null}
     >
       {(number || number === 0) && (
-        <div
-          className={`${
-            mySide
-              ? "align-self-end"
-              : small
-              ? "align-self-center"
-              : "align-self-start"
-          }`}
-        >
+        <div className={`align-self-center`}>
           <span
             className={`text-warning bg-dark px-2 
           `}
@@ -50,10 +41,8 @@ function Card({
         <img
           className={`img-fluid ${hover ? "opacity-25" : ""} ${
             number === 0 ? "opacity-0" : "opacity-100"
-          }
-          ${number || number === 0 ? "p-2" : ""} ${
-            small ? "align-self-center" : ""
-          }`}
+          } ${small ? "align-self-center" : ""}
+          ${number || number === 0 ? "p-2" : ""}`}
           src={src}
           alt={name}
         />
