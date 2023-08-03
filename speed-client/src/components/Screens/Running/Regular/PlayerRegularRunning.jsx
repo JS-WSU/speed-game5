@@ -213,14 +213,16 @@ function PlayerRegularRunning({
               ? game.playerTwo.name
               : game.playerOne.name}{" "}
           </p>
-          <Card src="/img/PNG-cards-1.3/cardback.png" border={true} />
-          <p>
-            Deck Size:{" "}
-            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-            UserTypes.PLAYER_ONE
-              ? game.playerTwo.drawPile
-              : game.playerOne.drawPile}{" "}
-          </p>
+          <Card
+            src="/img/PNG-cards-1.3/cardback.png"
+            border={true}
+            number={
+              JSON.parse(localStorage.getItem("gameInSession")).userType ===
+              UserTypes.PLAYER_ONE
+                ? game.playerTwo.drawPile
+                : game.playerOne.drawPile
+            }
+          />
         </div>
         <div className="d-flex justify-content-evenly">
           {opponentHand.map((card) => card)}
@@ -370,27 +372,21 @@ function PlayerRegularRunning({
           </p>
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE ? (
-            game.playerOne.drawPile ? (
-              <Card
-                src="/img/PNG-cards-1.3/cardback.png"
-                onClick={DrawCard}
-                border={true}
-              />
-            ) : null
-          ) : game.playerTwo.drawPile ? (
+            <Card
+              src="/img/PNG-cards-1.3/cardback.png"
+              onClick={DrawCard}
+              number={game.playerOne.drawPile}
+              mySide={true}
+            />
+          ) : (
             <Card
               src="/img/PNG-cards-1.3/cardback.png"
               onClick={DrawCard}
               border={true}
+              number={game.playerTwo.drawPile}
+              mySide={true}
             />
-          ) : null}
-          <p>
-            Deck Size:{" "}
-            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-            UserTypes.PLAYER_ONE
-              ? game.playerOne.drawPile
-              : game.playerTwo.drawPile}{" "}
-          </p>
+          )}
         </div>
       </div>
     </div>

@@ -7,25 +7,25 @@ function Card({
   number,
   hover,
   onClick,
-  border,
+  mySide,
 }) {
   return (
     <div
       ref={innerRef}
       className={`d-flex flex-column flex-grow-1 me-2 ${
-        border ? "border p-2" : number ? "border" : ""
+        number || number === 0 ? "border" : ""
       }
      `}
       style={{
         maxWidth: "125px",
         transform: flip ? "rotate(180deg)" : "",
-        cursor: onClick ? "pointer" : "auto",
+        cursor: number ? "pointer" : "auto",
       }}
       value={value}
-      onClick={onClick}
+      onClick={number ? onClick : null}
     >
-      {number && (
-        <div>
+      {(number || number === 0) && (
+        <div className={`${mySide ? "align-self-end" : "align-self-start"}`}>
           <span
             className={`text-warning bg-dark px-2 
           `}
@@ -41,7 +41,8 @@ function Card({
         <img
           className={`img-fluid ${hover ? "opacity-25" : ""} ${
             number === 0 ? "opacity-0" : "opacity-100"
-          }`}
+          }
+          ${number || number === 0 ? "p-2" : ""}`}
           src={src}
           alt={name}
         />
