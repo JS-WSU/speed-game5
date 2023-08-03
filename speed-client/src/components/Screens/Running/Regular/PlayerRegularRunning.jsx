@@ -198,12 +198,20 @@ function PlayerRegularRunning({
   return (
     <div className="row text-light g-3 flex-grow-1">
       {game.playerOne.unableToPlay ? (
-        <div className="bg-danger mt-0 text-center text-light position-absolute">
+        <div
+          className={`bg-danger ${
+            game.playerTwo.unableToPlay ? "mt-3" : "mt-0"
+          } text-center text-light position-absolute`}
+        >
           {game.playerOne.name} unable to play!
         </div>
       ) : null}
       {game.playerTwo.unableToPlay ? (
-        <div className="bg-danger mt-1 text-center text-light position-absolute">
+        <div
+          className={`bg-danger ${
+            game.playerOne.unableToPlay ? "mt-3" : "mt-0"
+          } text-center text-light position-absolute`}
+        >
           {game.playerTwo.name} unable to play!
         </div>
       ) : null}
@@ -337,27 +345,42 @@ function PlayerRegularRunning({
           </div>
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE ? (
-            !game.playerOne.hand.length && !game.playerOne.drawPile ? (
-              <button
-                onClick={SpeedWinner}
-                className="border btn btn-primary mx-auto mt-1"
-              >
-                SPEED
-              </button>
-            ) : null
-          ) : !game.playerTwo.hand.length && !game.playerTwo.drawPile ? (
             <button
               onClick={SpeedWinner}
-              className="border btn btn-primary mx-auto mt-1"
+              className={`border btn btn-primary mx-auto mt-1
+              
+              ${
+                !game.playerOne.hand.length && !game.playerOne.drawPile
+                  ? "opacity-100"
+                  : "opacity-0"
+              }
+              `}
+              disabled={game.playerOne.hand.length || game.playerOne.drawPile}
             >
               SPEED
             </button>
-          ) : null}
+          ) : (
+            <button
+              onClick={SpeedWinner}
+              className={`border btn btn-primary mx-auto mt-1 ${
+                !game.playerTwo.hand.length && !game.playerTwo.drawPile
+                  ? "opacity-100"
+                  : "opacity-0"
+              }`}
+              disabled={game.playerTwo.hand.length || game.playerTwo.drawPile}
+            >
+              SPEED
+            </button>
+          )}
           <button
             onClick={UnableToPlay}
             disabled={drawingSidePile || shufflingSidePile || !unableToPlay}
             className={`border btn btn-danger mx-auto mt-1 ${
-              unableToPlay ? "opacity-100" : "opacity-0"
+              drawingSidePile || shufflingSidePile
+                ? "opacity-50"
+                : unableToPlay
+                ? "opacity-100"
+                : "opacity-0"
             }`}
           >
             Unable to Play
