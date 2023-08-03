@@ -198,12 +198,12 @@ function PlayerRegularRunning({
   return (
     <div className="row text-light g-3 flex-grow-1">
       {game.playerOne.unableToPlay ? (
-        <div className="bg-danger mt-0 text-center text-light">
+        <div className="bg-danger mt-0 text-center text-light position-absolute">
           {game.playerOne.name} unable to play!
         </div>
       ) : null}
       {game.playerTwo.unableToPlay ? (
-        <div className="bg-danger mt-1 text-center text-light">
+        <div className="bg-danger mt-1 text-center text-light position-absolute" style={{top: "50px"}}>
           {game.playerTwo.name} unable to play!
         </div>
       ) : null}
@@ -353,15 +353,15 @@ function PlayerRegularRunning({
               SPEED
             </button>
           ) : null}
-          {unableToPlay ? (
-            <button
-              onClick={UnableToPlay}
-              disabled={drawingSidePile || shufflingSidePile}
-              className="border btn btn-danger mx-auto mt-1"
-            >
-              Unable to Play
-            </button>
-          ) : null}
+          <button
+            onClick={UnableToPlay}
+            disabled={drawingSidePile || shufflingSidePile || !unableToPlay}
+            className={`border btn btn-danger mx-auto mt-1 ${
+              unableToPlay ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            Unable to Play
+          </button>
         </div>
 
         <div className="d-flex flex-column text-center ms-auto">
