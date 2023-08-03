@@ -199,18 +199,15 @@ function PlayerRegularRunning({
     <div className="row text-light g-3 flex-grow-1">
       {game.playerOne.unableToPlay ? (
         <div
-          className={`bg-danger ${
-            game.playerTwo.unableToPlay ? "mt-3" : "mt-0"
-          } text-center text-light position-absolute`}
+          className={`bg-danger mt-1 text-center text-light position-absolute`}
         >
           {game.playerOne.name} unable to play!
         </div>
       ) : null}
       {game.playerTwo.unableToPlay ? (
         <div
-          className={`bg-danger ${
-            game.playerOne.unableToPlay ? "mt-3" : "mt-0"
-          } text-center text-light position-absolute`}
+          className={`bg-danger text-center text-light position-absolute`}
+          style={{ top: game.playerOne.unableToPlay ? "70px" : "auto" }}
         >
           {game.playerTwo.name} unable to play!
         </div>

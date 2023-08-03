@@ -279,8 +279,10 @@ io.on("connection", async (socket) => {
     games[gameIndex].playerOne.hand = playerOneHand;
     games[gameIndex].playerTwo.hand = playerTwoHand;
 
-    games[gameIndex].playerOne.unableToPlay = false;
-    games[gameIndex].playerTwo.unableToPlay = false;
+    // games[gameIndex].playerOne.unableToPlay = false;
+    // games[gameIndex].playerTwo.unableToPlay = false;
+    CheckIfPlayersCanPlay(games[gameIndex]);
+
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
@@ -333,8 +335,9 @@ io.on("connection", async (socket) => {
       ];
       games[gameIndex].playerTwo.sidePile.splice(0, 1);
 
-      games[gameIndex].playerOne.unableToPlay = false;
-      games[gameIndex].playerTwo.unableToPlay = false;
+      // games[gameIndex].playerOne.unableToPlay = false;
+      // games[gameIndex].playerTwo.unableToPlay = false;
+      CheckIfPlayersCanPlay(games[gameIndex]);
       EmitToAllUsersInGame(io, games[gameIndex], "draw_from_side_pile");
     } else if (
       games[gameIndex].playerOne.unableToPlay &&
@@ -365,8 +368,9 @@ io.on("connection", async (socket) => {
       ];
       games[gameIndex].playerTwo.sidePile.splice(0, 1);
 
-      games[gameIndex].playerOne.unableToPlay = false;
-      games[gameIndex].playerTwo.unableToPlay = false;
+      // games[gameIndex].playerOne.unableToPlay = false;
+      // games[gameIndex].playerTwo.unableToPlay = false;
+      CheckIfPlayersCanPlay(games[gameIndex]);
 
       EmitToAllUsersInGame(io, games[gameIndex], "shuffle_side_pile");
     }
