@@ -55,10 +55,10 @@ function PlayerEnd({ game, quitGame, socket }) {
         ${
           JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE
-            ? game.winner !== game.playerOne.name
+            ? game.winner === game.playerOne.name
               ? "bg-danger"
               : "bg-primary"
-            : game.winner !== game.playerTwo.name
+            : game.winner === game.playerTwo.name
             ? "bg-danger"
             : "bg-primary"
         }
