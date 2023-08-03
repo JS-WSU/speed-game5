@@ -439,6 +439,37 @@ io.on("connection", async (socket) => {
     }
   });
 
+  socket.on("regular_speed_winner", async (hostName, userType) => {
+    const gameIndex = games.findIndex((game) => game.hostName === hostName);
+
+    const playerOneName = games[gameIndex].playerOne.name;
+    const playerTwoName = games[gameIndex].playerTwo.name;
+
+    games[gameIndex].gameState = GameStates.END;
+
+    if (userType === UserTypes.PLAYER_ONE) {
+      await User.findOneAndUpdate(
+        { username: playerOneName },
+        { $inc: { regular_wins: 1 } }
+      );
+      await User.findOneAndUpdate(
+        { username: playerTwoName },
+        { $inc: { regular_losses: 1 } }
+      );
+    } else {
+      await User.findOneAndUpdate(
+        { username: playerTwoName },
+        { $inc: { regular_wins: 1 } }
+      );
+      await User.findOneAndUpdate(
+        { username: playerOneName },
+        { $inc: { regular_losses: 1 } }
+      );
+    }
+
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+  });
+
   socket.on("disconnect", () => {
     console.log(`Socket ${socket.id} disconnected from main namespace`);
   });

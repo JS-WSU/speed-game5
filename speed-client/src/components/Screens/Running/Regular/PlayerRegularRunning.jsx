@@ -341,12 +341,12 @@ function PlayerRegularRunning({
               </button>
             ) : null
           ) : !game.playerTwo.hand.length && !game.playerTwo.drawPile ? (
-            <button onClick={SpeedWinner} className="border btn btn-success">
+            <button onClick={SpeedWinner} className="border btn btn-success mx-auto mt-1">
               YELL SPEED
             </button>
           ) : null}
           {unableToPlay ? (
-            <button onClick={UnableToPlay} className="border btn btn-danger">
+            <button onClick={UnableToPlay} className="border btn btn-danger mx-auto mt-1">
               Unable to Play
             </button>
           ) : null}
