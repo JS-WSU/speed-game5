@@ -191,7 +191,9 @@ function PlayerRegularRunning({
       : game.playerOne.hand;
 
   for (let i = 0; i < opponentHandLength; i++) {
-    opponentHand.push(<Card key={i} src="/img/PNG-cards-1.3/cardback.png" />);
+    opponentHand.push(
+      <Card key={i} src="/img/PNG-cards-1.3/cardback.png" small={true} />
+    );
   }
   return (
     <div className="row text-light g-3 flex-grow-1">
@@ -382,7 +384,6 @@ function PlayerRegularRunning({
             <Card
               src="/img/PNG-cards-1.3/cardback.png"
               onClick={DrawCard}
-              border={true}
               number={game.playerTwo.drawPile}
               mySide={true}
             />
