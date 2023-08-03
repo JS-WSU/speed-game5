@@ -66,7 +66,6 @@ function RegularSpeed({ socket }) {
         UserTypes.VIEWER ? (
           <ViewerRegularRunning
             game={game}
-            socket={socket}
             quitGame={QuitGame}
             drawingSidePile={drawingSidePile}
             shufflingSidePile={shufflingSidePile}

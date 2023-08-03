@@ -307,7 +307,7 @@ function PlayerRegularRunning({
           onClick={quitGame}
           className="border btn btn-danger align-self-end me-auto"
         >
-          Quit Game
+          Forfeit Game
         </button>
 
         <div className="d-flex flex-column">

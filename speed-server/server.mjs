@@ -170,15 +170,39 @@ io.on("connection", async (socket) => {
     }
   });
 
-  socket.on("quit_game", (hostName, userType, username) => {
+  socket.on("quit_game", async (hostName, userType, username) => {
     socket.leave(username);
     console.log(`${socket.id} left room ${username}`);
     const gameIndex = games.findIndex((room) => room.hostName === hostName);
 
     if (gameIndex !== -1) {
       if (userType === UserTypes.PLAYER_ONE) {
+        if (games[gameIndex].gameState === GameStates.RUNNING) {
+          const playerOneName = games[gameIndex].playerOne.name;
+          const playerTwoName = games[gameIndex].playerTwo.name;
+          await User.findOneAndUpdate(
+            { username: playerOneName },
+            { $inc: { regular_losses: 1 } }
+          );
+          await User.findOneAndUpdate(
+            { username: playerTwoName },
+            { $inc: { regular_wins: 1 } }
+          );
+        }
         games[gameIndex].playerOne.name = null;
       } else if (userType === UserTypes.PLAYER_TWO) {
+        if (games[gameIndex].gameState === GameStates.RUNNING) {
+          const playerOneName = games[gameIndex].playerOne.name;
+          const playerTwoName = games[gameIndex].playerTwo.name;
+          await User.findOneAndUpdate(
+            { username: playerOneName },
+            { $inc: { regular_wins: 1 } }
+          );
+          await User.findOneAndUpdate(
+            { username: playerTwoName },
+            { $inc: { regular_losses: 1 } }
+          );
+        }
         games[gameIndex].playerTwo.name = null;
       } else {
         let viewers = games[gameIndex].viewers;

@@ -3,9 +3,8 @@ import Card from "../../../Card";
 
 function ViewerRegularRunning({
   game,
-  socket,
   quitGame,
-  drawingFromSidePile,
+  drawingSidePile,
   shufflingSidePile,
 }) {
   return (
@@ -43,7 +42,7 @@ function ViewerRegularRunning({
           ))}
         </div>
       </div>
-      {drawingFromSidePile ? (
+      {drawingSidePile ? (
         <h2 className="m-auto text-center bg-info">
           Nobody can play! Drawing a card from each player's side pile...
         </h2>
@@ -80,7 +79,7 @@ function ViewerRegularRunning({
           onClick={quitGame}
           className="btn btn-danger align-self-end me-auto"
         >
-          Quit Game
+          Quit Watching Game
         </button>
         <div className="d-flex">
           {game.playerOne.hand.map((card) => (
