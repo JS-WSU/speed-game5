@@ -60,7 +60,12 @@ export default function GameField({
     const LeftGame = (game, userType, username) => {
       if (userType !== UserTypes.VIEWER) {
         alertContext.error(`Player ${username} has left!`);
-        quitGame();
+
+        if (game.gameState !== GameStates.WAITING) {
+          quitGame();
+        } else if (userType === UserTypes.PLAYER_ONE) {
+          quitGame();
+        }
       }
       setGame(game);
     };

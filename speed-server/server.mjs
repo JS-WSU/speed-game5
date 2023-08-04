@@ -120,16 +120,17 @@ io.on("connection", async (socket) => {
         deck: Deck,
         hostName,
         speedType,
+        winner: null,
         playerOne: {
           name: hostName,
           deck: [],
-          field: [],
+          fieldCards: [[], [], [], []],
           ready: false,
         },
         playerTwo: {
           name: null,
           deck: [],
-          field: [],
+          fieldCards: [[], [], [], []],
           ready: false,
         },
         viewers: [],
@@ -218,7 +219,7 @@ io.on("connection", async (socket) => {
 
       if (
         !games[gameIndex].playerOne.name ||
-        !games[gameIndex].playerTwo.name
+        (!games[gameIndex].playerTwo.name && games[gameIndex].gameState !== GameStates.WAITING)
       ) {
         games = games.filter(
           (game) => game.hostName !== games[gameIndex].hostName
