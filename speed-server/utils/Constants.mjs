@@ -152,7 +152,6 @@ export const Deck = [
 {
     name: "QueenDiamond",
     value: 12,
-    
     src: "/img/PNG-cards-1.3/queen_of_diamonds.png"
 },
 {

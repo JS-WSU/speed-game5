@@ -124,13 +124,13 @@ io.on("connection", async (socket) => {
         playerOne: {
           name: hostName,
           deck: [],
-          fieldCards: [[], [], [], []],
+          fieldCards: [],
           ready: false,
         },
         playerTwo: {
           name: null,
           deck: [],
-          fieldCards: [[], [], [], []],
+          fieldCards: [],
           ready: false,
         },
         viewers: [],
@@ -219,7 +219,8 @@ io.on("connection", async (socket) => {
 
       if (
         !games[gameIndex].playerOne.name ||
-        (!games[gameIndex].playerTwo.name && games[gameIndex].gameState !== GameStates.WAITING)
+        (!games[gameIndex].playerTwo.name &&
+          games[gameIndex].gameState !== GameStates.WAITING)
       ) {
         games = games.filter(
           (game) => game.hostName !== games[gameIndex].hostName
@@ -234,7 +235,7 @@ io.on("connection", async (socket) => {
 
     games[gameIndex].gameState = GameStates.RUNNING;
 
-    games[gameIndex] = ShuffleCards(games[gameIndex]);
+    ShuffleCards(games[gameIndex]);
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_started");
   });
