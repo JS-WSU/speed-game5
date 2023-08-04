@@ -16,7 +16,7 @@ export default function Navbar({
   const navigate = useNavigate();
   const Logout = async () => {
     try {
-      await axios.delete("http://localhost:4000/users/logout");
+      await axios.delete(`${process.env.REACT_APP_API}/users/logout`);
       navigate("/login");
       localStorage.removeItem("userSession");
       localStorage.removeItem("gameInSession");

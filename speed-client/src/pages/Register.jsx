@@ -128,7 +128,7 @@ export default function Register({ setIsAuth, socket }) {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:4000/users/make-salt",
+        `${process.env.REACT_APP_API}/users/make-salt`,
         {
           email: form.email,
           username: form.username,
@@ -147,7 +147,7 @@ export default function Register({ setIsAuth, socket }) {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:4000/users/register",
+        `${process.env.REACT_APP_API}/users/register`,
         {
           email: form.email,
           username: form.username,

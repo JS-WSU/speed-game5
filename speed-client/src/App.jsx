@@ -26,7 +26,7 @@ import { io } from "socket.io-client";
 
 axios.defaults.withCredentials = true;
 
-const socket = io.connect("http://localhost:4000/", {
+const socket = io.connect(`${process.env.REACT_APP_API}/`, {
   autoConnect: false,
 });
 function App() {
@@ -39,7 +39,7 @@ function App() {
     try {
       const {
         data: { username },
-      } = await axios.get(`http://localhost:4000/users/authenticated`);
+      } = await axios.get(`${process.env.REACT_APP_API}/users/authenticated`);
       localStorage.setItem("userSession", username);
       socket.connect();
     } catch (error) {

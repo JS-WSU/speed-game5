@@ -62,7 +62,7 @@ export default function Login({ setIsAuth, socket }) {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:4000/users/get-salt",
+        `${process.env.REACT_APP_API}/users/get-salt`,
         {
           email: form.email,
         }
@@ -75,7 +75,7 @@ export default function Login({ setIsAuth, socket }) {
     }
 
     try {
-      const { data } = await axios.post("http://localhost:4000/users/login", {
+      const { data } = await axios.post(`${process.env.REACT_APP_API}/users/login`, {
         email: form.email,
         password: sha256(form.password + salt),
       });

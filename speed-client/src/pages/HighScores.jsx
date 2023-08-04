@@ -29,7 +29,7 @@ function HighScores() {
       try {
         const {
           data: { users_california, users_regular },
-        } = await axios.get("http://localhost:4000/users/top-10-each");
+        } = await axios.get(`${process.env.REACT_APP_API}/users/top-10-each`);
         setUsersRegular(users_regular);
         setUsersCalifornia(users_california);
         setFetchStatusUsers(FetchStatus.SUCCESS);
@@ -57,7 +57,7 @@ function HighScores() {
 
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/users/regular/${localStorage.getItem(
+          `${process.env.REACT_APP_API}/users/regular/${localStorage.getItem(
             "userSession"
           )}`
         );
@@ -70,7 +70,7 @@ function HighScores() {
       }
       try {
         const { data } = await axios.get(
-          `http://localhost:4000/users/california/${localStorage.getItem(
+          `${process.env.REACT_APP_API}/users/california/${localStorage.getItem(
             "userSession"
           )}`
         );
