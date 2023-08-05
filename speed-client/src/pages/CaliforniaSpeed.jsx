@@ -10,12 +10,22 @@ function CaliforniaSpeed({ socket }) {
 
   const navigate = useNavigate();
 
+  const SpeedWinner = () => {
+    console.log("You won!");
+    socket.emit(
+      "winner",
+      game.hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType
+    );
+  };
+
   const QuitGame = () => {
     socket.emit(
       "quit_game",
       JSON.parse(localStorage.getItem("gameInSession")).hostName,
       JSON.parse(localStorage.getItem("gameInSession")).userType,
-      localStorage.getItem("userSession")
+      localStorage.getItem("userSession"),
+      SpeedTypes.CALIFORNIA
     );
     localStorage.removeItem("gameInSession");
     navigate("/lobby");
@@ -44,6 +54,7 @@ function CaliforniaSpeed({ socket }) {
             game={game}
             socket={socket}
             quitGame={QuitGame}
+            speedWinner={SpeedWinner}
           />
         )}
       </GameField>

@@ -12,6 +12,7 @@ import User from "./db/models/UserSchema.mjs";
 import ChatMessage from "./db/models/ChatMessageSchema.mjs";
 import {
   GameStates,
+  Piles,
   SpeedTypes,
   UserTypes,
 } from "../speed-client/src/utils/Constants.mjs";
@@ -19,6 +20,7 @@ import { Deck } from "./utils/Constants.mjs";
 import FilteredGames from "./utils/FilteredGames.mjs";
 import ShuffleCards from "./utils/ShuffleCards.mjs";
 import EmitToAllUsersInGame from "./utils/EmitToAllUsersInGame.mjs";
+import CheckIfSameValueCards from "./utils/CheckIfSameValueCards.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -117,20 +119,32 @@ io.on("connection", async (socket) => {
       });
     } else {
       games.push({
-        deck: Deck,
+        deck: Deck.map((card) => {
+          return { ...card, hasMultiple: false };
+        }),
         hostName,
         speedType,
         winner: null,
         playerOne: {
           name: hostName,
           deck: [],
-          fieldCards: [],
+          fieldCards: {
+            pileOne: [],
+            pileTwo: [],
+            pileThree: [],
+            pileFour: [],
+          },
           ready: false,
         },
         playerTwo: {
           name: null,
           deck: [],
-          fieldCards: [],
+          fieldCards: {
+            pileOne: [],
+            pileTwo: [],
+            pileThree: [],
+            pileFour: [],
+          },
           ready: false,
         },
         viewers: [],
@@ -172,7 +186,7 @@ io.on("connection", async (socket) => {
     }
   });
 
-  socket.on("quit_game", async (hostName, userType, username) => {
+  socket.on("quit_game", async (hostName, userType, username, speedType) => {
     socket.leave(username);
     console.log(`${socket.id} left room ${username}`);
     const gameIndex = games.findIndex((room) => room.hostName === hostName);
@@ -182,30 +196,56 @@ io.on("connection", async (socket) => {
         if (games[gameIndex].gameState === GameStates.RUNNING) {
           const playerOneName = games[gameIndex].playerOne.name;
           const playerTwoName = games[gameIndex].playerTwo.name;
-          await User.findOneAndUpdate(
-            { username: playerOneName },
-            { $inc: { regular_losses: 1 } }
-          );
-          await User.findOneAndUpdate(
-            { username: playerTwoName },
-            { $inc: { regular_wins: 1 } }
-          );
+
+          if (speedType === SpeedTypes.CALIFORNIA) {
+            await User.findOneAndUpdate(
+              { username: playerOneName },
+              { $inc: { california_losses: 1 } }
+            );
+            await User.findOneAndUpdate(
+              { username: playerTwoName },
+              { $inc: { california_wins: 1 } }
+            );
+          } else {
+            await User.findOneAndUpdate(
+              { username: playerOneName },
+              { $inc: { regular_losses: 1 } }
+            );
+            await User.findOneAndUpdate(
+              { username: playerTwoName },
+              { $inc: { regular_wins: 1 } }
+            );
+          }
         }
         games[gameIndex].playerOne.name = null;
       } else if (userType === UserTypes.PLAYER_TWO) {
         if (games[gameIndex].gameState === GameStates.RUNNING) {
           const playerOneName = games[gameIndex].playerOne.name;
           const playerTwoName = games[gameIndex].playerTwo.name;
-          await User.findOneAndUpdate(
-            { username: playerOneName },
-            { $inc: { regular_wins: 1 } }
-          );
-          await User.findOneAndUpdate(
-            { username: playerTwoName },
-            { $inc: { regular_losses: 1 } }
-          );
+
+          if (speedType === SpeedTypes.CALIFORNIA) {
+            await User.findOneAndUpdate(
+              { username: playerOneName },
+              { $inc: { california_wins: 1 } }
+            );
+            await User.findOneAndUpdate(
+              { username: playerTwoName },
+              { $inc: { california_losses: 1 } }
+            );
+          } else {
+            await User.findOneAndUpdate(
+              { username: playerOneName },
+              { $inc: { regular_wins: 1 } }
+            );
+            await User.findOneAndUpdate(
+              { username: playerTwoName },
+              { $inc: { regular_losses: 1 } }
+            );
+          }
         }
         games[gameIndex].playerTwo.name = null;
+        games[gameIndex].playerOne.ready = false;
+        games[gameIndex].playerTwo.ready = false;
       } else {
         let viewers = games[gameIndex].viewers;
         viewers = viewers.filter((viewer) => viewer !== username);
@@ -283,6 +323,139 @@ io.on("connection", async (socket) => {
     games[gameIndex].playerOne.unableToPlay = false;
     games[gameIndex].playerTwo.unableToPlay = false;
 
+    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+  });
+
+  socket.on("cover_card", (hostName, userType, pile) => {
+    const gameIndex = games.findIndex((game) => game.hostName === hostName);
+
+    if (userType === UserTypes.PLAYER_ONE) {
+      switch (pile) {
+        case Piles.PLAYER_ONE_PILE_ONE:
+          games[gameIndex].playerOne.fieldCards.pileOne = [
+            games[gameIndex].playerOne.deck[0],
+            ...games[gameIndex].playerOne.fieldCards.pileOne,
+          ];
+          break;
+
+        case Piles.PLAYER_ONE_PILE_TWO:
+          games[gameIndex].playerOne.fieldCards.pileTwo = [
+            games[gameIndex].playerOne.deck[0],
+            ...games[gameIndex].playerOne.fieldCards.pileTwo,
+          ];
+          break;
+
+        case Piles.PLAYER_ONE_PILE_THREE:
+          games[gameIndex].playerOne.fieldCards.pileThree = [
+            games[gameIndex].playerOne.deck[0],
+            ...games[gameIndex].playerOne.fieldCards.pileThree,
+          ];
+          break;
+
+        case Piles.PLAYER_ONE_PILE_FOUR:
+          games[gameIndex].playerOne.fieldCards.pileFour = [
+            games[gameIndex].playerOne.deck[0],
+            ...games[gameIndex].playerOne.fieldCards.pileFour,
+          ];
+          break;
+
+        case Piles.PLAYER_TWO_PILE_ONE:
+          games[gameIndex].playerTwo.fieldCards.pileOne = [
+            games[gameIndex].playerOne.deck[0],
+            ...games[gameIndex].playerTwo.fieldCards.pileOne,
+          ];
+          break;
+
+        case Piles.PLAYER_TWO_PILE_TWO:
+          games[gameIndex].playerTwo.fieldCards.pileTwo = [
+            games[gameIndex].playerOne.deck[0],
+            ...games[gameIndex].playerTwo.fieldCards.pileTwo,
+          ];
+          break;
+
+        case Piles.PLAYER_TWO_PILE_THREE:
+          games[gameIndex].playerTwo.fieldCards.pileThree = [
+            games[gameIndex].playerOne.deck[0],
+            ...games[gameIndex].playerTwo.fieldCards.pileThree,
+          ];
+          break;
+
+        case Piles.PLAYER_TWO_PILE_FOUR:
+          games[gameIndex].playerTwo.fieldCards.pileFour = [
+            games[gameIndex].playerOne.deck[0],
+            ...games[gameIndex].playerTwo.fieldCards.pileFour,
+          ];
+          break;
+
+        default:
+          console.log("failed in placing in pile");
+      }
+      games[gameIndex].playerOne.deck.splice(0, 1);
+    } else {
+      switch (pile) {
+        case Piles.PLAYER_ONE_PILE_ONE:
+          games[gameIndex].playerOne.fieldCards.pileOne = [
+            games[gameIndex].playerTwo.deck[0],
+            ...games[gameIndex].playerOne.fieldCards.pileOne,
+          ];
+          break;
+
+        case Piles.PLAYER_ONE_PILE_TWO:
+          games[gameIndex].playerOne.fieldCards.pileTwo = [
+            games[gameIndex].playerTwo.deck[0],
+            ...games[gameIndex].playerOne.fieldCards.pileTwo,
+          ];
+          break;
+
+        case Piles.PLAYER_ONE_PILE_THREE:
+          games[gameIndex].playerOne.fieldCards.pileThree = [
+            games[gameIndex].playerTwo.deck[0],
+            ...games[gameIndex].playerOne.fieldCards.pileThree,
+          ];
+          break;
+
+        case Piles.PLAYER_ONE_PILE_FOUR:
+          games[gameIndex].playerOne.fieldCards.pileFour = [
+            games[gameIndex].playerTwo.deck[0],
+            ...games[gameIndex].playerOne.fieldCards.pileFour,
+          ];
+          break;
+
+        case Piles.PLAYER_TWO_PILE_ONE:
+          games[gameIndex].playerTwo.fieldCards.pileOne = [
+            games[gameIndex].playerTwo.deck[0],
+            ...games[gameIndex].playerTwo.fieldCards.pileOne,
+          ];
+          break;
+
+        case Piles.PLAYER_TWO_PILE_TWO:
+          games[gameIndex].playerTwo.fieldCards.pileTwo = [
+            games[gameIndex].playerTwo.deck[0],
+            ...games[gameIndex].playerTwo.fieldCards.pileTwo,
+          ];
+          break;
+
+        case Piles.PLAYER_TWO_PILE_THREE:
+          games[gameIndex].playerTwo.fieldCards.pileThree = [
+            games[gameIndex].playerTwo.deck[0],
+            ...games[gameIndex].playerTwo.fieldCards.pileThree,
+          ];
+          break;
+
+        case Piles.PLAYER_TWO_PILE_FOUR:
+          games[gameIndex].playerTwo.fieldCards.pileFour = [
+            games[gameIndex].playerTwo.deck[0],
+            ...games[gameIndex].playerTwo.fieldCards.pileFour,
+          ];
+          break;
+
+        default:
+          console.log("failed in placing in pile");
+      }
+      games[gameIndex].playerTwo.deck.splice(0, 1);
+    }
+
+    CheckIfSameValueCards(games[gameIndex]);
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
@@ -375,8 +548,12 @@ io.on("connection", async (socket) => {
     }
   });
 
-  socket.on("regular_speed_winner", async (hostName, userType) => {
+  socket.on("winner", async (hostName, userType, speedType) => {
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
+
+    if (games[gameIndex].winner) {
+      return;
+    }
 
     const playerOneName = games[gameIndex].playerOne.name;
     const playerTwoName = games[gameIndex].playerTwo.name;
@@ -386,24 +563,47 @@ io.on("connection", async (socket) => {
     if (userType === UserTypes.PLAYER_ONE) {
       games[gameIndex].winner = playerOneName;
 
-      await User.findOneAndUpdate(
-        { username: playerOneName },
-        { $inc: { regular_wins: 1 } }
-      );
-      await User.findOneAndUpdate(
-        { username: playerTwoName },
-        { $inc: { regular_losses: 1 } }
-      );
+      if (speedType === SpeedTypes.CALIFORNIA) {
+        await User.findOneAndUpdate(
+          { username: playerOneName },
+          { $inc: { california_wins: 1 } }
+        );
+        await User.findOneAndUpdate(
+          { username: playerTwoName },
+          { $inc: { california_losses: 1 } }
+        );
+      } else {
+        await User.findOneAndUpdate(
+          { username: playerOneName },
+          { $inc: { regular_wins: 1 } }
+        );
+        await User.findOneAndUpdate(
+          { username: playerTwoName },
+          { $inc: { regular_losses: 1 } }
+        );
+      }
     } else {
       games[gameIndex].winner = playerTwoName;
-      await User.findOneAndUpdate(
-        { username: playerTwoName },
-        { $inc: { regular_wins: 1 } }
-      );
-      await User.findOneAndUpdate(
-        { username: playerOneName },
-        { $inc: { regular_losses: 1 } }
-      );
+
+      if (speedType === SpeedTypes.CALIFORNIA) {
+        await User.findOneAndUpdate(
+          { username: playerTwoName },
+          { $inc: { california_wins: 1 } }
+        );
+        await User.findOneAndUpdate(
+          { username: playerOneName },
+          { $inc: { california_losses: 1 } }
+        );
+      } else {
+        await User.findOneAndUpdate(
+          { username: playerTwoName },
+          { $inc: { regular_wins: 1 } }
+        );
+        await User.findOneAndUpdate(
+          { username: playerOneName },
+          { $inc: { regular_losses: 1 } }
+        );
+      }
     }
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");

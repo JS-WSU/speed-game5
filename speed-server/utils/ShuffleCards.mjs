@@ -1,4 +1,5 @@
 import { SpeedTypes } from "../../speed-client/src/utils/Constants.mjs";
+import CheckIfSameValueCards from "./CheckIfSameValueCards.mjs";
 
 const ShuffleCards = (game) => {
   let shuffled = game.deck
@@ -39,8 +40,6 @@ const ShuffleCards = (game) => {
       game.playerTwo.drawPile.push(game.deck[i]);
     }
     game.deck.splice(0, 15);
-
-    console.log(game);
   } else {
     for (let i = 0; i < 26; i++) {
       game.playerOne.deck.push(game.deck[i]);
@@ -52,17 +51,36 @@ const ShuffleCards = (game) => {
     }
     game.deck.splice(0, 26);
 
-    for (let i = 0; i < 4; i++) {
-      game.playerOne.fieldCards.push(game.playerOne.deck[i]);
-    }
+    game.playerOne.fieldCards.pileOne.push(game.playerOne.deck[0]);
+    game.playerOne.fieldCards.pileTwo.push(game.playerOne.deck[1]);
+    game.playerOne.fieldCards.pileThree.push(game.playerOne.deck[2]);
+    game.playerOne.fieldCards.pileFour.push(game.playerOne.deck[3]);
+
+    console.log("Player One Deck before splice\n");
+
+    console.log(game.playerOne.deck);
+
     game.playerOne.deck.splice(0, 4);
 
-    for (let i = 0; i < 4; i++) {
-      game.playerTwo.fieldCards.push(game.playerTwo.deck[i]);
-    }
+    console.log("Player One Deck after splice\n");
+
+
+    console.log(game.playerOne.deck);
+
+
+    game.playerTwo.fieldCards.pileOne.push(game.playerOne.deck[0]);
+    game.playerTwo.fieldCards.pileTwo.push(game.playerOne.deck[1]);
+    game.playerTwo.fieldCards.pileThree.push(game.playerOne.deck[2]);
+    game.playerTwo.fieldCards.pileFour.push(game.playerOne.deck[3]);
+
     game.playerTwo.deck.splice(0, 4);
 
-    console.log(game);
+    console.log(game.playerOne.deck);
+
+
+    CheckIfSameValueCards(game);
+    console.log(game.playerOne.deck);
+
   }
 };
 

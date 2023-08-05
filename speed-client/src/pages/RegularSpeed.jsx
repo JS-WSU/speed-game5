@@ -10,12 +10,23 @@ function RegularSpeed({ socket }) {
 
   const navigate = useNavigate();
 
+  const SpeedWinner = () => {
+    console.log("You won!");
+    socket.emit(
+      "winner",
+      game.hostName,
+      JSON.parse(localStorage.getItem("gameInSession")).userType,
+      SpeedTypes.REGULAR
+    );
+  };
+
   const QuitGame = () => {
     socket.emit(
       "quit_game",
       JSON.parse(localStorage.getItem("gameInSession")).hostName,
       JSON.parse(localStorage.getItem("gameInSession")).userType,
-      localStorage.getItem("userSession")
+      localStorage.getItem("userSession"),
+      SpeedTypes.REGULAR
     );
     localStorage.removeItem("gameInSession");
     navigate("/lobby");
@@ -78,6 +89,7 @@ function RegularSpeed({ socket }) {
             quitGame={QuitGame}
             drawingSidePile={drawingSidePile}
             shufflingSidePile={shufflingSidePile}
+            speedWinner={SpeedWinner}
           />
         )}
       </GameField>

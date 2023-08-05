@@ -11,12 +11,15 @@ function PlayerRegularRunning({
   quitGame,
   shufflingSidePile,
   drawingSidePile,
+  speedWinner,
 }) {
   let opponentHand = [];
 
   const alertContext = useContext(AlertContext);
 
   const [unableToPlay, setUnableToPlay] = useState(null);
+
+  const [drawingCard, setDrawingCard] = useState(false);
 
   useEffect(() => {
     if (
@@ -98,28 +101,21 @@ function PlayerRegularRunning({
     );
   };
 
-  const SpeedWinner = () => {
-    console.log("You won!");
-    socket.emit(
-      "regular_speed_winner",
-      game.hostName,
-      JSON.parse(localStorage.getItem("gameInSession")).userType
-    );
-  };
-
   const DrawCard = () => {
+    setDrawingCard(true);
     if (
       JSON.parse(localStorage.getItem("gameInSession")).userType ===
       UserTypes.PLAYER_ONE
     ) {
-      game.playerOne.hand.length === 5
+      game.playerOne.hand.length >= 5
         ? alertContext.error("Cannot draw a card. You already have 5 cards.")
         : socket.emit("draw_card", game.hostName, UserTypes.PLAYER_ONE);
     } else {
-      game.playerTwo.hand.length === 5
+      game.playerTwo.hand.length >= 5
         ? alertContext.error("Cannot draw a card. You already have 5 cards.")
         : socket.emit("draw_card", game.hostName, UserTypes.PLAYER_TWO);
     }
+    setDrawingCard(false);
   };
 
   const [{ isOverPlayerOneField }, dropPlayerOneField] = useDrop(
@@ -343,7 +339,7 @@ function PlayerRegularRunning({
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE ? (
             <button
-              onClick={SpeedWinner}
+              onClick={speedWinner}
               className={`border btn btn-primary mx-auto mt-1
               
               ${
@@ -358,7 +354,7 @@ function PlayerRegularRunning({
             </button>
           ) : (
             <button
-              onClick={SpeedWinner}
+              onClick={speedWinner}
               className={`border btn btn-primary mx-auto mt-1 ${
                 !game.playerTwo.hand.length && !game.playerTwo.drawPile
                   ? "opacity-100"
@@ -397,6 +393,7 @@ function PlayerRegularRunning({
             <Card
               src="/img/PNG-cards-1.3/cardback.png"
               onClick={DrawCard}
+              drawingCard={drawingCard}
               number={game.playerOne.drawPile}
               mySide={true}
             />

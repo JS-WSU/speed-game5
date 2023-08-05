@@ -8,6 +8,9 @@ function Card({
   hover,
   onClick,
   small,
+  smallCard,
+  californiaRef,
+  drawingCard,
 }) {
   return (
     <div
@@ -17,12 +20,11 @@ function Card({
       }
      `}
       style={{
-        maxWidth: "125px",
-        transform: flip ? "rotate(180deg)" : "",
+        maxWidth: smallCard ? "100px" : "125px",
         cursor: onClick && number ? "pointer" : "auto",
       }}
       value={value}
-      onClick={number ? onClick : null}
+      onClick={number && !drawingCard ? onClick : null}
     >
       {(number || number === 0) && (
         <div className={`align-self-center`}>
@@ -35,16 +37,18 @@ function Card({
         </div>
       )}
       <div
+        ref={californiaRef}
         className={`d-flex flex-grow-1
       ${hover ? "bg-dark p-3" : ""} `}
       >
         <img
           className={`img-fluid ${hover ? "opacity-25" : ""} ${
             number === 0 ? "opacity-0" : "opacity-100"
-          } ${small ? "align-self-center" : ""}
+          } ${small ? "align-self-center" : ""} 
           ${number || number === 0 ? "p-2" : ""}`}
           src={src}
           alt={name}
+          style={{ transform: flip ? "rotate(180deg)" : "" }}
         />
       </div>
     </div>

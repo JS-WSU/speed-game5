@@ -61,7 +61,8 @@ function App() {
           "quit_game",
           JSON.parse(localStorage.getItem("gameInSession")).hostName,
           JSON.parse(localStorage.getItem("gameInSession")).userType,
-          localStorage.getItem("userSession")
+          localStorage.getItem("userSession"),
+          JSON.parse(localStorage.getItem("gameInSession")).speedType
         );
         localStorage.removeItem("gameInSession");
       }

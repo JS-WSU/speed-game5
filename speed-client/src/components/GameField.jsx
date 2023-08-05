@@ -22,6 +22,8 @@ export default function GameField({
 
   const navigate = useNavigate();
 
+
+
   const ReadyUp = () => {
     socket.emit(
       "ready_to_play",
