@@ -21,6 +21,8 @@ import FilteredGames from "./utils/FilteredGames.mjs";
 import ShuffleCards from "./utils/ShuffleCards.mjs";
 import EmitToAllUsersInGame from "./utils/EmitToAllUsersInGame.mjs";
 import CheckIfSameValueCards from "./utils/CheckIfSameValueCards.mjs";
+import CheckIfNoSameValueCards from "./utils/CheckIfNoSameValueCards.mjs";
+import ReshuffleCalifornia from "./utils/ReshuffleCalifornia.mjs";
 
 const PORT = process.env.PORT || 5050;
 const app = express();
@@ -278,6 +280,13 @@ io.on("connection", async (socket) => {
     ShuffleCards(games[gameIndex]);
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_started");
+
+    if (games[gameIndex].speedType === SpeedTypes.CALIFORNIA) {
+      while (CheckIfNoSameValueCards(games[gameIndex])) {
+        ReshuffleCalifornia(games[gameIndex]);
+        EmitToAllUsersInGame(io, games[gameIndex], "no_same_value_cards");
+      }
+    }
   });
 
   socket.on("ready_to_play", (hostName, userType) => {
@@ -456,20 +465,29 @@ io.on("connection", async (socket) => {
     }
 
     CheckIfSameValueCards(games[gameIndex]);
+    while (CheckIfNoSameValueCards(games[gameIndex])) {
+      ReshuffleCalifornia(games[gameIndex]);
+
+      EmitToAllUsersInGame(io, games[gameIndex], "no_same_value_cards");
+    }
+
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
   socket.on("draw_card", (hostName, userType) => {
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
 
-    if (userType === UserTypes.PLAYER_ONE && games[gameIndex].playerOne.hand.length < 5) {
+    if (
+      userType === UserTypes.PLAYER_ONE &&
+      games[gameIndex].playerOne.hand.length < 5
+    ) {
       games[gameIndex].playerOne.hand = [
         ...games[gameIndex].playerOne.hand,
         games[gameIndex].playerOne.drawPile[0],
       ];
       games[gameIndex].playerOne.drawPile.splice(0, 1);
       games[gameIndex].playerOne.unableToPlay = false;
-    } else if (games[gameIndex].playerTwo.hand.length < 5){
+    } else if (games[gameIndex].playerTwo.hand.length < 5) {
       games[gameIndex].playerTwo.hand = [
         ...games[gameIndex].playerTwo.hand,
         games[gameIndex].playerTwo.drawPile[0],
@@ -609,7 +627,7 @@ io.on("connection", async (socket) => {
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
-  socket.on("rematch", (hostName, userType) => {
+  socket.on("rematch", (hostName, userType, speedType) => {
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
 
     if (userType === UserTypes.PLAYER_ONE) {
@@ -622,34 +640,69 @@ io.on("connection", async (socket) => {
       games[gameIndex].playerOne.rematch &&
       games[gameIndex].playerTwo.rematch
     ) {
-      games[gameIndex] = {
-        deck: Deck,
-        hostName,
-        speedType: SpeedTypes.REGULAR,
-        winner: null,
-        playerOne: {
-          name: hostName,
-          fieldCards: [],
-          hand: [],
-          sidePile: [],
-          drawPile: [],
-          ready: false,
-          unabletoPlay: false,
-          rematch: null,
-        },
-        playerTwo: {
-          name: games[gameIndex].playerTwo.name,
-          fieldCards: [],
-          hand: [],
-          sidePile: [],
-          drawPile: [],
-          ready: false,
-          unableToPlay: false,
-          rematch: null,
-        },
-        viewers: games[gameIndex].viewers,
-        gameState: GameStates.WAITING,
-      };
+      if (speedType === SpeedTypes.REGULAR) {
+        games[gameIndex] = {
+          deck: Deck,
+          hostName,
+          speedType: SpeedTypes.REGULAR,
+          winner: null,
+          playerOne: {
+            name: hostName,
+            fieldCards: [],
+            hand: [],
+            sidePile: [],
+            drawPile: [],
+            ready: false,
+            unabletoPlay: false,
+            rematch: null,
+          },
+          playerTwo: {
+            name: games[gameIndex].playerTwo.name,
+            fieldCards: [],
+            hand: [],
+            sidePile: [],
+            drawPile: [],
+            ready: false,
+            unableToPlay: false,
+            rematch: null,
+          },
+          viewers: games[gameIndex].viewers,
+          gameState: GameStates.WAITING,
+        };
+      } else {
+        games[gameIndex] = {
+          deck: Deck.map((card) => {
+            return { ...card, hasMultiple: false };
+          }),
+          hostName,
+          speedType,
+          winner: null,
+          playerOne: {
+            name: hostName,
+            deck: [],
+            fieldCards: {
+              pileOne: [],
+              pileTwo: [],
+              pileThree: [],
+              pileFour: [],
+            },
+            ready: false,
+          },
+          playerTwo: {
+            name: games[gameIndex].playerTwo.name,
+            deck: [],
+            fieldCards: {
+              pileOne: [],
+              pileTwo: [],
+              pileThree: [],
+              pileFour: [],
+            },
+            ready: false,
+          },
+          viewers: games[gameIndex].viewers,
+          gameState: GameStates.WAITING,
+        };
+      }
     }
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_status");

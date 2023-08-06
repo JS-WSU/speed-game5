@@ -56,31 +56,16 @@ const ShuffleCards = (game) => {
     game.playerOne.fieldCards.pileThree.push(game.playerOne.deck[2]);
     game.playerOne.fieldCards.pileFour.push(game.playerOne.deck[3]);
 
-    console.log("Player One Deck before splice\n");
-
-    console.log(game.playerOne.deck);
-
     game.playerOne.deck.splice(0, 4);
 
-    console.log("Player One Deck after splice\n");
-
-
-    console.log(game.playerOne.deck);
-
-
-    game.playerTwo.fieldCards.pileOne.push(game.playerOne.deck[0]);
-    game.playerTwo.fieldCards.pileTwo.push(game.playerOne.deck[1]);
-    game.playerTwo.fieldCards.pileThree.push(game.playerOne.deck[2]);
-    game.playerTwo.fieldCards.pileFour.push(game.playerOne.deck[3]);
+    game.playerTwo.fieldCards.pileOne.push(game.playerTwo.deck[0]);
+    game.playerTwo.fieldCards.pileTwo.push(game.playerTwo.deck[1]);
+    game.playerTwo.fieldCards.pileThree.push(game.playerTwo.deck[2]);
+    game.playerTwo.fieldCards.pileFour.push(game.playerTwo.deck[3]);
 
     game.playerTwo.deck.splice(0, 4);
 
-    console.log(game.playerOne.deck);
-
-
     CheckIfSameValueCards(game);
-    console.log(game.playerOne.deck);
-
   }
 };
 

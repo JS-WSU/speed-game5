@@ -36,7 +36,7 @@ function Card({
         </div>
       )}
       <div
-        ref={californiaRef}
+        ref={number && californiaRef ? californiaRef : null}
         className={`d-flex flex-grow-1
       ${hover ? "bg-dark p-3" : ""} `}
       >

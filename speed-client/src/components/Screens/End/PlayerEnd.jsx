@@ -8,7 +8,8 @@ function PlayerEnd({ game, quitGame, socket }) {
     socket.emit(
       "rematch",
       game.hostName,
-      JSON.parse(localStorage.getItem("gameInSession")).userType
+      JSON.parse(localStorage.getItem("gameInSession")).userType,
+      game.speedType
     );
   };
   return (

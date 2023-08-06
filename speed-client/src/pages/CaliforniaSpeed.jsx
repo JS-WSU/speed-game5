@@ -1,12 +1,13 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import GameField from "../components/GameField";
 import { SpeedTypes, UserTypes } from "../utils/Constants.mjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ViewerCaliforniaRunning from "../components/Screens/Running/California/ViewerCaliforniaRunning";
 import PlayerCaliforniaRunning from "../components/Screens/Running/California/PlayerCaliforniaRunning";
 
 function CaliforniaSpeed({ socket }) {
   const [game, setGame] = useState({});
+  const [noSameValueCards, setNoSameValueCards] = useState(false);
 
   const navigate = useNavigate();
 
@@ -15,7 +16,8 @@ function CaliforniaSpeed({ socket }) {
     socket.emit(
       "winner",
       game.hostName,
-      JSON.parse(localStorage.getItem("gameInSession")).userType
+      JSON.parse(localStorage.getItem("gameInSession")).userType,
+      SpeedTypes.CALIFORNIA
     );
   };
 
@@ -30,6 +32,20 @@ function CaliforniaSpeed({ socket }) {
     localStorage.removeItem("gameInSession");
     navigate("/lobby");
   };
+
+  useEffect(() => {
+    const NoSameValueCards = (game) => {
+      setNoSameValueCards(true);
+      setTimeout(() => {
+        setGame(game);
+        setNoSameValueCards(false);
+      }, 2000);
+    };
+
+    socket.on("no_same_value_cards", NoSameValueCards);
+
+    return () => socket.off("no_same_value_cards", NoSameValueCards);
+  }, [socket]);
 
   if (localStorage.getItem("gameInSession")) {
     return JSON.parse(localStorage.getItem("gameInSession")).speedType ===
@@ -46,8 +62,8 @@ function CaliforniaSpeed({ socket }) {
         UserTypes.VIEWER ? (
           <ViewerCaliforniaRunning
             game={game}
-            socket={socket}
             quitGame={QuitGame}
+            noSameValueCards={noSameValueCards}
           />
         ) : (
           <PlayerCaliforniaRunning
@@ -55,6 +71,7 @@ function CaliforniaSpeed({ socket }) {
             socket={socket}
             quitGame={QuitGame}
             speedWinner={SpeedWinner}
+            noSameValueCards={noSameValueCards}
           />
         )}
       </GameField>

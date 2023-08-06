@@ -11,7 +11,6 @@ const CheckIfSameValueCards = (game) => {
   ];
 
   for (let pile in game.playerOne.fieldCards) {
-    console.log(game.playerOne.fieldCards[pile][0]);
     for (let j = 0; j < combine.length; ++j) {
       if (
         game.playerOne.fieldCards[pile][0].name !== combine[j].name &&

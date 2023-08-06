@@ -7,6 +7,22 @@ import { GameTypes, MONGO_DB_LIMIT } from "../utils/Constants.mjs";
 
 const router = express.Router();
 
+// router.get(
+//   "/reset",
+//   asyncHandler(async (req, res) => {
+//     await User.updateMany(null, {
+//       $set: {
+//         california_losses: 0,
+//         california_wins: 0,
+//         regular_losses: 0,
+//         regular_wins: 0,
+//       },
+//     });
+
+//     res.status(200).send(await User.find());
+//   })
+// );
+
 router.get(
   "/top-10-each",
   asyncHandler(async (req, res) => {

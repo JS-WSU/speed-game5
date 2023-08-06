@@ -5,7 +5,13 @@ import AlertContext from "../../../../context/AlertContext";
 import { useDrop } from "react-dnd";
 import CardDraggableCalifornia from "../../../CardDraggableCalifornia";
 
-function PlayerCalifornia({ game, socket, quitGame }) {
+function PlayerCalifornia({
+  game,
+  socket,
+  quitGame,
+  speedWinner,
+  noSameValueCards,
+}) {
   const alertContext = useContext(AlertContext);
 
   const [{ isOverPlayerOnePileOne }, dropPlayerOnePileOne] = useDrop(
@@ -231,182 +237,191 @@ function PlayerCalifornia({ game, socket, quitGame }) {
         </div>
       </div>
 
-      <div className="d-flex justify-content-center">
-        {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-        UserTypes.PLAYER_ONE ? (
-          <>
-            {" "}
-            <Card
-              innerRef={dropPlayerTwoPileFour}
-              name={game.playerTwo.fieldCards.pileFour[0].name}
-              src={game.playerTwo.fieldCards.pileFour[0].src}
-              value={game.playerTwo.fieldCards.pileFour[0].value}
-              number={game.playerTwo.fieldCards.pileFour.length}
-              flip={true}
-              smallCard={true}
-              hover={isOverPlayerTwoPileFour}
-            />
-            <Card
-              innerRef={dropPlayerTwoPileThree}
-              name={game.playerTwo.fieldCards.pileThree[0].name}
-              src={game.playerTwo.fieldCards.pileThree[0].src}
-              value={game.playerTwo.fieldCards.pileThree[0].value}
-              number={game.playerTwo.fieldCards.pileThree.length}
-              flip={true}
-              smallCard={true}
-              hover={isOverPlayerTwoPileThree}
-            />
-            <Card
-              innerRef={dropPlayerTwoPileTwo}
-              name={game.playerTwo.fieldCards.pileTwo[0].name}
-              src={game.playerTwo.fieldCards.pileTwo[0].src}
-              value={game.playerTwo.fieldCards.pileTwo[0].value}
-              number={game.playerTwo.fieldCards.pileTwo.length}
-              flip={true}
-              smallCard={true}
-              hover={isOverPlayerTwoPileTwo}
-            />
-            <Card
-              innerRef={dropPlayerTwoPileOne}
-              name={game.playerTwo.fieldCards.pileOne[0].name}
-              src={game.playerTwo.fieldCards.pileOne[0].src}
-              value={game.playerTwo.fieldCards.pileOne[0].value}
-              number={game.playerTwo.fieldCards.pileOne.length}
-              flip={true}
-              smallCard={true}
-              hover={isOverPlayerTwoPileOne}
-            />
-          </>
-        ) : (
-          <>
-            {" "}
-            <Card
-              innerRef={dropPlayerOnePileFour}
-              name={game.playerOne.fieldCards.pileFour[0].name}
-              src={game.playerOne.fieldCards.pileFour[0].src}
-              value={game.playerOne.fieldCards.pileFour[0].value}
-              number={game.playerOne.fieldCards.pileFour.length}
-              flip={true}
-              smallCard={true}
-              hover={isOverPlayerOnePileFour}
-            />
-            <Card
-              innerRef={dropPlayerOnePileThree}
-              name={game.playerOne.fieldCards.pileThree[0].name}
-              src={game.playerOne.fieldCards.pileThree[0].src}
-              value={game.playerOne.fieldCards.pileThree[0].value}
-              number={game.playerOne.fieldCards.pileThree.length}
-              flip={true}
-              smallCard={true}
-              hover={isOverPlayerOnePileThree}
-            />
-            <Card
-              innerRef={dropPlayerOnePileTwo}
-              name={game.playerOne.fieldCards.pileTwo[0].name}
-              src={game.playerOne.fieldCards.pileTwo[0].src}
-              value={game.playerOne.fieldCards.pileTwo[0].value}
-              number={game.playerOne.fieldCards.pileTwo.length}
-              flip={true}
-              smallCard={true}
-              hover={isOverPlayerOnePileTwo}
-            />
-            <Card
-              innerRef={dropPlayerOnePileOne}
-              name={game.playerOne.fieldCards.pileOne[0].name}
-              src={game.playerOne.fieldCards.pileOne[0].src}
-              value={game.playerOne.fieldCards.pileOne[0].value}
-              number={game.playerOne.fieldCards.pileOne.length}
-              flip={true}
-              smallCard={true}
-              hover={isOverPlayerOnePileOne}
-            />
-          </>
-        )}
-      </div>
-      <div className="d-flex justify-content-center">
-        {JSON.parse(localStorage.getItem("gameInSession")).userType ===
-        UserTypes.PLAYER_ONE ? (
-          <>
-            {" "}
-            <Card
-              innerRef={dropPlayerOnePileOne}
-              name={game.playerOne.fieldCards.pileOne[0].name}
-              src={game.playerOne.fieldCards.pileOne[0].src}
-              value={game.playerOne.fieldCards.pileOne[0].value}
-              number={game.playerOne.fieldCards.pileOne.length}
-              smallCard={true}
-              hover={isOverPlayerOnePileOne}
-            />
-            <Card
-              innerRef={dropPlayerOnePileTwo}
-              name={game.playerOne.fieldCards.pileTwo[0].name}
-              src={game.playerOne.fieldCards.pileTwo[0].src}
-              value={game.playerOne.fieldCards.pileTwo[0].value}
-              number={game.playerOne.fieldCards.pileTwo.length}
-              smallCard={true}
-              hover={isOverPlayerOnePileTwo}
-            />
-            <Card
-              innerRef={dropPlayerOnePileThree}
-              name={game.playerOne.fieldCards.pileThree[0].name}
-              src={game.playerOne.fieldCards.pileThree[0].src}
-              value={game.playerOne.fieldCards.pileThree[0].value}
-              number={game.playerOne.fieldCards.pileThree.length}
-              smallCard={true}
-              hover={isOverPlayerOnePileThree}
-            />
-            <Card
-              innerRef={dropPlayerOnePileFour}
-              name={game.playerOne.fieldCards.pileFour[0].name}
-              src={game.playerOne.fieldCards.pileFour[0].src}
-              value={game.playerOne.fieldCards.pileFour[0].value}
-              number={game.playerOne.fieldCards.pileFour.length}
-              smallCard={true}
-              hover={isOverPlayerOnePileFour}
-            />
-          </>
-        ) : (
-          <>
-            {" "}
-            <Card
-              innerRef={dropPlayerTwoPileOne}
-              name={game.playerTwo.fieldCards.pileOne[0].name}
-              src={game.playerTwo.fieldCards.pileOne[0].src}
-              value={game.playerTwo.fieldCards.pileOne[0].value}
-              number={game.playerTwo.fieldCards.pileOne.length}
-              smallCard={true}
-              hover={isOverPlayerTwoPileOne}
-            />
-            <Card
-              innerRef={dropPlayerTwoPileTwo}
-              name={game.playerTwo.fieldCards.pileTwo[0].name}
-              src={game.playerTwo.fieldCards.pileTwo[0].src}
-              value={game.playerTwo.fieldCards.pileTwo[0].value}
-              number={game.playerTwo.fieldCards.pileTwo.length}
-              smallCard={true}
-              hover={isOverPlayerTwoPileTwo}
-            />
-            <Card
-              innerRef={dropPlayerTwoPileThree}
-              name={game.playerTwo.fieldCards.pileThree[0].name}
-              src={game.playerTwo.fieldCards.pileThree[0].src}
-              value={game.playerTwo.fieldCards.pileThree[0].value}
-              number={game.playerTwo.fieldCards.pileThree.length}
-              smallCard={true}
-              hover={isOverPlayerTwoPileThree}
-            />
-            <Card
-              innerRef={dropPlayerTwoPileFour}
-              name={game.playerTwo.fieldCards.pileFour[0].name}
-              src={game.playerTwo.fieldCards.pileFour[0].src}
-              value={game.playerTwo.fieldCards.pileFour[0].value}
-              number={game.playerTwo.fieldCards.pileFour.length}
-              smallCard={true}
-              hover={isOverPlayerTwoPileFour}
-            />
-          </>
-        )}
-      </div>
+      {noSameValueCards ? (
+        <h2 className="m-auto text-center bg-info">
+          No cards on the field have the same value! Reshuffling each player's
+          piles and deck cards...
+        </h2>
+      ) : (
+        <>
+          <div className="d-flex justify-content-center">
+            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.PLAYER_ONE ? (
+              <>
+                {" "}
+                <Card
+                  innerRef={dropPlayerTwoPileFour}
+                  name={game.playerTwo.fieldCards.pileFour[0].name}
+                  src={game.playerTwo.fieldCards.pileFour[0].src}
+                  value={game.playerTwo.fieldCards.pileFour[0].value}
+                  number={game.playerTwo.fieldCards.pileFour.length}
+                  flip={true}
+                  smallCard={true}
+                  hover={isOverPlayerTwoPileFour}
+                />
+                <Card
+                  innerRef={dropPlayerTwoPileThree}
+                  name={game.playerTwo.fieldCards.pileThree[0].name}
+                  src={game.playerTwo.fieldCards.pileThree[0].src}
+                  value={game.playerTwo.fieldCards.pileThree[0].value}
+                  number={game.playerTwo.fieldCards.pileThree.length}
+                  flip={true}
+                  smallCard={true}
+                  hover={isOverPlayerTwoPileThree}
+                />
+                <Card
+                  innerRef={dropPlayerTwoPileTwo}
+                  name={game.playerTwo.fieldCards.pileTwo[0].name}
+                  src={game.playerTwo.fieldCards.pileTwo[0].src}
+                  value={game.playerTwo.fieldCards.pileTwo[0].value}
+                  number={game.playerTwo.fieldCards.pileTwo.length}
+                  flip={true}
+                  smallCard={true}
+                  hover={isOverPlayerTwoPileTwo}
+                />
+                <Card
+                  innerRef={dropPlayerTwoPileOne}
+                  name={game.playerTwo.fieldCards.pileOne[0].name}
+                  src={game.playerTwo.fieldCards.pileOne[0].src}
+                  value={game.playerTwo.fieldCards.pileOne[0].value}
+                  number={game.playerTwo.fieldCards.pileOne.length}
+                  flip={true}
+                  smallCard={true}
+                  hover={isOverPlayerTwoPileOne}
+                />
+              </>
+            ) : (
+              <>
+                {" "}
+                <Card
+                  innerRef={dropPlayerOnePileFour}
+                  name={game.playerOne.fieldCards.pileFour[0].name}
+                  src={game.playerOne.fieldCards.pileFour[0].src}
+                  value={game.playerOne.fieldCards.pileFour[0].value}
+                  number={game.playerOne.fieldCards.pileFour.length}
+                  flip={true}
+                  smallCard={true}
+                  hover={isOverPlayerOnePileFour}
+                />
+                <Card
+                  innerRef={dropPlayerOnePileThree}
+                  name={game.playerOne.fieldCards.pileThree[0].name}
+                  src={game.playerOne.fieldCards.pileThree[0].src}
+                  value={game.playerOne.fieldCards.pileThree[0].value}
+                  number={game.playerOne.fieldCards.pileThree.length}
+                  flip={true}
+                  smallCard={true}
+                  hover={isOverPlayerOnePileThree}
+                />
+                <Card
+                  innerRef={dropPlayerOnePileTwo}
+                  name={game.playerOne.fieldCards.pileTwo[0].name}
+                  src={game.playerOne.fieldCards.pileTwo[0].src}
+                  value={game.playerOne.fieldCards.pileTwo[0].value}
+                  number={game.playerOne.fieldCards.pileTwo.length}
+                  flip={true}
+                  smallCard={true}
+                  hover={isOverPlayerOnePileTwo}
+                />
+                <Card
+                  innerRef={dropPlayerOnePileOne}
+                  name={game.playerOne.fieldCards.pileOne[0].name}
+                  src={game.playerOne.fieldCards.pileOne[0].src}
+                  value={game.playerOne.fieldCards.pileOne[0].value}
+                  number={game.playerOne.fieldCards.pileOne.length}
+                  flip={true}
+                  smallCard={true}
+                  hover={isOverPlayerOnePileOne}
+                />
+              </>
+            )}
+          </div>
+          <div className="d-flex justify-content-center">
+            {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+            UserTypes.PLAYER_ONE ? (
+              <>
+                {" "}
+                <Card
+                  innerRef={dropPlayerOnePileOne}
+                  name={game.playerOne.fieldCards.pileOne[0].name}
+                  src={game.playerOne.fieldCards.pileOne[0].src}
+                  value={game.playerOne.fieldCards.pileOne[0].value}
+                  number={game.playerOne.fieldCards.pileOne.length}
+                  smallCard={true}
+                  hover={isOverPlayerOnePileOne}
+                />
+                <Card
+                  innerRef={dropPlayerOnePileTwo}
+                  name={game.playerOne.fieldCards.pileTwo[0].name}
+                  src={game.playerOne.fieldCards.pileTwo[0].src}
+                  value={game.playerOne.fieldCards.pileTwo[0].value}
+                  number={game.playerOne.fieldCards.pileTwo.length}
+                  smallCard={true}
+                  hover={isOverPlayerOnePileTwo}
+                />
+                <Card
+                  innerRef={dropPlayerOnePileThree}
+                  name={game.playerOne.fieldCards.pileThree[0].name}
+                  src={game.playerOne.fieldCards.pileThree[0].src}
+                  value={game.playerOne.fieldCards.pileThree[0].value}
+                  number={game.playerOne.fieldCards.pileThree.length}
+                  smallCard={true}
+                  hover={isOverPlayerOnePileThree}
+                />
+                <Card
+                  innerRef={dropPlayerOnePileFour}
+                  name={game.playerOne.fieldCards.pileFour[0].name}
+                  src={game.playerOne.fieldCards.pileFour[0].src}
+                  value={game.playerOne.fieldCards.pileFour[0].value}
+                  number={game.playerOne.fieldCards.pileFour.length}
+                  smallCard={true}
+                  hover={isOverPlayerOnePileFour}
+                />
+              </>
+            ) : (
+              <>
+                {" "}
+                <Card
+                  innerRef={dropPlayerTwoPileOne}
+                  name={game.playerTwo.fieldCards.pileOne[0].name}
+                  src={game.playerTwo.fieldCards.pileOne[0].src}
+                  value={game.playerTwo.fieldCards.pileOne[0].value}
+                  number={game.playerTwo.fieldCards.pileOne.length}
+                  smallCard={true}
+                  hover={isOverPlayerTwoPileOne}
+                />
+                <Card
+                  innerRef={dropPlayerTwoPileTwo}
+                  name={game.playerTwo.fieldCards.pileTwo[0].name}
+                  src={game.playerTwo.fieldCards.pileTwo[0].src}
+                  value={game.playerTwo.fieldCards.pileTwo[0].value}
+                  number={game.playerTwo.fieldCards.pileTwo.length}
+                  smallCard={true}
+                  hover={isOverPlayerTwoPileTwo}
+                />
+                <Card
+                  innerRef={dropPlayerTwoPileThree}
+                  name={game.playerTwo.fieldCards.pileThree[0].name}
+                  src={game.playerTwo.fieldCards.pileThree[0].src}
+                  value={game.playerTwo.fieldCards.pileThree[0].value}
+                  number={game.playerTwo.fieldCards.pileThree.length}
+                  smallCard={true}
+                  hover={isOverPlayerTwoPileThree}
+                />
+                <Card
+                  innerRef={dropPlayerTwoPileFour}
+                  name={game.playerTwo.fieldCards.pileFour[0].name}
+                  src={game.playerTwo.fieldCards.pileFour[0].src}
+                  value={game.playerTwo.fieldCards.pileFour[0].value}
+                  number={game.playerTwo.fieldCards.pileFour.length}
+                  smallCard={true}
+                  hover={isOverPlayerTwoPileFour}
+                />
+              </>
+            )}
+          </div>
+        </>
+      )}
 
       <div className="d-flex justify-content-center">
         <button
@@ -415,7 +430,7 @@ function PlayerCalifornia({ game, socket, quitGame }) {
         >
           Forfeit
         </button>
-        <div className="d-flex">
+        <div className="d-flex flex-column">
           <CardDraggableCalifornia
             src="/img/PNG-cards-1.3/cardback.png"
             number={
@@ -425,6 +440,29 @@ function PlayerCalifornia({ game, socket, quitGame }) {
                 : game.playerTwo.deck
             }
           />
+          {JSON.parse(localStorage.getItem("gameInSession")).userType ===
+          UserTypes.PLAYER_ONE ? (
+            <button
+              onClick={speedWinner}
+              className={`border btn btn-primary mx-auto mt-1
+              
+              ${!game.playerOne.deck ? "opacity-100" : "opacity-0"}
+              `}
+              disabled={game.playerOne.deck}
+            >
+              SPEED
+            </button>
+          ) : (
+            <button
+              onClick={speedWinner}
+              className={`border btn btn-primary mx-auto mt-1 ${
+                !game.playerTwo.deck ? "opacity-100" : "opacity-0"
+              }`}
+              disabled={game.playerTwo.deck}
+            >
+              SPEED
+            </button>
+          )}
         </div>
         <div className="d-flex flex-column text-center ms-auto align-self-end">
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
