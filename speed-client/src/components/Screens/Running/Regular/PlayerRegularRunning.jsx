@@ -102,20 +102,18 @@ function PlayerRegularRunning({
   };
 
   const DrawCard = () => {
-    setDrawingCard(true);
     if (
       JSON.parse(localStorage.getItem("gameInSession")).userType ===
       UserTypes.PLAYER_ONE
     ) {
-      game.playerOne.hand.length >= 5
+      game.playerOne.hand.length === 5
         ? alertContext.error("Cannot draw a card. You already have 5 cards.")
         : socket.emit("draw_card", game.hostName, UserTypes.PLAYER_ONE);
     } else {
-      game.playerTwo.hand.length >= 5
+      game.playerTwo.hand.length === 5
         ? alertContext.error("Cannot draw a card. You already have 5 cards.")
         : socket.emit("draw_card", game.hostName, UserTypes.PLAYER_TWO);
     }
-    setDrawingCard(false);
   };
 
   const [{ isOverPlayerOneField }, dropPlayerOneField] = useDrop(

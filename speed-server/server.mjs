@@ -462,14 +462,14 @@ io.on("connection", async (socket) => {
   socket.on("draw_card", (hostName, userType) => {
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
 
-    if (userType === UserTypes.PLAYER_ONE) {
+    if (userType === UserTypes.PLAYER_ONE && games[gameIndex].playerOne.hand.length < 5) {
       games[gameIndex].playerOne.hand = [
         ...games[gameIndex].playerOne.hand,
         games[gameIndex].playerOne.drawPile[0],
       ];
       games[gameIndex].playerOne.drawPile.splice(0, 1);
       games[gameIndex].playerOne.unableToPlay = false;
-    } else {
+    } else if (games[gameIndex].playerTwo.hand.length < 5){
       games[gameIndex].playerTwo.hand = [
         ...games[gameIndex].playerTwo.hand,
         games[gameIndex].playerTwo.drawPile[0],

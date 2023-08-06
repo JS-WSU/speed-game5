@@ -10,7 +10,6 @@ function Card({
   small,
   smallCard,
   californiaRef,
-  drawingCard,
 }) {
   return (
     <div
@@ -24,7 +23,7 @@ function Card({
         cursor: onClick && number ? "pointer" : "auto",
       }}
       value={value}
-      onClick={number && !drawingCard ? onClick : null}
+      onClick={number ? onClick : null}
     >
       {(number || number === 0) && (
         <div className={`align-self-center`}>
