@@ -743,7 +743,7 @@ io.on("connection", async (socket) => {
         games[gameIndex] = {
           deck: Deck,
           hostName,
-          speedType: SpeedTypes.REGULAR,
+          speedType,
           winner: null,
           playerOne: {
             name: hostName,
@@ -786,6 +786,7 @@ io.on("connection", async (socket) => {
               pileFour: [],
             },
             ready: false,
+            rematch: null,
           },
           playerTwo: {
             name: games[gameIndex].playerTwo.name,
@@ -797,6 +798,7 @@ io.on("connection", async (socket) => {
               pileFour: [],
             },
             ready: false,
+            rematch: null,
           },
           viewers: games[gameIndex].viewers,
           gameState: GameStates.WAITING,
