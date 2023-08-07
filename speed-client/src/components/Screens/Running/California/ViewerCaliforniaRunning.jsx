@@ -9,13 +9,14 @@ function ViewerCalifornia({ game, quitGame, noSameValueCards }) {
           {game.playerTwo.name}
         </div>
         <div className="d-flex justify-content-evenly">
-          {" "}
-          <Card
-            src="/img/PNG-cards-1.3/cardback.png"
-            small={true}
-            smallCard={true}
-            number={game.playerTwo.deck}
-          />
+          {noSameValueCards ? null : (
+            <Card
+              src="/img/PNG-cards-1.3/cardback.png"
+              small={true}
+              smallCard={true}
+              number={game.playerTwo.deck}
+            />
+          )}{" "}
         </div>
         <div className="bg-secondary align-self-start p-3 ms-auto">
           Viewers:
@@ -108,10 +109,14 @@ function ViewerCalifornia({ game, quitGame, noSameValueCards }) {
           Stop Watching
         </button>
         <div className="d-flex flex-column">
-          <Card
-            src="/img/PNG-cards-1.3/cardback.png"
-            number={game.playerOne.deck}
-          />
+          {noSameValueCards ? null : (
+            <Card
+              src="/img/PNG-cards-1.3/cardback.png"
+              small={true}
+              smallCard={true}
+              number={game.playerTwo.deck}
+            />
+          )}
         </div>
         <div className="d-flex flex-column text-center ms-auto align-self-end">
           {game.playerOne.name}

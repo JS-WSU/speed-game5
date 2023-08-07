@@ -216,18 +216,19 @@ function PlayerCalifornia({
             : game.playerOne.name}{" "}
         </div>
         <div className="d-flex justify-content-evenly">
-          {" "}
-          <Card
-            src="/img/PNG-cards-1.3/cardback.png"
-            small={true}
-            smallCard={true}
-            number={
-              JSON.parse(localStorage.getItem("gameInSession")).userType ===
-              UserTypes.PLAYER_ONE
-                ? game.playerTwo.deck
-                : game.playerOne.deck
-            }
-          />
+          {noSameValueCards ? null : (
+            <Card
+              src="/img/PNG-cards-1.3/cardback.png"
+              small={true}
+              smallCard={true}
+              number={
+                JSON.parse(localStorage.getItem("gameInSession")).userType ===
+                UserTypes.PLAYER_ONE
+                  ? game.playerTwo.deck
+                  : game.playerOne.deck
+              }
+            />
+          )}{" "}
         </div>
         <div className="bg-secondary align-self-start p-3 ms-auto">
           Viewers:
@@ -431,15 +432,17 @@ function PlayerCalifornia({
           Forfeit
         </button>
         <div className="d-flex flex-column">
-          <CardDraggableCalifornia
-            src="/img/PNG-cards-1.3/cardback.png"
-            number={
-              JSON.parse(localStorage.getItem("gameInSession")).userType ===
-              UserTypes.PLAYER_ONE
-                ? game.playerOne.deck
-                : game.playerTwo.deck
-            }
-          />
+          {noSameValueCards ? null : (
+            <CardDraggableCalifornia
+              src="/img/PNG-cards-1.3/cardback.png"
+              number={
+                JSON.parse(localStorage.getItem("gameInSession")).userType ===
+                UserTypes.PLAYER_ONE
+                  ? game.playerOne.deck
+                  : game.playerTwo.deck
+              }
+            />
+          )}{" "}
           {JSON.parse(localStorage.getItem("gameInSession")).userType ===
           UserTypes.PLAYER_ONE ? (
             <button

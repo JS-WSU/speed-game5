@@ -280,13 +280,6 @@ io.on("connection", async (socket) => {
     ShuffleCards(games[gameIndex]);
 
     EmitToAllUsersInGame(io, games[gameIndex], "game_started");
-
-    if (games[gameIndex].speedType === SpeedTypes.CALIFORNIA) {
-      while (CheckIfNoSameValueCards(games[gameIndex])) {
-        ReshuffleCalifornia(games[gameIndex]);
-        EmitToAllUsersInGame(io, games[gameIndex], "no_same_value_cards");
-      }
-    }
   });
 
   socket.on("ready_to_play", (hostName, userType) => {
@@ -465,13 +458,15 @@ io.on("connection", async (socket) => {
     }
 
     CheckIfSameValueCards(games[gameIndex]);
-    while (CheckIfNoSameValueCards(games[gameIndex])) {
-      ReshuffleCalifornia(games[gameIndex]);
 
-      EmitToAllUsersInGame(io, games[gameIndex], "no_same_value_cards");
+    if (!CheckIfNoSameValueCards(games[gameIndex])) {
+      EmitToAllUsersInGame(io, games[gameIndex], "game_status");
+    } else {
+      while (CheckIfNoSameValueCards(games[gameIndex])) {
+        ReshuffleCalifornia(games[gameIndex]);
+        EmitToAllUsersInGame(io, games[gameIndex], "no_same_value_cards");
+      }
     }
-
-    EmitToAllUsersInGame(io, games[gameIndex], "game_status");
   });
 
   socket.on("draw_card", (hostName, userType) => {

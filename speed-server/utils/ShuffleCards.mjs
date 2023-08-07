@@ -1,5 +1,7 @@
 import { SpeedTypes } from "../../speed-client/src/utils/Constants.mjs";
 import CheckIfSameValueCards from "./CheckIfSameValueCards.mjs";
+import CheckIfNoSameValueCards from "./CheckIfNoSameValueCards.mjs";
+import ReshuffleCalifornia from "./ReshuffleCalifornia.mjs";
 
 const ShuffleCards = (game) => {
   let shuffled = game.deck
@@ -66,6 +68,10 @@ const ShuffleCards = (game) => {
     game.playerTwo.deck.splice(0, 4);
 
     CheckIfSameValueCards(game);
+
+    while (CheckIfNoSameValueCards(game)) {
+      ReshuffleCalifornia(game);
+    }
   }
 };
 
