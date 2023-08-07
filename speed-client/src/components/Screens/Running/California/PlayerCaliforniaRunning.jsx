@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Card from "../../../Card";
 import { Piles, UserTypes } from "../../../../utils/Constants.mjs";
 import AlertContext from "../../../../context/AlertContext";
@@ -14,22 +14,28 @@ function PlayerCalifornia({
 }) {
   const alertContext = useContext(AlertContext);
 
+  useEffect(() => {
+    const InvalidCardCover = (message) => {
+      alertContext.error(message);
+    };
+
+    socket.on("invalid_card_cover", InvalidCardCover);
+
+    return () => socket.off("invalid_card_cover", InvalidCardCover);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [socket]);
+
   const [{ isOverPlayerOnePileOne }, dropPlayerOnePileOne] = useDrop(
     () => ({
       accept: "card",
       drop: (card) => {
-        if (game.playerOne.fieldCards.pileOne[0].hasMultiple) {
-          socket.emit(
-            "cover_card",
-            JSON.parse(localStorage.getItem("gameInSession")).hostName,
-            JSON.parse(localStorage.getItem("gameInSession")).userType,
-            Piles.PLAYER_ONE_PILE_ONE
-          );
-        } else {
-          alertContext.error(
-            `Invalid play, card ${game.playerOne.fieldCards.pileOne[0].name} doesn't have a double!`
-          );
-        }
+        socket.emit(
+          "cover_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          Piles.PLAYER_ONE_PILE_ONE
+        );
       },
       collect: (monitor) => ({
         isOverPlayerOnePileOne: monitor.isOver(),
@@ -42,18 +48,12 @@ function PlayerCalifornia({
     () => ({
       accept: "card",
       drop: (card) => {
-        if (game.playerOne.fieldCards.pileTwo[0].hasMultiple) {
-          socket.emit(
-            "cover_card",
-            JSON.parse(localStorage.getItem("gameInSession")).hostName,
-            JSON.parse(localStorage.getItem("gameInSession")).userType,
-            Piles.PLAYER_ONE_PILE_TWO
-          );
-        } else {
-          alertContext.error(
-            `Invalid play, card ${game.playerOne.fieldCards.pileTwo[0].name} doesn't have a double!`
-          );
-        }
+        socket.emit(
+          "cover_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          Piles.PLAYER_ONE_PILE_TWO
+        );
       },
       collect: (monitor) => ({
         isOverPlayerOnePileTwo: monitor.isOver(),
@@ -66,18 +66,12 @@ function PlayerCalifornia({
     () => ({
       accept: "card",
       drop: (card) => {
-        if (game.playerOne.fieldCards.pileThree[0].hasMultiple) {
-          socket.emit(
-            "cover_card",
-            JSON.parse(localStorage.getItem("gameInSession")).hostName,
-            JSON.parse(localStorage.getItem("gameInSession")).userType,
-            Piles.PLAYER_ONE_PILE_THREE
-          );
-        } else {
-          alertContext.error(
-            `Invalid play, card ${game.playerOne.fieldCards.pileThree[0].name} doesn't have a double!`
-          );
-        }
+        socket.emit(
+          "cover_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          Piles.PLAYER_ONE_PILE_THREE
+        );
       },
       collect: (monitor) => ({
         isOverPlayerOnePileThree: monitor.isOver(),
@@ -90,18 +84,12 @@ function PlayerCalifornia({
     () => ({
       accept: "card",
       drop: (card) => {
-        if (game.playerOne.fieldCards.pileFour[0].hasMultiple) {
-          socket.emit(
-            "cover_card",
-            JSON.parse(localStorage.getItem("gameInSession")).hostName,
-            JSON.parse(localStorage.getItem("gameInSession")).userType,
-            Piles.PLAYER_ONE_PILE_FOUR
-          );
-        } else {
-          alertContext.error(
-            `Invalid play, card ${game.playerOne.fieldCards.pileFour[0].name} doesn't have a double!`
-          );
-        }
+        socket.emit(
+          "cover_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          Piles.PLAYER_ONE_PILE_FOUR
+        );
       },
       collect: (monitor) => ({
         isOverPlayerOnePileFour: monitor.isOver(),
@@ -114,18 +102,12 @@ function PlayerCalifornia({
     () => ({
       accept: "card",
       drop: (card) => {
-        if (game.playerTwo.fieldCards.pileOne[0].hasMultiple) {
-          socket.emit(
-            "cover_card",
-            JSON.parse(localStorage.getItem("gameInSession")).hostName,
-            JSON.parse(localStorage.getItem("gameInSession")).userType,
-            Piles.PLAYER_TWO_PILE_ONE
-          );
-        } else {
-          alertContext.error(
-            `Invalid play, card ${game.playerTwo.fieldCards.pileOne[0].name} doesn't have a double!`
-          );
-        }
+        socket.emit(
+          "cover_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          Piles.PLAYER_TWO_PILE_ONE
+        );
       },
       collect: (monitor) => ({
         isOverPlayerTwoPileOne: monitor.isOver(),
@@ -138,18 +120,12 @@ function PlayerCalifornia({
     () => ({
       accept: "card",
       drop: (card) => {
-        if (game.playerTwo.fieldCards.pileTwo[0].hasMultiple) {
-          socket.emit(
-            "cover_card",
-            JSON.parse(localStorage.getItem("gameInSession")).hostName,
-            JSON.parse(localStorage.getItem("gameInSession")).userType,
-            Piles.PLAYER_TWO_PILE_TWO
-          );
-        } else {
-          alertContext.error(
-            `Invalid play, card ${game.playerTwo.fieldCards.pileTwo[0].name} doesn't have a double!`
-          );
-        }
+        socket.emit(
+          "cover_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          Piles.PLAYER_TWO_PILE_TWO
+        );
       },
       collect: (monitor) => ({
         isOverPlayerTwoPileTwo: monitor.isOver(),
@@ -162,18 +138,12 @@ function PlayerCalifornia({
     () => ({
       accept: "card",
       drop: (card) => {
-        if (game.playerTwo.fieldCards.pileThree[0].hasMultiple) {
-          socket.emit(
-            "cover_card",
-            JSON.parse(localStorage.getItem("gameInSession")).hostName,
-            JSON.parse(localStorage.getItem("gameInSession")).userType,
-            Piles.PLAYER_TWO_PILE_THREE
-          );
-        } else {
-          alertContext.error(
-            `Invalid play, card ${game.playerTwo.fieldCards.pileThree[0].name} doesn't have a double!`
-          );
-        }
+        socket.emit(
+          "cover_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          Piles.PLAYER_TWO_PILE_THREE
+        );
       },
       collect: (monitor) => ({
         isOverPlayerTwoPileThree: monitor.isOver(),
@@ -186,18 +156,12 @@ function PlayerCalifornia({
     () => ({
       accept: "card",
       drop: (card) => {
-        if (game.playerTwo.fieldCards.pileFour[0].hasMultiple) {
-          socket.emit(
-            "cover_card",
-            JSON.parse(localStorage.getItem("gameInSession")).hostName,
-            JSON.parse(localStorage.getItem("gameInSession")).userType,
-            Piles.PLAYER_TWO_PILE_FOUR
-          );
-        } else {
-          alertContext.error(
-            `Invalid play, card ${game.playerTwo.fieldCards.pileFour[0].name} doesn't have a double!`
-          );
-        }
+        socket.emit(
+          "cover_card",
+          JSON.parse(localStorage.getItem("gameInSession")).hostName,
+          JSON.parse(localStorage.getItem("gameInSession")).userType,
+          Piles.PLAYER_TWO_PILE_FOUR
+        );
       },
       collect: (monitor) => ({
         isOverPlayerTwoPileFour: monitor.isOver(),

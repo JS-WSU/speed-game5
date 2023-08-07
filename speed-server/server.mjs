@@ -332,129 +332,233 @@ io.on("connection", async (socket) => {
     const gameIndex = games.findIndex((game) => game.hostName === hostName);
 
     if (userType === UserTypes.PLAYER_ONE) {
-      switch (pile) {
-        case Piles.PLAYER_ONE_PILE_ONE:
+      if (pile === Piles.PLAYER_ONE_PILE_ONE) {
+        if (games[gameIndex].playerOne.fieldCards.pileOne[0].hasMultiple) {
           games[gameIndex].playerOne.fieldCards.pileOne = [
             games[gameIndex].playerOne.deck[0],
             ...games[gameIndex].playerOne.fieldCards.pileOne,
           ];
-          break;
-
-        case Piles.PLAYER_ONE_PILE_TWO:
+          games[gameIndex].playerOne.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerOne.fieldCards.pileOne[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_ONE_PILE_TWO) {
+        if (games[gameIndex].playerOne.fieldCards.pileTwo[0].hasMultiple) {
           games[gameIndex].playerOne.fieldCards.pileTwo = [
             games[gameIndex].playerOne.deck[0],
             ...games[gameIndex].playerOne.fieldCards.pileTwo,
           ];
-          break;
-
-        case Piles.PLAYER_ONE_PILE_THREE:
+          games[gameIndex].playerOne.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerOne.fieldCards.pileTwo[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_ONE_PILE_THREE) {
+        if (games[gameIndex].playerOne.fieldCards.pileThree[0].hasMultiple) {
           games[gameIndex].playerOne.fieldCards.pileThree = [
             games[gameIndex].playerOne.deck[0],
             ...games[gameIndex].playerOne.fieldCards.pileThree,
           ];
-          break;
-
-        case Piles.PLAYER_ONE_PILE_FOUR:
+          games[gameIndex].playerOne.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerOne.fieldCards.pileThree[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_ONE_PILE_FOUR) {
+        if (games[gameIndex].playerOne.fieldCards.pileFour[0].hasMultiple) {
           games[gameIndex].playerOne.fieldCards.pileFour = [
             games[gameIndex].playerOne.deck[0],
             ...games[gameIndex].playerOne.fieldCards.pileFour,
           ];
-          break;
-
-        case Piles.PLAYER_TWO_PILE_ONE:
+          games[gameIndex].playerOne.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerOne.fieldCards.pileFour[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_TWO_PILE_ONE) {
+        if (games[gameIndex].playerTwo.fieldCards.pileOne[0].hasMultiple) {
           games[gameIndex].playerTwo.fieldCards.pileOne = [
             games[gameIndex].playerOne.deck[0],
             ...games[gameIndex].playerTwo.fieldCards.pileOne,
           ];
-          break;
-
-        case Piles.PLAYER_TWO_PILE_TWO:
+          games[gameIndex].playerOne.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerTwo.fieldCards.pileOne[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_TWO_PILE_TWO) {
+        if (games[gameIndex].playerTwo.fieldCards.pileTwo[0].hasMultiple) {
           games[gameIndex].playerTwo.fieldCards.pileTwo = [
             games[gameIndex].playerOne.deck[0],
             ...games[gameIndex].playerTwo.fieldCards.pileTwo,
           ];
-          break;
-
-        case Piles.PLAYER_TWO_PILE_THREE:
+          games[gameIndex].playerOne.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerTwo.fieldCards.pileTwo[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_TWO_PILE_THREE) {
+        if (games[gameIndex].playerTwo.fieldCards.pileThree[0].hasMultiple) {
           games[gameIndex].playerTwo.fieldCards.pileThree = [
             games[gameIndex].playerOne.deck[0],
             ...games[gameIndex].playerTwo.fieldCards.pileThree,
           ];
-          break;
-
-        case Piles.PLAYER_TWO_PILE_FOUR:
+          games[gameIndex].playerOne.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerTwo.fieldCards.pileThree[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else {
+        if (games[gameIndex].playerTwo.fieldCards.pileFour[0].hasMultiple) {
           games[gameIndex].playerTwo.fieldCards.pileFour = [
             games[gameIndex].playerOne.deck[0],
             ...games[gameIndex].playerTwo.fieldCards.pileFour,
           ];
-          break;
-
-        default:
-          console.log("failed in placing in pile");
+          games[gameIndex].playerOne.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerTwo.fieldCards.pileFour[0].name} doesn't have a double!`
+          );
+          return;
+        }
       }
-      games[gameIndex].playerOne.deck.splice(0, 1);
     } else {
-      switch (pile) {
-        case Piles.PLAYER_ONE_PILE_ONE:
+      if (pile === Piles.PLAYER_ONE_PILE_ONE) {
+        if (games[gameIndex].playerOne.fieldCards.pileOne[0].hasMultiple) {
           games[gameIndex].playerOne.fieldCards.pileOne = [
             games[gameIndex].playerTwo.deck[0],
             ...games[gameIndex].playerOne.fieldCards.pileOne,
           ];
-          break;
-
-        case Piles.PLAYER_ONE_PILE_TWO:
+          games[gameIndex].playerTwo.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerOne.fieldCards.pileOne[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_ONE_PILE_TWO) {
+        if (games[gameIndex].playerOne.fieldCards.pileTwo[0].hasMultiple) {
           games[gameIndex].playerOne.fieldCards.pileTwo = [
             games[gameIndex].playerTwo.deck[0],
             ...games[gameIndex].playerOne.fieldCards.pileTwo,
           ];
-          break;
-
-        case Piles.PLAYER_ONE_PILE_THREE:
+          games[gameIndex].playerTwo.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerOne.fieldCards.pileTwo[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_ONE_PILE_THREE) {
+        if (games[gameIndex].playerOne.fieldCards.pileThree[0].hasMultiple) {
           games[gameIndex].playerOne.fieldCards.pileThree = [
             games[gameIndex].playerTwo.deck[0],
             ...games[gameIndex].playerOne.fieldCards.pileThree,
           ];
-          break;
-
-        case Piles.PLAYER_ONE_PILE_FOUR:
+          games[gameIndex].playerTwo.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerOne.fieldCards.pileThree[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_ONE_PILE_FOUR) {
+        if (games[gameIndex].playerOne.fieldCards.pileFour[0].hasMultiple) {
           games[gameIndex].playerOne.fieldCards.pileFour = [
             games[gameIndex].playerTwo.deck[0],
             ...games[gameIndex].playerOne.fieldCards.pileFour,
           ];
-          break;
-
-        case Piles.PLAYER_TWO_PILE_ONE:
+          games[gameIndex].playerTwo.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerOne.fieldCards.pileFour[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_TWO_PILE_ONE) {
+        if (games[gameIndex].playerTwo.fieldCards.pileOne[0].hasMultiple) {
           games[gameIndex].playerTwo.fieldCards.pileOne = [
             games[gameIndex].playerTwo.deck[0],
             ...games[gameIndex].playerTwo.fieldCards.pileOne,
           ];
-          break;
-
-        case Piles.PLAYER_TWO_PILE_TWO:
+          games[gameIndex].playerTwo.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerTwo.fieldCards.pileOne[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_TWO_PILE_TWO) {
+        if (games[gameIndex].playerTwo.fieldCards.pileTwo[0].hasMultiple) {
           games[gameIndex].playerTwo.fieldCards.pileTwo = [
             games[gameIndex].playerTwo.deck[0],
             ...games[gameIndex].playerTwo.fieldCards.pileTwo,
           ];
-          break;
-
-        case Piles.PLAYER_TWO_PILE_THREE:
+          games[gameIndex].playerTwo.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerTwo.fieldCards.pileTwo[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else if (pile === Piles.PLAYER_TWO_PILE_THREE) {
+        if (games[gameIndex].playerTwo.fieldCards.pileThree[0].hasMultiple) {
           games[gameIndex].playerTwo.fieldCards.pileThree = [
             games[gameIndex].playerTwo.deck[0],
             ...games[gameIndex].playerTwo.fieldCards.pileThree,
           ];
-          break;
-
-        case Piles.PLAYER_TWO_PILE_FOUR:
+          games[gameIndex].playerTwo.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerTwo.fieldCards.pileThree[0].name} doesn't have a double!`
+          );
+          return;
+        }
+      } else {
+        if (games[gameIndex].playerTwo.fieldCards.pileFour[0].hasMultiple) {
           games[gameIndex].playerTwo.fieldCards.pileFour = [
             games[gameIndex].playerTwo.deck[0],
             ...games[gameIndex].playerTwo.fieldCards.pileFour,
           ];
-          break;
-
-        default:
-          console.log("failed in placing in pile");
+          games[gameIndex].playerTwo.deck.splice(0, 1);
+        } else {
+          socket.emit(
+            "invalid_card_cover",
+            `Invalid play, card ${games[gameIndex].playerTwo.fieldCards.pileFour[0].name} doesn't have a double!`
+          );
+          return;
+        }
       }
-      games[gameIndex].playerTwo.deck.splice(0, 1);
     }
 
     CheckIfSameValueCards(games[gameIndex]);
