@@ -4,7 +4,7 @@
 
 ### Description
 
-For our final project we built a playable speed game, that included both California Speed, and Regular Speed. This implementation also included a full login system, a high schores, and a chat room.
+For our final project we built a playable speed game, that included both California Speed, and Regular Speed. This implementation also included a full login system, a high scores, and a chat room.
 
 ### Technologies Used
 
